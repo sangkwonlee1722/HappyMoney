@@ -1,12 +1,10 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity } from "typeorm";
+import { User } from "src/user/entities/user.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-@Entity()
+@Entity({ name: "accounts" })
 export class Account extends BaseEntity {
-  @Column({ nullable: false }) // 유저 Entity 추가 후 관계 설정 예정
-  userId: number;
-
   /**
    * 계좌이름
    * @example "2차 전지"
@@ -19,4 +17,8 @@ export class Account extends BaseEntity {
 
   @Column({ default: 100000000 })
   point: number;
+
+  @ManyToOne(() => User, (user) => user.account)
+  @JoinColumn({ name: "user_id" })
+  user: User;
 }

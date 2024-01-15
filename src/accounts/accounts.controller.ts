@@ -9,6 +9,11 @@ import { ApiTags } from "@nestjs/swagger";
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
+  /**
+   * 계좌 생성하기
+   * @param name
+   * @returns
+   */
   @Post()
   async create(@Body() { name }: CreateAccountDto) {
     await this.accountsService.createNewAccount(name, 1); // 로그인 기능 개발되면 유저 Id는 데코레이터 활용 예정
