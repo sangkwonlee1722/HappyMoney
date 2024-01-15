@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
-@Controller('user')
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from "@nestjs/common";
+import { UserService } from "./user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { Public } from "src/common/decorator/public.decorator";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+@ApiBearerAuth()
+@ApiTags("User")
+@Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: "회원가입" })
+  @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() { email, password, passwordCheck, name, nick_name, phone, signup_type }: CreateUserDto) {
+    if (password !== passwordCheck) throw new BadRequestException("비밀번호를 확인해주세요.");
+    return this.userService.createUser(email, password, name, nick_name, phone, signup_type);
   }
 
   @Get()
@@ -17,18 +23,18 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.userService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.userService.remove(+id);
   }
 }

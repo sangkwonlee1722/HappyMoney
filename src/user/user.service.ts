@@ -1,11 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ConflictException, Injectable } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { hashSync } from "bcrypt";
+import { User } from "./entities/user.entity";
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private readonly configService: ConfigService,
+    private jwtService: JwtService
+  ) {}
+
+  async createUser(
+    email: string,
+    password: string,
+    name: string,
+    nick_name: string,
+    phone: string,
+    signup_type: string
+  ) {
+    const existUser = await this.findUserByEmail(email);
+    if (existUser) throw new ConflictException("이미 존재하는 회원입니다.");
+
+    const existNickName = await this.findUserByNickName(nick_name);
+    if (existNickName) throw new ConflictException("이미 존재하는 이름입니다.");
+
+    const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
+    const hashPassword = hashSync(password, hashRound);
+    return await this.userRepository.save({
+      email,
+      password: hashPassword,
+      nick_name,
+      phone,
+      name,
+      signup_type
+    });
   }
 
   findAll() {
@@ -22,5 +57,17 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async findUserById(id: number) {
+    return await this.userRepository.findOneBy({ id });
+  }
+
+  async findUserByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
+  }
+
+  async findUserByNickName(nick_name: string) {
+    return await this.userRepository.findOneBy({ nick_name });
   }
 }
