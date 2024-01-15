@@ -4,6 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -33,6 +34,9 @@ async function bootstrap() {
       operationSorter: "alpha"
     }
   });
+
+  // 정적파일 제공
+  app.useStaticAssets(join(__dirname, "..", "assets"));
 
   await app.listen(port);
 }
