@@ -1,11 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateAccountDto } from "./dto/create-account.dto";
+import { UpdateAccountDto } from "./dto/update-account.dto";
+import { v4 as uuidv4 } from "uuid";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Account } from "./entities/account.entity";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class AccountsService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  constructor(
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>
+  ) {}
+
+  async createNewAccount(name: string, userId: number) {
+    await this.accountRepository.save({
+      name,
+      userId
+    });
   }
 
   findAll() {
@@ -22,5 +34,12 @@ export class AccountsService {
 
   remove(id: number) {
     return `This action removes a #${id} account`;
+  }
+
+  generateUniqueAccountNumber() {
+    const uniqueId = uuidv4();
+    const formattedAccountId = uniqueId.replace(/-/g, "").substring(0, 9);
+    const accountNumber = `${formattedAccountId.slice(0, 3)}-${formattedAccountId.slice(3, 6)}-${formattedAccountId.slice(6)}`;
+    return accountNumber;
   }
 }

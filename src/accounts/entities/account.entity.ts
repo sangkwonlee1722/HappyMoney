@@ -1,14 +1,11 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 @Entity()
 export class Account extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ nullable: false })
-  accountNum: string;
+  @Column({ nullable: false }) // 유저 Entity 추가 후 관계 설정 예정
+  userId: number;
 
   /**
    * 계좌이름
