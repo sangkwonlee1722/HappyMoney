@@ -5,9 +5,6 @@
 ```
 SERVER_PORT= 서버 포트번호 (default: 3000)
 
-PASSWORD_HASH_ROUNDS=로그인 비밀번호 해시 생성 강도 (default: 10)
-JWT_SECRET=JWT 생성 및 검증 키
-
 DB_HOST= DB 엔드포인트 주소
 DB_PORT= DB 포트번호 (default:3306)
 DB_USERNAME= 사용자 명
