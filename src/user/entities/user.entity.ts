@@ -23,13 +23,13 @@ export class User {
   name: string;
 
   @Column({ type: "varchar", nullable: false })
-  nick_name: string;
+  nickName: string;
 
   @Column({ type: "varchar", nullable: false })
   phone: string;
 
   @Column({ type: "varchar", nullable: false, default: "user" })
-  signup_type: string;
+  signupType: string;
 
   @Column({ type: "enum", nullable: false, enum: role, default: role.User })
   role: role;

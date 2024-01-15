@@ -10,12 +10,16 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: "회원가입" })
+  /**
+
+회원가입
+@returns
+*/
   @Public()
   @Post()
-  create(@Body() { email, password, passwordCheck, name, nick_name, phone, signup_type }: CreateUserDto) {
+  create(@Body() { email, password, passwordCheck, name, nickName, phone, signupType }: CreateUserDto) {
     if (password !== passwordCheck) throw new BadRequestException("비밀번호를 확인해주세요.");
-    return this.userService.createUser(email, password, name, nick_name, phone, signup_type);
+    return this.userService.createUser(email, password, name, nickName, phone, signupType);
   }
 
   @Get()

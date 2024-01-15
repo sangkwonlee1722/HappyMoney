@@ -3,42 +3,77 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from "c
 
 // 회원가입
 export class CreateUserDto {
-  @ApiProperty({ required: true, example: "test@test.com" })
+  /**
+
+이메일
+@example "test@test.com"
+@requires true
+*/
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ required: true, example: "123456" })
+  /**
+
+비밀번호
+@example "Abcde123"
+@requires true
+*/
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
   password: string;
 
-  @ApiProperty({ required: true, example: "123456" })
+  /**
+
+확인 비밀번호
+@example "Abcde123"
+@requires true
+*/
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
   passwordCheck: string;
 
-  @ApiProperty({ required: true, example: "김민재" })
+  /**
+
+이름
+@example "김민재"
+@requires true
+*/
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ required: true, example: "주식의왕" })
+  /**
+
+닉네임
+@example "주식의왕"
+@requires true
+*/
   @IsString()
   @IsNotEmpty()
-  nick_name: string;
+  nickName: string;
 
-  @ApiProperty({ required: true, example: "010-1234-1111" })
+  /**
+
+핸드폰 번호
+@example "010-1111-1111"
+@requires true
+*/
   @IsString()
   @IsNotEmpty()
   phone: string;
 
-  @ApiProperty({ example: "user" })
+  /**
+
+가입형태
+@example "uesr"
+@requires true
+*/
   @IsString()
   @IsOptional()
-  signup_type: string;
+  signupType: string;
 }
 
 // // 로그인
