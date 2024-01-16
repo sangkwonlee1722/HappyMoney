@@ -1,6 +1,6 @@
 import { Account } from "src/accounts/entities/account.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 const role = {
   User: "user",
