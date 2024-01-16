@@ -23,9 +23,18 @@ export class AccountsController {
     };
   }
 
+  /**
+   * 나의 모든 계좌 조회하기
+   * @returns
+   */
   @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  async findAllAccount() {
+    const accounts = await this.accountsService.findAllMyAccountById(1);
+    return {
+      success: true,
+      message: "okay",
+      data: accounts
+    };
   }
 
   @Get(":id")

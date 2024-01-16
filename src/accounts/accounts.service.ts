@@ -13,15 +13,20 @@ export class AccountsService {
     private readonly accountRepository: Repository<Account>
   ) {}
 
-  async createNewAccount(name: string, userId: number) {
+  async createNewAccount(name: string, userId: number): Promise<void> {
     await this.accountRepository.save({
       name,
       userId
     });
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  async findAllMyAccountById(userId: number): Promise<Account[]> {
+    const accounts = await this.accountRepository.find({
+      where: { userId },
+      select: ["id", "name", "point", "userId"]
+    });
+
+    return accounts;
   }
 
   findOne(id: number) {

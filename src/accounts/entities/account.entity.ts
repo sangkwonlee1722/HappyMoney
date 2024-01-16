@@ -21,4 +21,7 @@ export class Account extends BaseEntity {
   @ManyToOne(() => User, (user) => user.account)
   @JoinColumn({ name: "user_id" })
   user: User;
+
+  @Column()
+  userId: number;
 }
