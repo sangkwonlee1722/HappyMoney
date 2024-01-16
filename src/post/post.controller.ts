@@ -2,39 +2,49 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/commo
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { ApiTags } from "@nestjs/swagger";
 
-@Controller("post")
+@ApiTags("게시판")
+@Controller("posts")
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  /**
+   * 글 작성
+   * @param createUserDto 카테고리아이디, 제목, 내용
+   * @param userId 토큰의 유저아이디
+   * @returns 저장된 글
+   */
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    const data = this.postService.create(createPostDto);
+  async create(@Body() createPostDto: CreatePostDto) {
+    const userId: number = 0;
+    const data = await this.postService.create(userId, createPostDto);
     return { success: true, message: "okay", data: data };
   }
 
+
   @Get()
-  findAll() {
-    const data = this.postService.findAll();
+  async findAll() {
+    const data = await this.postService.findAll();
     return { success: true, message: "okay", data: data };
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    const data = this.postService.findOne(+id);
+  async findOne(@Param("id") id: string) {
+    const data = await this.postService.findOne(+id);
     return { success: true, message: "okay", data: data };
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
-    this.postService.update(+id, updatePostDto);
+  async update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
+    await this.postService.update(+id, updatePostDto);
     const data = this.postService.findOne(+id);
     return { success: true, message: "okay", data: data };
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    this.postService.remove(+id);
+  async remove(@Param("id") id: string) {
+    await this.postService.remove(+id);
     return { success: true, message: "okay" };
   }
 }

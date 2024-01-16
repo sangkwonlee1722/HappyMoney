@@ -37,7 +37,7 @@ export class Post extends BaseEntity {
   contents: string;
 
   @ManyToOne(() => User)
-  user: User;
+  users: User;
 
   // @ManyToOne(() => Category)
   // category: Category;
