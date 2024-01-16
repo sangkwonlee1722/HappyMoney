@@ -93,7 +93,7 @@ export class UserController {
     }
 
     if (newPassword && newPassword !== newPasswordCheck) {
-      throw new UnauthorizedException("New password and confirmation do not match");
+      throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
     }
 
     const hashedPassword = await hash(String(newPassword), 10);
