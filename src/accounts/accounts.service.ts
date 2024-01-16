@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { UpdateAccountDto } from "./dto/update-account.dto";
 import { v4 as uuidv4 } from "uuid";
@@ -13,33 +13,46 @@ export class AccountsService {
     private readonly accountRepository: Repository<Account>
   ) {}
 
-  async createNewAccount(name: string, userId: number) {
+  async createNewAccount(name: string, userId: number): Promise<void> {
     await this.accountRepository.save({
       name,
       userId
     });
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  async findAllMyAccountsById(userId: number): Promise<Account[]> {
+    const accounts: Account[] = await this.accountRepository.find({
+      where: { userId },
+      select: ["id", "name", "point", "userId"] // 주식 총 평가금액 추가 예정
+    });
+
+    return accounts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  async findOneMyAccountById(userId: number, accountId: number): Promise<Account> {
+    const account: Account = await this.accountRepository
+      .createQueryBuilder("a")
+      .where("a.userId=:userId", { userId })
+      .andWhere("a.id=:accountId", { accountId })
+      .select(["a.id", "a.name", "a.point", "a.userId"]) // 계좌가 보유한 주식 목록 조인 예정
+      .getOne();
+
+    if (!account) {
+      throw new NotFoundException("해당하는 계좌를 찾을 수 없습니다.");
+    }
+
+    return account;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
+    await this.findOneMyAccountById(userId, accountId);
+
+    await this.accountRepository.update({ id: accountId }, { name });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
-  }
+  async removeMyAccountById(accountId: number, userId: number): Promise<void> {
+    const account: Account = await this.findOneMyAccountById(userId, accountId);
 
-  generateUniqueAccountNumber() {
-    const uniqueId = uuidv4();
-    const formattedAccountId = uniqueId.replace(/-/g, "").substring(0, 9);
-    const accountNumber = `${formattedAccountId.slice(0, 3)}-${formattedAccountId.slice(3, 6)}-${formattedAccountId.slice(6)}`;
-    return accountNumber;
+    await this.accountRepository.softRemove(account);
   }
 }
