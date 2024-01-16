@@ -1,28 +1,17 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity } from "src/common/entities/base.entity";
+import { Column, Entity } from "typeorm";
 
 @Entity({ name: "notices" })
-export class Notice {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: "int" })
+export class Notice extends BaseEntity {
+  @Column()
   userId: number;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column()
   title: string;
 
-  @Column({ type: "text" })
+  @Column()
   contents: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ nullable: true })
   filePath?: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  deletedAt?: Date;
 }
