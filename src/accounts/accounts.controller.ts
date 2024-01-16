@@ -29,7 +29,7 @@ export class AccountsController {
    */
   @Get()
   async findAllAccount() {
-    const accounts = await this.accountsService.findAllMyAccountById(1);
+    const accounts = await this.accountsService.findAllMyAccountsById(1);
     return {
       success: true,
       message: "okay",
@@ -37,9 +37,20 @@ export class AccountsController {
     };
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.accountsService.findOne(+id);
+  /**
+   * 특정 계좌 상세 조회하기
+   * @param accountId
+   * @returns
+   */
+  @Get(":accountId")
+  async findOne(@Param("accountId") accountId: number) {
+    const account = await this.accountsService.findOneMyAccountById(1, accountId);
+
+    return {
+      success: true,
+      message: "okay",
+      data: account
+    };
   }
 
   @Patch(":id")
