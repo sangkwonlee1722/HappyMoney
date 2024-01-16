@@ -1,11 +1,11 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { hashSync } from "bcrypt";
+import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
 
 @Injectable()
@@ -37,6 +37,21 @@ export class UserService {
     });
   }
 
+  async login(email: string, password: string) {
+    const user = await this.findUserByEmail(email);
+    if (!user) throw new UnauthorizedException("이메일을 확인해주세요.");
+
+    if (!compareSync(password, user?.password ?? "")) throw new UnauthorizedException("비밀번호를 확인해주세요.");
+
+    const payload = { sub: user.id, tokenType: "access" };
+
+    return {
+      success: true,
+      message: "okay",
+      accessToken: this.jwtService.sign(payload, { expiresIn: "1d" })
+    };
+  }
+
   findAll() {
     return `This action returns all user`;
   }
@@ -58,7 +73,10 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOne({
+      select: ["id", "email", "password", "name", "role"],
+      where: [{ email }]
+    });
   }
 
   async findUserByNickName(nickName: string) {

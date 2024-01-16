@@ -1,3 +1,4 @@
+import { PickType } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword } from "class-validator";
 
 // 회원가입
@@ -13,7 +14,7 @@ export class CreateUserDto {
 
   /**
    * 비밀번호
-   * @example "Abcde123!"
+   * @example "abcde123!"
    * @requires true
    */
   @IsNotEmpty()
@@ -23,7 +24,7 @@ export class CreateUserDto {
 
   /**
    * 확인 비밀번호
-   * @example "Abcde123!"
+   * @example "abcde123!"
    * @requires true
    */
   @IsNotEmpty()
@@ -59,8 +60,8 @@ export class CreateUserDto {
   phone: string;
 }
 
-// // 로그인
-// export class ReqLoginDto extends PickType(CreateUserDto, ['email', 'password'] as const) {}
+// 로그인
+export class loginDto extends PickType(CreateUserDto, ["email", "password"] as const) {}
 
 // //  유저 정보 수정
 // export class ReqUpdateUserDto extends PickType(CreateUserDto, ['name'] as const) {}

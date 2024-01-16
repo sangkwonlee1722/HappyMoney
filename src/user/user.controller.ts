@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+  UnauthorizedException
+} from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto, loginDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Public } from "src/common/decorator/public.decorator";
 @ApiBearerAuth()
 @ApiTags("User")
@@ -28,9 +38,17 @@ export class UserController {
     };
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  /**
+   * 로그인
+   * @param loginDto
+   * @returns
+   */
+  @Public()
+  @Post("login")
+  async login(@Body() loginDto: loginDto) {
+    const { email, password } = loginDto;
+
+    return this.userService.login(email, password);
   }
 
   @Get(":id")
