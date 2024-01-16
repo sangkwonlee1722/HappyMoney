@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Account } from "src/accounts/entities/account.entity";
+import { BaseEntity } from "src/common/entities/base.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 
 const role = {
   User: "user",
@@ -9,10 +11,7 @@ type role = (typeof role)[keyof typeof role]; // 'user' | 'admin'
 @Entity({
   name: "users"
 })
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends BaseEntity {
   @Column({ type: "varchar", nullable: false, unique: true })
   email: string;
 
@@ -28,16 +27,12 @@ export class User {
   @Column({ type: "varchar", nullable: false })
   phone: string;
 
-  @Column({ type: "varchar", nullable: false, default: "user" })
+  @Column({ type: "varchar", nullable: false, default: "local" })
   signupType: string;
 
   @Column({ type: "enum", nullable: false, enum: role, default: role.User })
   role: role;
 
-  @CreateDateColumn()
-  created_at: Date;
-  @UpdateDateColumn()
-  updated_at: Date;
-  @DeleteDateColumn()
-  deleted_at: Date;
+  @OneToMany(() => Account, (account) => account.user, { cascade: ["soft-remove"] })
+  account: Account[];
 }

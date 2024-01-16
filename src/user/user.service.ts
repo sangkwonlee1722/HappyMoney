@@ -17,7 +17,9 @@ export class UserService {
     private jwtService: JwtService
   ) {}
 
-  async createUser(email: string, password: string, name: string, nickName: string, phone: string, signupType: string) {
+  async createUser(createUserDto: CreateUserDto) {
+    const { email, password, name, nickName, phone } = createUserDto;
+
     const existUser = await this.findUserByEmail(email);
     if (existUser) throw new ConflictException("이미 존재하는 회원입니다.");
 
@@ -31,8 +33,7 @@ export class UserService {
       password: hashPassword,
       nickName,
       phone,
-      name,
-      signupType
+      name
     });
   }
 
