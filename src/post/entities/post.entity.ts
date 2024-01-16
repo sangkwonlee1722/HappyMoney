@@ -16,6 +16,10 @@ export class Post extends BaseEntity {
   @Column({ nullable: false })
   userId: number;
 
+  @IsString()
+  @Column({ nullable: false })
+  nickName: string;
+
   /**
    * 글 제목
    * @example "테슬라 관련 정보 공유합니다"
@@ -36,8 +40,8 @@ export class Post extends BaseEntity {
   @Column({ type: "text", nullable: false })
   contents: string;
 
-  @ManyToOne(() => User, (user) => user.posts) 
-  @JoinColumn({ name: "user_id" }) 
+  @ManyToOne(() => User, (user) => user.post)
+  @JoinColumn({ name: "userId", referencedColumnName: "id" })
   user: User;
 
   // @ManyToOne(() => Category)

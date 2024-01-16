@@ -18,8 +18,8 @@ export class PostController {
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
     const userId: number = 1;
-    const data = await this.postService.create(userId, createPostDto);
-    return { success: true, message: "okay", data: data };
+    await this.postService.create(userId, createPostDto);
+    return { success: true, message: "okay" };
   }
 
   /**
@@ -46,8 +46,8 @@ export class PostController {
   @Patch(":id")
   async update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
     await this.postService.update(+id, updatePostDto);
-    const data = this.postService.findOne(+id);
-    return { success: true, message: "okay", data: data };
+    this.postService.findOne(+id);
+    return { success: true, message: "okay" };
   }
 
   @Delete(":id")
