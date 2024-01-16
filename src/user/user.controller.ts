@@ -2,8 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException 
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { Public } from "src/common/decorator/public.decorator";
+
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Public } from "src/common/decorator/public.decorator";
 @ApiBearerAuth()
 @ApiTags("User")
 @Controller("user")
@@ -11,15 +12,20 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   /**
-
-회원가입
-@returns
-*/
+   * 회원가입
+   * @param createUserDto
+   * @returns
+   */
   @Public()
   @Post()
-  create(@Body() { email, password, passwordCheck, name, nickName, phone, signupType }: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
+    const { password, passwordCheck } = createUserDto;
     if (password !== passwordCheck) throw new BadRequestException("비밀번호를 확인해주세요.");
-    return this.userService.createUser(email, password, name, nickName, phone, signupType);
+    await this.userService.createUser(createUserDto);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 
   @Get()
