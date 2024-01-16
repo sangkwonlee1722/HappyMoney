@@ -53,9 +53,19 @@ export class AccountsController {
     };
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountsService.update(+id, updateAccountDto);
+  /**
+   * 특정 계좌 수정하기
+   * @param id
+   * @param name
+   * @returns
+   */
+  @Patch(":accountId")
+  async updateMyAccount(@Param("accountId") accountId: number, @Body() { name }: UpdateAccountDto) {
+    await this.accountsService.updateMyAccount(accountId, 1, name);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 
   @Delete(":id")

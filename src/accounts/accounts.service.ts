@@ -44,18 +44,13 @@ export class AccountsService {
     return account;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async updateMyAccount(accountId: number, userId: number, name: string) {
+    await this.findOneMyAccountById(userId, accountId);
+
+    await this.accountRepository.update({ id: accountId }, { name });
   }
 
   remove(id: number) {
     return `This action removes a #${id} account`;
-  }
-
-  generateUniqueAccountNumber() {
-    const uniqueId = uuidv4();
-    const formattedAccountId = uniqueId.replace(/-/g, "").substring(0, 9);
-    const accountNumber = `${formattedAccountId.slice(0, 3)}-${formattedAccountId.slice(3, 6)}-${formattedAccountId.slice(6)}`;
-    return accountNumber;
   }
 }
