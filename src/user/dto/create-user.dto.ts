@@ -62,6 +62,3 @@ export class CreateUserDto {
 
 // 로그인
 export class loginDto extends PickType(CreateUserDto, ["email", "password"] as const) {}
-
-//  유저 정보 수정
-export class updateUserDto extends PickType(CreateUserDto, ["nickName", "phone", "password"] as const) {}

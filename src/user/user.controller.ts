@@ -12,7 +12,7 @@ import {
   Query
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserDto, loginDto, updateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto, loginDto } from "./dto/create-user.dto";
 
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Public } from "src/common/decorator/public.decorator";
@@ -20,6 +20,7 @@ import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
 import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @ApiTags("User")
 @Controller("user")
@@ -74,8 +75,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch("mypage")
-  async updateUserInfo(@UserInfo() user: User, @Body() { nickName, phone, password }: updateUserDto) {
+  async updateUserInfo(@UserInfo() user: User, @Body() updateUserDto: UpdateUserDto) {
+    const { nickName, phone, password, newPassword, newPasswordCheck } = updateUserDto;
     const userInfo = await this.userService.findUserByEmail(user.email);
+    const allUser = await this.userService.find();
+
+    allUser.forEach((user) => {
+      if (user.nickName === nickName) {
+        throw new UnauthorizedException("이미 존재하는 닉네임입니다.");
+      }
+    });
 
     const isPasswordValid = await compare(password, userInfo.password);
 
@@ -83,7 +92,11 @@ export class UserController {
       throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
     }
 
-    const hashedPassword = await hash(password, 10);
+    if (newPassword && newPassword !== newPasswordCheck) {
+      throw new UnauthorizedException("New password and confirmation do not match");
+    }
+
+    const hashedPassword = await hash(String(newPassword), 10);
 
     await this.userService.updateUserInfo(user.id, nickName, phone, hashedPassword);
     return {
