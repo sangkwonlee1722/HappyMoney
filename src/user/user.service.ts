@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { Repository } from "typeorm";
@@ -21,6 +20,7 @@ export class UserService {
     const { email, password, name, nickName, phone } = createUserDto;
 
     const existUser = await this.findUserByEmail(email);
+
     if (existUser) throw new ConflictException("이미 존재하는 회원입니다.");
 
     const existNickName = await this.findUserByNickName(nickName);
@@ -28,7 +28,7 @@ export class UserService {
 
     const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
     const hashPassword = hashSync(password, hashRound);
-    return await this.userRepository.save({
+    await this.userRepository.save({
       email,
       password: hashPassword,
       nickName,
@@ -52,20 +52,22 @@ export class UserService {
     };
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async updateUserInfo(id: number, nickName: string, phone: string, password: string) {
+    const updated = await this.userRepository.update({ id }, { nickName, phone, password });
+
+    return updated;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async deleteUser(id: number) {
+    const user: User = await this.userRepository.findOne({
+      where: { id }
+    });
+
+    return await this.userRepository.softRemove(user);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async find() {
+    return await this.userRepository.find();
   }
 
   async findUserById(id: number) {

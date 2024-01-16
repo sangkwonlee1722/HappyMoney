@@ -7,15 +7,20 @@ import {
   Param,
   Delete,
   BadRequestException,
-  UnauthorizedException
+  UnauthorizedException,
+  UseGuards,
+  Query
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserDto, loginDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto, loginDto, updateUserDto } from "./dto/create-user.dto";
 
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Public } from "src/common/decorator/public.decorator";
-@ApiBearerAuth()
+import { UserInfo } from "src/common/decorator/user.decorator";
+import { User } from "./entities/user.entity";
+import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+import { compare, hash } from "bcrypt";
+
 @ApiTags("User")
 @Controller("user")
 export class UserController {
@@ -51,18 +56,54 @@ export class UserController {
     return this.userService.login(email, password);
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.userService.findOne(+id);
+  /**
+   * 내 정보 조회
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get("mypage")
+  async getUserInfo(@UserInfo() user: User) {
+    return user;
   }
 
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  /**
+   * 내 정보 수정
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch("mypage")
+  async updateUserInfo(@UserInfo() user: User, @Body() { nickName, phone, password }: updateUserDto) {
+    const userInfo = await this.userService.findUserByEmail(user.email);
+
+    const isPasswordValid = await compare(password, userInfo.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    await this.userService.updateUserInfo(user.id, nickName, phone, hashedPassword);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userService.remove(+id);
+  /**
+   * 회원탈퇴
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete("delete")
+  async deleteUser(@UserInfo() user: User) {
+    await this.userService.deleteUser(user.id);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 }
