@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne } from "typeorm";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-// import { User } from "src/user/entities/user.entity";
+import { User } from "src/user/entities/user.entity";
 // import { Category } from "src/category/entities/category.entity";
 
 @Entity({
@@ -28,7 +28,7 @@ export class Post extends BaseEntity {
 
   /**
    * 글 내용
-   * @example "방탄 트럭을 출시했다고 합니다"
+   * @example "방탄 트럭을 출시했다고 합니다."
    * @requires true
    */
   @IsNotEmpty({ message: "내용을 입력해 주세요." })
@@ -36,8 +36,8 @@ export class Post extends BaseEntity {
   @Column({ type: "text", nullable: false })
   contents: string;
 
-  // @ManyToOne(() => User)
-  // user: User;
+  @ManyToOne(() => User)
+  user: User;
 
   // @ManyToOne(() => Category)
   // category: Category;
