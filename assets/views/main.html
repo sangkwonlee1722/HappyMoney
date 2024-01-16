@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/js/jquery-3.7.1.min.js"></script>
-    <script type="module" src="/js/axios.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
     <script type="module" src="/js/bootstrap.min.js"></script>
     <script type="module" src="/js/common.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -18,4 +19,64 @@
       <footer id="footer_wrap"></footer>
     </div>
   </body>
+  <script>
+    // fetch
+    // document.addEventListener("DOMContentLoaded", async function () {
+    //   const proxyUrl = "http://localhost:8080"; // 프록시 서버 주소
+    //   const path = "/oauth2/Approval"; // 실제 백엔드 API 경로
+
+    //   const domain = `${proxyUrl}${path}`;
+    //   const data = {
+    //     grant_type: "client_credentials",
+    //     appkey: "PSx12cIDxMAVmGDzE9WOu1yMLY8XXUqnQ5Su",
+    //     secretkey:
+    //       "0tRWqmWS4+FpTYNNQPYLUiHafllolO9nFGzSZIQA34vTIqj1m/+Vqmme2u0Q2jwlgpwJOui82bp36ptzl2pGXCqPKDmTqt4ZWnZrI5JcZzE31KMhi1Vz3nXebFHLrCpQmODBooXpEokygiF+LYbf/Zk3MXMnPgPrnKoi+bNnYJxM7xEmaHs="
+    //   };
+
+    //   try {
+    //     const response = await fetch(domain, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //       },
+    //       body: JSON.stringify(data)
+    //     });
+
+    //     if (!response.ok) {
+    //       throw new Error(`HTTP error! Status: ${response.status}`);
+    //     }
+
+    //     const responseData = await response.json();
+    //     console.log("Response:", responseData);
+    //   } catch (error) {
+    //     console.error("Error:", error.message);
+    //   }
+    // });
+
+    // axios
+    document.addEventListener("DOMContentLoaded", async function () {
+      const proxyUrl = "http://localhost:8080"; // 프록시 서버 주소
+      const path = "/oauth2/Approval"; // 실제 백엔드 API 경로
+
+      const domain = `${proxyUrl}${path}`;
+      const data = {
+        grant_type: "client_credentials",
+        appkey: "PSx12cIDxMAVmGDzE9WOu1yMLY8XXUqnQ5Su",
+        secretkey:
+          "0tRWqmWS4+FpTYNNQPYLUiHafllolO9nFGzSZIQA34vTIqj1m/+Vqmme2u0Q2jwlgpwJOui82bp36ptzl2pGXCqPKDmTqt4ZWnZrI5JcZzE31KMhi1Vz3nXebFHLrCpQmODBooXpEokygiF+LYbf/Zk3MXMnPgPrnKoi+bNnYJxM7xEmaHs="
+      };
+
+      try {
+        const response = await axios.post(domain, data, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Error:", error.message);
+      }
+    });
+  </script>
 </html>
