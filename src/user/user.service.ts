@@ -1,11 +1,10 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { hashSync } from "bcrypt";
+import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
 
 @Injectable()
@@ -21,6 +20,7 @@ export class UserService {
     const { email, password, name, nickName, phone } = createUserDto;
 
     const existUser = await this.findUserByEmail(email);
+
     if (existUser) throw new ConflictException("이미 존재하는 회원입니다.");
 
     const existNickName = await this.findUserByNickName(nickName);
@@ -28,7 +28,7 @@ export class UserService {
 
     const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
     const hashPassword = hashSync(password, hashRound);
-    return await this.userRepository.save({
+    await this.userRepository.save({
       email,
       password: hashPassword,
       nickName,
@@ -37,20 +37,37 @@ export class UserService {
     });
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async login(email: string, password: string) {
+    const user = await this.findUserByEmail(email);
+    if (!user) throw new UnauthorizedException("이메일을 확인해주세요.");
+
+    if (!compareSync(password, user?.password ?? "")) throw new UnauthorizedException("비밀번호를 확인해주세요.");
+
+    const payload = { sub: user.id, tokenType: "access" };
+
+    return {
+      success: true,
+      message: "okay",
+      accessToken: this.jwtService.sign(payload, { expiresIn: "1d" })
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async updateUserInfo(id: number, nickName: string, phone: string, password: string) {
+    const updated = await this.userRepository.update({ id }, { nickName, phone, password });
+
+    return updated;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async deleteUser(id: number) {
+    const user: User = await this.userRepository.findOne({
+      where: { id }
+    });
+
+    return await this.userRepository.softRemove(user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async find() {
+    return await this.userRepository.find();
   }
 
   async findUserById(id: number) {
@@ -58,7 +75,10 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOne({
+      select: ["id", "email", "password", "name", "role"],
+      where: [{ email }]
+    });
   }
 
   async findUserByNickName(nickName: string) {
