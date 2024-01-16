@@ -5,6 +5,8 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configModuleValidationSchema } from "./configs/env-validation.config";
 import { typeOrmModuleAsyncOptions } from "./configs/database.config";
+import { AccountsModule } from "./accounts/accounts.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -12,9 +14,11 @@ import { typeOrmModuleAsyncOptions } from "./configs/database.config";
       isGlobal: true,
       validationSchema: configModuleValidationSchema
     }),
-    TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions)
+    TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions),
+    UserModule,
+    AccountsModule
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [],
+  providers: []
 })
 export class AppModule {}
