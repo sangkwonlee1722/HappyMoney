@@ -68,8 +68,17 @@ export class AccountsController {
     };
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.accountsService.remove(+id);
+  /**
+   * 나의 특정 계좌 삭제하기
+   * @param accountId
+   * @returns
+   */
+  @Delete(":accountId")
+  async removeMyAccountById(@Param("accountId") accountId: number) {
+    await this.accountsService.removeMyAccountById(accountId, 1);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 }

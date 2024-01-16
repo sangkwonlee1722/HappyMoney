@@ -44,13 +44,15 @@ export class AccountsService {
     return account;
   }
 
-  async updateMyAccount(accountId: number, userId: number, name: string) {
+  async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
     await this.findOneMyAccountById(userId, accountId);
 
     await this.accountRepository.update({ id: accountId }, { name });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async removeMyAccountById(accountId: number, userId: number): Promise<void> {
+    const account: Account = await this.findOneMyAccountById(userId, accountId);
+
+    await this.accountRepository.softRemove(account);
   }
 }
