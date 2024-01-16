@@ -10,25 +10,33 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   /**
-   * 글 작성
+   * 게사글 작성
    * @param createUserDto 카테고리아이디, 제목, 내용
    * @param userId 토큰의 유저아이디
    * @returns 저장된 글
    */
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
-    const userId: number = 0;
+    const userId: number = 1;
     const data = await this.postService.create(userId, createPostDto);
     return { success: true, message: "okay", data: data };
   }
 
-
+  /**
+   * 게시글 전체조회
+   * @returns 전체 글
+   */
   @Get()
   async findAll() {
     const data = await this.postService.findAll();
     return { success: true, message: "okay", data: data };
   }
 
+  /**
+   * 게시글 특정조회
+   * @Param id 게시글의 아이디
+   * @returns 특정 글
+   */
   @Get(":id")
   async findOne(@Param("id") id: string) {
     const data = await this.postService.findOne(+id);

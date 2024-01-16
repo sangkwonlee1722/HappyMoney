@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { User } from "src/user/entities/user.entity";
@@ -36,8 +36,9 @@ export class Post extends BaseEntity {
   @Column({ type: "text", nullable: false })
   contents: string;
 
-  @ManyToOne(() => User)
-  users: User;
+  @ManyToOne(() => User, (user) => user.posts) 
+  @JoinColumn({ name: "user_id" }) 
+  user: User;
 
   // @ManyToOne(() => Category)
   // category: Category;

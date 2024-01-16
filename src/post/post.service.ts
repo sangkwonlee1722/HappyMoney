@@ -14,7 +14,7 @@ export class PostService {
   async create(userId: Number, createPostDto: CreatePostDto) {
     const { categoryId, title, contents } = createPostDto;
     const data = await this.postRepository.save({
-      category_id: categoryId,
+      categoryId,
       user_id: userId,
       title,
       contents
@@ -22,12 +22,20 @@ export class PostService {
     return data;
   }
 
-  findAll() {
-    return `This action returns all post`;
+  async findAll() {
+    const data = await this.postRepository.find({
+      where: { deletedAt: null },
+      select: ["id", "categoryId", "userId", "title", "createdAt"],
+      order: { createdAt: "DESC" }
+    });
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    const data = await this.postRepository.findOne({
+      where: { id, deletedAt: null },
+    });
+    return data;
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
