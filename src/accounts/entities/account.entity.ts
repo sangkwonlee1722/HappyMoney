@@ -18,7 +18,7 @@ export class Account extends BaseEntity {
   @Column({ default: 100000000 })
   point: number;
 
-  @ManyToOne(() => User, (user) => user.account)
+  @ManyToOne(() => User, (user) => user.accounts)
   @JoinColumn({ name: "user_id" })
   user: User;
 
