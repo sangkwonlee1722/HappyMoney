@@ -1,6 +1,9 @@
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
+import { User } from "src/user/entities/user.entity";
+import { Notice } from "src/notice/entities/notice.entity";
+import { Account } from "src/accounts/entities/account.entity";
 
 export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -15,7 +18,7 @@ export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
     database: configService.get<string>("DB_NAME"),
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
-    entities: [],
+    entities: [User, Notice, Account],
     logging: true
   })
 };

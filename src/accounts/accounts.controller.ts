@@ -1,10 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
 import { AccountsService } from "./accounts.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { UpdateAccountDto } from "./dto/update-account.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { UserInfo } from "src/common/decorator/user.decorator";
+import { User } from "src/user/entities/user.entity";
+import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 
+@ApiBearerAuth()
 @ApiTags("Accounts")
+@UseGuards(JwtAuthGuard)
 @Controller("accounts")
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
@@ -15,8 +20,8 @@ export class AccountsController {
    * @returns
    */
   @Post()
-  async create(@Body() { name }: CreateAccountDto) {
-    await this.accountsService.createNewAccount(name, 1); // 로그인 기능 개발되면 유저 Id는 데코레이터 활용 예정
+  async create(@Body() { name }: CreateAccountDto, @UserInfo() user: User) {
+    await this.accountsService.createNewAccount(name, user.id); // 로그인 기능 개발되면 유저 Id는 데코레이터 활용 예정
     return {
       success: true,
       message: "okay"
@@ -28,8 +33,8 @@ export class AccountsController {
    * @returns
    */
   @Get()
-  async findAllAccount() {
-    const accounts = await this.accountsService.findAllMyAccountsById(1);
+  async findAllAccount(@UserInfo() user: User) {
+    const accounts = await this.accountsService.findAllMyAccountsById(user.id);
     return {
       success: true,
       message: "okay",
@@ -38,13 +43,14 @@ export class AccountsController {
   }
 
   /**
-   * 특정 계좌 상세 조회하기
+   * 나의 특정 계좌 조회하기
    * @param accountId
+   * @param user
    * @returns
    */
   @Get(":accountId")
-  async findOne(@Param("accountId") accountId: number) {
-    const account = await this.accountsService.findOneMyAccountById(1, accountId);
+  async findOne(@Param("accountId") accountId: number, @UserInfo() user: User) {
+    const account = await this.accountsService.findOneMyAccountById(user.id, accountId);
 
     return {
       success: true,
@@ -60,8 +66,12 @@ export class AccountsController {
    * @returns
    */
   @Patch(":accountId")
-  async updateMyAccount(@Param("accountId") accountId: number, @Body() { name }: UpdateAccountDto) {
-    await this.accountsService.updateMyAccount(accountId, 1, name);
+  async updateMyAccount(
+    @Param("accountId") accountId: number,
+    @Body() { name }: UpdateAccountDto,
+    @UserInfo() user: User
+  ) {
+    await this.accountsService.updateMyAccount(accountId, user.id, name);
     return {
       success: true,
       message: "okay"
@@ -74,8 +84,8 @@ export class AccountsController {
    * @returns
    */
   @Delete(":accountId")
-  async removeMyAccountById(@Param("accountId") accountId: number) {
-    await this.accountsService.removeMyAccountById(accountId, 1);
+  async removeMyAccountById(@Param("accountId") accountId: number, @UserInfo() user: User) {
+    await this.accountsService.removeMyAccountById(accountId, user.id);
     return {
       success: true,
       message: "okay"
