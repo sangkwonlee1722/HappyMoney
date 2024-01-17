@@ -2,15 +2,20 @@ import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { User } from "src/user/entities/user.entity";
-// import { Category } from "src/category/entities/category.entity";
 
 @Entity({
   name: "posts"
 })
 export class Post extends BaseEntity {
-  @IsNumber()
-  @Column({ nullable: false })
-  categoryId: number;
+  /**
+   * 말머리
+   * @example "잡담"
+   * @requires true
+   */
+  @IsNotEmpty({ message: "카테고리 비입력." })
+  @IsString()
+  @Column({ type: "varchar", length: 31, nullable: false })
+  category: string;
 
   @IsNumber()
   @Column({ nullable: false })
@@ -27,7 +32,7 @@ export class Post extends BaseEntity {
    */
   @IsNotEmpty({ message: "제목을 입력해 주세요." })
   @IsString()
-  @Column({ type: "varchar", length: 255, nullable: false })
+  @Column({ type: "varchar", length: 63, nullable: false })
   title: string;
 
   /**
@@ -43,7 +48,4 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User, (user) => user.post)
   @JoinColumn({ name: "userId", referencedColumnName: "id" })
   user: User;
-
-  // @ManyToOne(() => Category)
-  // category: Category;
 }

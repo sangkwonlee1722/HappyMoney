@@ -4,24 +4,17 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Post } from "./entities/post.entity";
 import { Repository } from "typeorm";
-import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly postRepository: Repository<Post>
   ) {}
-  async create(userId: number, createPostDto: CreatePostDto) {
-    const { categoryId, title, contents } = createPostDto;
-    const userData = await this.userRepository.findOne({
-      where: { id: userId, deletedAt: null }
-    });
-    const nickName: string = userData.nickName;
+  async create(userId: number, nickName: string, createPostDto: CreatePostDto) {
+    const { category, title, contents } = createPostDto;
     const data = await this.postRepository.save({
-      categoryId,
+      category,
       userId,
       nickName,
       title,
@@ -33,7 +26,7 @@ export class PostService {
   async findAll() {
     const data = await this.postRepository.find({
       where: { deletedAt: null },
-      select: ["id", "categoryId", "userId", "nickName", "title", "createdAt"],
+      select: ["id", "category", "userId", "nickName", "title", "createdAt"],
       order: { createdAt: "DESC" }
     });
     return data;
@@ -47,13 +40,13 @@ export class PostService {
   }
 
   async update(id: number, userId: number, updatePostDto: UpdatePostDto) {
-    const { categoryId, title, contents } = updatePostDto;
+    const { category, title, contents } = updatePostDto;
     const data = await this.postRepository.update(
       {
         id,
         userId
       },
-      { categoryId, title, contents }
+      { category, title, contents }
     );
     return data.affected;
   }

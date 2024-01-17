@@ -22,8 +22,8 @@ export class PostController {
   @ApiBearerAuth()
   @Post()
   async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
-    const userId: number = user.id;
-    await this.postService.create(userId, createPostDto);
+    const { id: userId, nickName } = user;
+    await this.postService.create(userId, nickName, createPostDto);
     return { success: true, message: "okay" };
   }
 
