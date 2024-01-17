@@ -1,7 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { CreateAccountDto } from "./dto/create-account.dto";
-import { UpdateAccountDto } from "./dto/update-account.dto";
-import { v4 as uuidv4 } from "uuid";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Account } from "./entities/account.entity";
 import { Repository } from "typeorm";
@@ -17,7 +14,7 @@ export class AccountsService {
     const myAccountsNumbers = await this.countMyAllAcounts(userId);
 
     if (myAccountsNumbers >= 3) {
-      throw new BadRequestException("계좌는 계정 당 3개까지만 개설이 가능합니다.");
+      throw new ForbiddenException("계좌는 계정 당 3개까지만 개설이 가능합니다.");
     }
 
     const accountNumber: string = await this.generateUniqueAccountNumber();
