@@ -18,8 +18,8 @@ export class NoticeController {
    * @returns
    */
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  // @Roles("Admin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
   @Post()
   async create(@Body() createNoticeDto: CreateNoticeDto, @Request() req) {
     await this.noticeService.create(createNoticeDto, req.user.id);
@@ -55,8 +55,8 @@ export class NoticeController {
    * @returns
    */
   @ApiBearerAuth()
-  // @Roles("Admin")
-  @UseGuards(JwtAuthGuard)
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(":id")
   update(@Param("id") id: number, @Body() updateNoticeDto: UpdateNoticeDto) {
     return this.noticeService.update(id, updateNoticeDto);
@@ -68,8 +68,8 @@ export class NoticeController {
    * @returns
    */
   @ApiBearerAuth()
-  // @Roles("Admin")
-  @UseGuards(JwtAuthGuard)
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(":id")
   remove(@Param("id") id: number) {
     return this.noticeService.remove(id);
