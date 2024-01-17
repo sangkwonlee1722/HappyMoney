@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { User } from "src/user/entities/user.entity";
+import { Comment } from "src/comment/entities/comment.entity";
 
 @Entity({
   name: "posts"
@@ -48,4 +49,7 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User, (user) => user.post)
   @JoinColumn({ name: "userId", referencedColumnName: "id" })
   user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
 }
