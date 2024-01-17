@@ -62,16 +62,25 @@ export class PostController {
     if (isUpdated) {
       return { success: true, message: "okay" };
     } else if (!isUpdated) {
-      throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." })
+      throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." });
     }
   }
 
+  /**
+   * 게시글 삭제
+   * @Param id 게시글의 아이디
+   * @returns
+   */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
   async remove(@UserInfo() user: User, @Param("id") id: string) {
     const userId: number = user.id;
     const isdeleted = await this.postService.remove(+id, userId);
-    return { success: true, message: "okay" };
+    if (isdeleted) {
+      return { success: true, message: "okay" };
+    } else if (!isdeleted) {
+      throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." });
+    }
   }
 }
