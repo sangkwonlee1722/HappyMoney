@@ -1,7 +1,8 @@
 import { Account } from "src/accounts/entities/account.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
+import { Post } from "src/post/entities/post.entity";
 import { Notice } from "src/notice/entities/notice.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 
 const role = {
   User: "user",
@@ -36,6 +37,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Account, (account) => account.user, { cascade: ["soft-remove"] })
   accounts: Account[];
+
+  @OneToMany(() => Post, (post) => post.user) 
+  post: Post[];
 
   @OneToMany(() => Notice, (notice) => notice.user)
   notices: Notice[];
