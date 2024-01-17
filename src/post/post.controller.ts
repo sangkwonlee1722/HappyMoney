@@ -14,9 +14,10 @@ export class PostController {
 
   /**
    * 게사글 작성
-   * @param createUserDto 카테고리아이디, 제목, 내용
-   * @param userId 토큰의 유저아이디
-   * @returns 저장된 글
+   * @param createUserDto 카테고리, 제목, 내용
+   * @param userId 유저아이디
+   * @param nickName 닉네임
+   * @returns
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -38,9 +39,9 @@ export class PostController {
   }
 
   /**
-   * 게시글 특정조회
+   * 게시글 상세 조회
    * @Param id 게시글의 아이디
-   * @returns 특정 글
+   * @returns 상세 글
    */
   @Get(":id")
   async findOne(@Param("id") id: string) {
