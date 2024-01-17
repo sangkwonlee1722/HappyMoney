@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Notice } from "./entities/notice.entity";
@@ -35,17 +35,31 @@ export class NoticeService {
 
   // 공지사항 특정 조회
   async findOne(id: number): Promise<Notice> {
-    return this.noticeRepository.findOneBy({ id });
+    const notice = await this.noticeRepository.findOneBy({ id });
+    if (!notice) {
+      throw new NotFoundException(`해당 공지사항을 찾을 수 없습니다.`);
+    }
+    return notice;
   }
 
   // 공지사항 수정
   async update(id: number, updateNoticeDto: UpdateNoticeDto): Promise<Notice> {
+    const notice = await this.noticeRepository.findOneBy({ id });
+    if (!notice) {
+      throw new NotFoundException("해당 공지사항을 찾을 수 없습니다.");
+    }
+
     await this.noticeRepository.update(id, updateNoticeDto);
     return this.noticeRepository.findOneBy({ id });
   }
 
   // 공지사항 삭제
   async remove(id: number): Promise<void> {
+    const notice = await this.noticeRepository.findOneBy({ id });
+    if (!notice) {
+      throw new NotFoundException("해당 공지사항을 찾을 수 없습니다.");
+    }
+
     await this.noticeRepository.delete(id);
   }
 }

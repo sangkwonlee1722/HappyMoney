@@ -5,7 +5,6 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UpdateNoticeDto } from "./dto/update-notice.dto";
 import { Roles } from "src/common/decorator/roles.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
-import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 
 @ApiTags("notices")
 @Controller("notices")
@@ -18,7 +17,7 @@ export class NoticeController {
    * @returns
    */
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Roles("admin")
   @Post()
   async create(@Body() createNoticeDto: CreateNoticeDto, @Request() req) {
@@ -56,7 +55,7 @@ export class NoticeController {
    */
   @ApiBearerAuth()
   @Roles("admin")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Patch(":id")
   update(@Param("id") id: number, @Body() updateNoticeDto: UpdateNoticeDto) {
     return this.noticeService.update(id, updateNoticeDto);
@@ -69,7 +68,7 @@ export class NoticeController {
    */
   @ApiBearerAuth()
   @Roles("admin")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   @Delete(":id")
   remove(@Param("id") id: number) {
     return this.noticeService.remove(id);
