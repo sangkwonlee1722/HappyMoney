@@ -1,18 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { PickType } from "@nestjs/swagger";
+import { Notice } from "../entities/notice.entity";
 
-export class CreateNoticeDto {
-  @IsNotEmpty()
-  userId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
-  @IsString()
-  @IsNotEmpty()
-  contents: string;
-
-  @IsString()
-  @IsOptional()
-  filePath?: string;
-}
+export class CreateNoticeDto extends PickType(Notice, ["title", "contents"] as const) {}

@@ -13,20 +13,24 @@ export class NoticeService {
   ) {}
 
   // 공지사항 작성
-  async create(createNoticeDto: CreateNoticeDto): Promise<Notice> {
+  async create(createNoticeDto: CreateNoticeDto, userId: number): Promise<Notice> {
     const existingNotice = await this.noticeRepository.findOne({ where: { title: createNoticeDto.title } });
     if (existingNotice) {
       throw new ConflictException("동일한 제목의 공지사항이 이미 존재합니다.");
     }
 
-    const notice = this.noticeRepository.create(createNoticeDto);
+    const notice = this.noticeRepository.create({ ...createNoticeDto, user: { id: userId } });
     await this.noticeRepository.save(notice);
     return notice;
   }
 
   // 공지사항 전체 조회
   async findAll(): Promise<Notice[]> {
-    return this.noticeRepository.find();
+    return this.noticeRepository.find({
+      order: {
+        createdAt: "DESC" // createdAt 필드를 기준으로 내림차순 정렬
+      }
+    });
   }
 
   // 공지사항 특정 조회
