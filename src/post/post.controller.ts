@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
@@ -48,14 +48,22 @@ export class PostController {
     return { success: true, message: "okay", data: data };
   }
 
+  /**
+   * 게시글 수정
+   * @Param id 게시글의 아이디
+   * @returns
+   */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
   async update(@UserInfo() user: User, @Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
     const userId: number = user.id;
-    await this.postService.update(+id, updatePostDto);
-    this.postService.findOne(+id);
-    return { success: true, message: "okay" };
+    const isUpdated = await this.postService.update(+id, userId, updatePostDto);
+    if (isUpdated) {
+      return { success: true, message: "okay" };
+    } else if (!isUpdated) {
+      throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." })
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,7 +71,7 @@ export class PostController {
   @Delete(":id")
   async remove(@UserInfo() user: User, @Param("id") id: string) {
     const userId: number = user.id;
-    await this.postService.remove(+id);
+    const isdeleted = await this.postService.remove(+id, userId);
     return { success: true, message: "okay" };
   }
 }

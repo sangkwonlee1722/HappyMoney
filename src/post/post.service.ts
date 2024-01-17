@@ -46,11 +46,19 @@ export class PostService {
     return data;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, userId: number, updatePostDto: UpdatePostDto) {
+    const { categoryId, title, contents } = updatePostDto;
+    const data = await this.postRepository.update(
+      {
+        id,
+        userId,
+      },
+      { categoryId, title, contents },
+    );
+    return data.affected;
   }
 
-  remove(id: number) {
+  remove(id: number, userId: number) {
     return `This action removes a #${id} post`;
   }
 }
