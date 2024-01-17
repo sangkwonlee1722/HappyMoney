@@ -25,7 +25,6 @@ export class PostService {
 
   async findAll() {
     const data = await this.postRepository.find({
-      where: { deletedAt: null },
       select: ["id", "category", "userId", "nickName", "title", "createdAt"],
       order: { createdAt: "DESC" }
     });
@@ -34,7 +33,7 @@ export class PostService {
 
   async findOne(id: number) {
     const data = await this.postRepository.findOne({
-      where: { id, deletedAt: null }
+      where: { id }
     });
     return data;
   }

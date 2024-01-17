@@ -44,7 +44,7 @@ export class PostController {
    * @returns 상세 글
    */
   @Get(":id")
-  async findOne(@Param("id") id: string) {
+  async findOne(@Param("id") id: number) {
     const data = await this.postService.findOne(+id);
     return { success: true, message: "okay", data: data };
   }
@@ -57,7 +57,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
-  async update(@UserInfo() user: User, @Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
+  async update(@UserInfo() user: User, @Param("id") id: number, @Body() updatePostDto: UpdatePostDto) {
     const userId: number = user.id;
     const isUpdated = await this.postService.update(+id, userId, updatePostDto);
     if (isUpdated) {
@@ -75,7 +75,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
-  async remove(@UserInfo() user: User, @Param("id") id: string) {
+  async remove(@UserInfo() user: User, @Param("id") id: number) {
     const userId: number = user.id;
     const isdeleted = await this.postService.remove(+id, userId);
     if (isdeleted) {
