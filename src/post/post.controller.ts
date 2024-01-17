@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+import { UserInfo } from "src/common/decorator/user.decorator";
+import { User } from "src/user/entities/user.entity";
 
 @ApiTags("게시판")
 @Controller("posts")
@@ -15,9 +18,11 @@ export class PostController {
    * @param userId 토큰의 유저아이디
    * @returns 저장된 글
    */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post()
-  async create(@Body() createPostDto: CreatePostDto) {
-    const userId: number = 1;
+  async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
+    const userId: number = user.id;
     await this.postService.create(userId, createPostDto);
     return { success: true, message: "okay" };
   }
@@ -43,15 +48,21 @@ export class PostController {
     return { success: true, message: "okay", data: data };
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Patch(":id")
-  async update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
+  async update(@UserInfo() user: User, @Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
+    const userId: number = user.id;
     await this.postService.update(+id, updatePostDto);
     this.postService.findOne(+id);
     return { success: true, message: "okay" };
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Delete(":id")
-  async remove(@Param("id") id: string) {
+  async remove(@UserInfo() user: User, @Param("id") id: string) {
+    const userId: number = user.id;
     await this.postService.remove(+id);
     return { success: true, message: "okay" };
   }
