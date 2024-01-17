@@ -22,7 +22,7 @@ export class Account extends BaseEntity {
   @Column({ nullable: false, unique: true })
   accountNumber: string;
 
-  @ManyToOne(() => User, (user) => user.account)
+  @ManyToOne(() => User, (user) => user.accounts)
   @JoinColumn({ name: "user_id" })
   user: User;
 
