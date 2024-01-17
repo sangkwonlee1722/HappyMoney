@@ -1,4 +1,5 @@
 import { Account } from "src/accounts/entities/account.entity";
+import { Comment } from "src/comment/entities/comment.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { Notice } from "src/notice/entities/notice.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -39,4 +40,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Notice, (notice) => notice.user)
   notices: Notice[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }

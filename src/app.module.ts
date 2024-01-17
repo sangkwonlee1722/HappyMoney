@@ -8,6 +8,7 @@ import { typeOrmModuleAsyncOptions } from "./configs/database.config";
 import { AccountsModule } from "./accounts/accounts.module";
 import { UserModule } from "./user/user.module";
 import { NoticeModule } from "./notice/notice.module";
+import { CommentModule } from "./comment/comment.module";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { NoticeModule } from "./notice/notice.module";
     TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions),
     UserModule,
     AccountsModule,
-    NoticeModule
+    NoticeModule,
+    CommentModule
   ],
   controllers: [],
   providers: []
