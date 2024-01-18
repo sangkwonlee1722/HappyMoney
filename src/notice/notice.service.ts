@@ -16,7 +16,7 @@ export class NoticeService {
   async create(createNoticeDto: CreateNoticeDto, userId: number): Promise<Notice> {
     const existingNotice = await this.noticeRepository.findOne({ where: { title: createNoticeDto.title } });
     if (existingNotice) {
-      throw new ConflictException("동일한 제목의 공지사항이 이미 존재합니다.");
+      throw new ConflictException({ success: false, message: "동일한 제목의 공지사항이 이미 존재합니다." });
     }
 
     const notice = this.noticeRepository.create({ ...createNoticeDto, user: { id: userId } });
@@ -37,7 +37,7 @@ export class NoticeService {
   async findOne(id: number): Promise<Notice> {
     const notice = await this.noticeRepository.findOneBy({ id });
     if (!notice) {
-      throw new NotFoundException(`해당 공지사항을 찾을 수 없습니다.`);
+      throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
     }
     return notice;
   }
@@ -46,7 +46,7 @@ export class NoticeService {
   async update(id: number, updateNoticeDto: UpdateNoticeDto): Promise<Notice> {
     const notice = await this.noticeRepository.findOneBy({ id });
     if (!notice) {
-      throw new NotFoundException("해당 공지사항을 찾을 수 없습니다.");
+      throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
     }
 
     await this.noticeRepository.update(id, updateNoticeDto);
@@ -57,7 +57,7 @@ export class NoticeService {
   async remove(id: number): Promise<void> {
     const notice = await this.noticeRepository.findOneBy({ id });
     if (!notice) {
-      throw new NotFoundException("해당 공지사항을 찾을 수 없습니다.");
+      throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
     }
 
     await this.noticeRepository.delete(id);

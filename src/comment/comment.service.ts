@@ -20,7 +20,7 @@ export class CommentService {
     // 게시글 존재 여부 확인
     const post = await this.postRepository.findOneBy({ id: postId });
     if (!post) {
-      throw new NotFoundException("게시글을 찾을 수 없습니다.");
+      throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
     }
 
     const comment = this.commentRepository.create({
@@ -44,32 +44,24 @@ export class CommentService {
   }
 
   async update(userId: number, commentId: number, updateCommentDto: UpdateCommentDto): Promise<Comment> {
-    const options: FindOneOptions<Comment> = {
-      relations: ["commentUser"]
-    };
-    const comment = await this.commentRepository.findOne({ where: { id: commentId }, ...options });
+    const comment = await this.commentRepository.findOne({ where: { id: commentId }, relations: ["commentUser"] });
 
-    if (!comment) throw new NotFoundException("댓글을 찾을 수 없습니다.");
+    if (!comment) throw new NotFoundException({ success: false, message: "댓글을 찾을 수 없습니다." });
 
-    if (comment.commentUser.id !== userId) throw new UnauthorizedException("댓글 수정 권한이 없습니다.");
+    if (comment.commentUser.id !== userId)
+      throw new UnauthorizedException({ success: false, message: "댓글 수정 권한이 없습니다." });
 
     await this.commentRepository.update(commentId, updateCommentDto);
 
-    const updatedComment = await this.commentRepository
-      .createQueryBuilder("c")
-      .leftJoinAndSelect("c.commentUser", "u")
-      .where("c.id = :id", { id: commentId })
-      .select(["c.id", "c.content", "c.createdAt", "c.updatedAt", "u.nickName"])
-      .getOne();
-
-    return updatedComment;
+    return await this.commentRepository.findOne({ where: { id: commentId }, relations: ["commentUser"] });
   }
 
   async remove(userId: number, commentId: number): Promise<void> {
     const comment = await this.commentRepository.findOne({ where: { id: commentId }, relations: ["commentUser"] });
 
-    if (!comment) throw new NotFoundException("댓글을 찾을 수 없습니다.");
-    if (comment.commentUser.id !== userId) throw new UnauthorizedException("댓글 삭제 권한이 없습니다.");
+    if (!comment) throw new NotFoundException({ success: false, message: "댓글을 찾을 수 없습니다." });
+    if (comment.commentUser.id !== userId)
+      throw new UnauthorizedException({ success: false, message: "댓글 수정 권한이 없습니다." });
 
     await this.commentRepository.delete(commentId);
   }
