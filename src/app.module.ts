@@ -8,6 +8,7 @@ import { typeOrmModuleAsyncOptions } from "./configs/database.config";
 import { PostModule } from "./post/post.module";
 import { AccountsModule } from "./accounts/accounts.module";
 import { UserModule } from "./user/user.module";
+import { StockModule } from "./stock/stock.module";
 import { NoticeModule } from "./notice/notice.module";
 import { CommentModule } from "./comment/comment.module";
 
@@ -21,10 +22,11 @@ import { CommentModule } from "./comment/comment.module";
     PostModule,
     UserModule,
     AccountsModule,
+    StockModule,
     NoticeModule,
     CommentModule
   ],
-  controllers: [],
-  providers: []
+  controllers: [AppController],
+  providers: [AppService]
 })
 export class AppModule {}
