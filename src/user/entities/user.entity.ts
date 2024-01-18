@@ -40,7 +40,7 @@ export class User extends BaseEntity {
   accounts: Account[];
 
   @OneToMany(() => Post, (post) => post.user)
-  post: Post[];
+  posts: Post[];
 
   @OneToMany(() => Notice, (notice) => notice.user)
   notices: Notice[];
