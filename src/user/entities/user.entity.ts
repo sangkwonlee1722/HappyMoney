@@ -30,6 +30,12 @@ export class User extends BaseEntity {
   @Column({ type: "varchar", nullable: false })
   phone: string;
 
+  @Column({ default: false }) // default to false, assuming initially not verified
+  isEmailVerified: boolean;
+
+  @Column({ nullable: true }) // nullable because it may not be set initially
+  emailVerifyToken: string;
+
   @Column({ type: "varchar", nullable: false, default: "local" })
   signupType: string;
 

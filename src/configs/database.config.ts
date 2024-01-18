@@ -20,7 +20,9 @@ export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
     database: configService.get<string>("DB_NAME"),
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
+
     entities: [User, Notice, Account, Comment, Post],
+
     logging: true
   })
 };
