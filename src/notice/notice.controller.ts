@@ -33,8 +33,13 @@ export class NoticeController {
    * @returns
    */
   @Get()
-  findAll() {
-    return this.noticeService.findAll();
+  async findAll() {
+    const notices = await this.noticeService.findAll();
+    return {
+      success: true,
+      message: "okay",
+      data: notices
+    };
   }
 
   /**
@@ -43,8 +48,13 @@ export class NoticeController {
    * @returns
    */
   @Get(":id")
-  findOne(@Param("id") id: number) {
-    return this.noticeService.findOne(id);
+  async findOne(@Param("id") id: number) {
+    const notice = await this.noticeService.findOne(id);
+    return {
+      success: true,
+      message: "okay",
+      data: notice
+    };
   }
 
   /**
@@ -57,8 +67,13 @@ export class NoticeController {
   @Roles("admin")
   @UseGuards(RolesGuard)
   @Patch(":id")
-  update(@Param("id") id: number, @Body() updateNoticeDto: UpdateNoticeDto) {
-    return this.noticeService.update(id, updateNoticeDto);
+  async update(@Param("id") id: number, @Body() updateNoticeDto: UpdateNoticeDto) {
+    const updatedNotice = await this.noticeService.update(id, updateNoticeDto);
+    return {
+      success: true,
+      message: "okay",
+      data: updatedNotice
+    };
   }
 
   /**
@@ -70,7 +85,11 @@ export class NoticeController {
   @Roles("admin")
   @UseGuards(RolesGuard)
   @Delete(":id")
-  remove(@Param("id") id: number) {
-    return this.noticeService.remove(id);
+  async remove(@Param("id") id: number) {
+    await this.noticeService.remove(id);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 }

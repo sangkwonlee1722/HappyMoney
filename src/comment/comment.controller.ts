@@ -35,18 +35,31 @@ export class CommentController {
    */
   @Get("post/:postId")
   async findCommentsByPost(@Param("postId") postId: number) {
-    return this.commentService.findCommentsByPost(postId);
+    const comments = await this.commentService.findCommentsByPost(postId);
+    return {
+      success: true,
+      message: "okay",
+      data: comments
+    };
   }
 
   /**
    * 댓글 수정
-   * @param id
+   * @param user
+   * @param commentId
    * @param updateCommentDto
    * @returns
    */
   @Patch(":id")
-  async update(@Param("id") id: number, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(id, updateCommentDto);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async update(@UserInfo() user, @Param("id") commentId: number, @Body() updateCommentDto: UpdateCommentDto) {
+    const updateComment = await this.commentService.update(user.id, commentId, updateCommentDto);
+    return {
+      success: true,
+      message: "okay",
+      data: updateComment
+    };
   }
 
   /**
@@ -56,6 +69,10 @@ export class CommentController {
    */
   @Delete(":id")
   async remove(@Param("id") id: number) {
-    return this.commentService.remove(id);
+    await this.commentService.remove(id);
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 }
