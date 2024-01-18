@@ -5,9 +5,12 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configModuleValidationSchema } from "./configs/env-validation.config";
 import { typeOrmModuleAsyncOptions } from "./configs/database.config";
+import { PostModule } from "./post/post.module";
 import { AccountsModule } from "./accounts/accounts.module";
 import { UserModule } from "./user/user.module";
 import { StockModule } from "./stock/stock.module";
+import { NoticeModule } from "./notice/notice.module";
+import { CommentModule } from "./comment/comment.module";
 
 @Module({
   imports: [
@@ -16,9 +19,12 @@ import { StockModule } from "./stock/stock.module";
       validationSchema: configModuleValidationSchema
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions),
+    PostModule,
     UserModule,
     AccountsModule,
-    StockModule
+    StockModule,
+    NoticeModule,
+    CommentModule
   ],
   controllers: [AppController],
   providers: [AppService]
