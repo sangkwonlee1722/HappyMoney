@@ -65,7 +65,12 @@ export class CommentService {
     return updatedComment;
   }
 
-  async remove(id: number): Promise<void> {
-    await this.commentRepository.delete(id);
+  async remove(userId: number, commentId: number): Promise<void> {
+    const comment = await this.commentRepository.findOne({ where: { id: commentId }, relations: ["commentUser"] });
+
+    if (!comment) throw new NotFoundException("댓글을 찾을 수 없습니다.");
+    if (comment.commentUser.id !== userId) throw new UnauthorizedException("댓글 삭제 권한이 없습니다.");
+
+    await this.commentRepository.delete(commentId);
   }
 }

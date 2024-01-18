@@ -68,8 +68,10 @@ export class CommentController {
    * @returns
    */
   @Delete(":id")
-  async remove(@Param("id") id: number) {
-    await this.commentService.remove(id);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async remove(@UserInfo() user, @Param("id") commentId: number) {
+    await this.commentService.remove(user.id, commentId);
     return {
       success: true,
       message: "okay"
