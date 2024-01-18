@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  BadRequestException,
+  NotFoundException
+} from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
@@ -76,12 +87,15 @@ export class PostController {
   @ApiBearerAuth()
   @Delete(":id")
   async remove(@UserInfo() user: User, @Param("id") id: number) {
+    const data = await this.postService.findOne(+id);
+    if (!data) {
+      throw new NotFoundException({ success: false, message: "해당 글이 없습니다." });
+    }
     const userId: number = user.id;
-    const isdeleted = await this.postService.remove(+id, userId);
-    if (isdeleted) {
-      return { success: true, message: "okay" };
-    } else if (!isdeleted) {
+    if (data.userId !== userId) {
       throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." });
     }
+    await this.postService.remove(data);
+    return { success: true, message: "okay" };
   }
 }
