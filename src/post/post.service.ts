@@ -13,14 +13,13 @@ export class PostService {
   ) {}
   async create(userId: number, nickName: string, createPostDto: CreatePostDto) {
     const { category, title, contents } = createPostDto;
-    const data = await this.postRepository.save({
+    await this.postRepository.save({
       category,
       user: { id: userId },
       nickName,
       title,
       contents
     });
-    return data;
   }
 
   async findAll() {
