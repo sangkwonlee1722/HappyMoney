@@ -8,7 +8,8 @@ import {
   Delete,
   UseGuards,
   BadRequestException,
-  NotFoundException
+  NotFoundException,
+  UnauthorizedException
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -18,7 +19,7 @@ import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 
-@ApiTags("게시판")
+@ApiTags("Posts")
 @Controller("posts")
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -69,12 +70,19 @@ export class PostController {
   @ApiBearerAuth()
   @Patch(":id")
   async update(@UserInfo() user: User, @Param("id") id: number, @Body() updatePostDto: UpdatePostDto) {
+    const data = await this.postService.findOne(+id);
+    if (!data) {
+      throw new NotFoundException({ success: false, message: "해당 글이 없습니다." });
+    }
     const userId: number = user.id;
-    const isUpdated = await this.postService.update(+id, userId, updatePostDto);
-    if (isUpdated) {
-      return { success: true, message: "okay" };
-    } else if (!isUpdated) {
+    if (data.userId !== userId) {
+      throw new UnauthorizedException({ success: false, message: "권한이 없습니다." });
+    }
+    const isUpdated = await this.postService.update(+id, updatePostDto);
+    if (!isUpdated) {
       throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." });
+    } else if (isUpdated) {
+      return { success: true, message: "okay" };
     }
   }
 
