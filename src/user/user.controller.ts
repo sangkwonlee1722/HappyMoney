@@ -91,6 +91,22 @@ export class UserController {
   }
 
   /**
+   * 로그아웃
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("logout")
+  logout(@Req() req: any, @Res() res: any) {
+    req.logout();
+    res.clearCookie("connect.sid", { httpOnly: true });
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
    * 내 정보 조회
    * @returns
    */
@@ -161,7 +177,7 @@ export class UserController {
   @ApiBearerAuth()
   @Delete("delete")
   async deleteUser(@UserInfo() user: User) {
-    await this.userService.deleteUserVerify(user.id);
+    await this.userService.deleteUserSendEmail(user.id);
     return {
       success: true,
       message: "okay"

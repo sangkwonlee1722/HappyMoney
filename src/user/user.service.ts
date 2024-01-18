@@ -23,10 +23,6 @@ export class UserService {
     private jwtService: JwtService
   ) {}
 
-  async generateEmailVerificationToken() {
-    return uuidv4();
-  }
-
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
@@ -55,16 +51,13 @@ export class UserService {
         }
       });
 
-      const emailVerifyToken = await this.generateEmailVerificationToken();
-
       await this.userRepository.save({
         email,
         password: hashPassword,
         nickName,
         phone,
         name,
-        isEmailVerified: false,
-        emailVerifyToken
+        isEmailVerified: false
       });
 
       const mailOptions = {
@@ -105,7 +98,7 @@ export class UserService {
     return updated;
   }
 
-  async deleteUserVerify(id: number) {
+  async deleteUserSendEmail(id: number) {
     const user: User = await this.userRepository.findOne({
       where: { id }
     });
@@ -132,9 +125,6 @@ export class UserService {
       };
 
       await transporter.sendMail(mailOptions);
-      await this.updateUserVerify(user.id, {
-        isEmailVerified: false
-      });
     } catch (err: any) {
       console.error(err);
     }
@@ -145,7 +135,10 @@ export class UserService {
       where: { id }
     });
 
-    return await this.userRepository.softRemove(user);
+    await this.updateUserVerify(user.id, {
+      isEmailVerified: false
+    });
+    await this.userRepository.softRemove(user);
   }
 
   async find() {
