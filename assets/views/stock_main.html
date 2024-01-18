@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/stock_main.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <div class="rank-wrap">
+          <h2>거래량 순위</h2>
+          <ul class="rank-list-wrap"></ul>
+        </div>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+  <script>
+    // axios
+    async function rankListData() {
+      const stockUrl = "http://localhost:3000/api/stock/stockRank";
+
+      try {
+        const stockList = await axios.get(stockUrl);
+        const list = stockList.data.list.output.slice(0, 10);
+        console.log(list);
+
+        const mainDom = document.querySelector(".rank-list-wrap");
+        mainDom.innerHTML = list
+          .map((list) => {
+            const formattedPrice = addComma(list.stck_prpr);
+            const percentClass = $(".rank-list-wrap .rank-price span").addClass("mius");
+            const priceClass = parseFloat(list.prdy_ctrt) < 0 ? percentClass : "";
+            return `
+            <li>
+              <a href='#none'></a>
+              <div class="rank-name">
+                <p><span>${list.data_rank}</span> ${list.hts_kor_isnm}</p>
+              </div>
+              <div class="rank-price">
+                <p>${formattedPrice} 원</p>
+                <span>${list.prdy_ctrt}%</span>
+              <div>
+            </li>
+            `;
+          })
+          .join("");
+      } catch (error) {
+        console.error("Error:", error.message);
+      }
+    }
+
+    function addComma(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    document.addEventListener("DOMContentLoaded", rankListData);
+  </script>
+</html>

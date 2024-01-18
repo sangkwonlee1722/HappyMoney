@@ -13,6 +13,8 @@ DB_NAME= DB 이름
 DB_SYNC= DB table 동기화 여부 (default: true)
 PASSWORD_HASH_ROUNDS= 로그인 비밀번호 해시 생성 강도 (default: 10)
 JWT_SECRET= JWT 생성 및 검증 키
+PROD_APPKEY= 한국투자 OpenAPI 인증 앱키
+PROD_APPSECRET= 한국투자 OpenAPI 인증 앱시크릿키
 ```
 
 ## 실행 방법
