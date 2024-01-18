@@ -50,11 +50,7 @@ export class PostService {
     return data.affected;
   }
 
-  async remove(id: number, userId: number) {
-    const data = await this.postRepository.softDelete({
-      id,
-      userId
-    });
-    return data.affected;
+  async remove(data: object) {
+    return await this.postRepository.softRemove(data);
   }
 }

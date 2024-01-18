@@ -46,10 +46,10 @@ export class Post extends BaseEntity {
   @Column({ type: "text", nullable: false })
   contents: string;
 
-  @ManyToOne(() => User, (user) => user.post)
-  @JoinColumn({ name: "userId", referencedColumnName: "id" })
+  @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, { cascade: ["soft-remove"] })
   comments: Comment[];
 }
