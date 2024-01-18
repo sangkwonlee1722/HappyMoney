@@ -7,7 +7,9 @@ export class StockService {
   private readonly domain = "https://openapi.koreainvestment.com:9443";
   private readonly tkPath = "/oauth2/tokenP";
   private readonly skPath = "/oauth2/Approval";
+  private readonly rankPath = "/uapi/domestic-stock/v1/quotations/volume-rank";
   private token: string;
+  private skToken: string;
   private tokenExpiresAt: Date;
 
   constructor(private readonly configService: ConfigService) {}
@@ -38,7 +40,6 @@ export class StockService {
 
       // 토큰의 만료 시간 설정
       this.tokenExpiresAt = new Date(Date.now() + expiresInSec * 1000);
-      console.log("New token acquired. Expires at:", this.tokenExpiresAt);
       return this.token;
     } catch (error) {
       console.error("Error acquiring token:", error.message);
@@ -48,6 +49,12 @@ export class StockService {
 
   // WebSocket token
   async getSk() {
+    // 토큰이 있고 유효기간이 남아있으면 기존 토큰 반환
+    if (this.skToken && this.tokenExpiresAt && new Date() < this.tokenExpiresAt) {
+      return this.skToken;
+    }
+
+    // 토큰이 없거나, 유효기간이 만료된 경우 새로운 토큰 요청
     const data = {
       grant_type: "client_credentials",
       appkey: this.configService.get<string>("PROD_APPKEY"),
@@ -61,7 +68,8 @@ export class StockService {
         }
       });
 
-      return response.data;
+      this.skToken = response.data.approval_key;
+      return this.skToken;
     } catch (error) {
       throw error;
     }
@@ -73,7 +81,6 @@ export class StockService {
       await this.getTk();
     }
 
-    const stockUrl = "https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/volume-rank";
     const queryParams = {
       FID_COND_MRKT_DIV_CODE: "J",
       FID_COND_SCR_DIV_CODE: "20171",
@@ -89,7 +96,7 @@ export class StockService {
     };
 
     try {
-      const stockList = await axios.get(stockUrl, {
+      const stockList = await axios.get(`${this.domain}${this.rankPath}`, {
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${this.token}`,
