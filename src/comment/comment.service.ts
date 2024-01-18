@@ -25,18 +25,22 @@ export class CommentService {
 
     const comment = this.commentRepository.create({
       content: createCommentDto.content,
-      author: { id: userId },
+      commentUser: { id: userId },
       post: { id: postId }
     });
     return this.commentRepository.save(comment);
   }
 
-  async findCommentsByPost(postId: number): Promise<Comment[]> {
-    return this.commentRepository.find({
-      where: { post: { id: postId } },
-      relations: ["author"],
-      order: { createdAt: "DESC" }
-    });
+  async findCommentsByPost(postId: number): Promise<any[]> {
+    const comments = await this.commentRepository
+      .createQueryBuilder("comment")
+      .leftJoinAndSelect("comment.commentUser", "commentUser")
+      .where("comment.post = :postId", { postId })
+      .select(["comment.id", "comment.content", "comment.createdAt", "comment.updatedAt", "commentUser.nickName"])
+      .orderBy("comment.createdAt", "DESC")
+      .getMany();
+
+    return comments;
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto): Promise<Comment> {

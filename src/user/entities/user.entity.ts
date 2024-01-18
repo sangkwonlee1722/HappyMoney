@@ -39,12 +39,12 @@ export class User extends BaseEntity {
   @OneToMany(() => Account, (account) => account.user, { cascade: ["soft-remove"] })
   accounts: Account[];
 
-  @OneToMany(() => Post, (post) => post.user) 
+  @OneToMany(() => Post, (post) => post.user)
   post: Post[];
 
   @OneToMany(() => Notice, (notice) => notice.user)
   notices: Notice[];
 
-  @OneToMany(() => Comment, (comment) => comment.author)
+  @OneToMany(() => Comment, (comment) => comment.commentUser)
   comments: Comment[];
 }
