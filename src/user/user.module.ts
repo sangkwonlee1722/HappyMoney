@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { PassportModule } from "@nestjs/passport";
@@ -7,6 +7,8 @@ import { User } from "./entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "src/auth/jwt.strategy";
+import { EmailModule } from "src/email/email.module";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
   imports: [

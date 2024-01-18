@@ -9,7 +9,10 @@ import {
   BadRequestException,
   UnauthorizedException,
   UseGuards,
-  Query
+  Query,
+  NotFoundException,
+  Res,
+  Req
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto, loginDto } from "./dto/create-user.dto";
@@ -21,11 +24,41 @@ import { User } from "./entities/user.entity";
 import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { Repository } from "typeorm";
 
 @ApiTags("User")
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  /**
+   * 이메일 회원가입 인증
+   * @returns
+   */
+  @Public()
+  @Get("email-verify-signin")
+  async verifyEmailSignin() {
+    const allUser = await this.userService.find();
+
+    const user = allUser.filter((user) => {
+      return user.emailVerifyToken !== null && user.isEmailVerified !== true;
+    });
+
+    const userVerify = user[0];
+
+    if (!userVerify) {
+      throw new NotFoundException("유저가 존재하지 않습니다.");
+    }
+
+    await this.userService.updateUserVerify(userVerify.id, {
+      isEmailVerified: true,
+      emailVerifyToken: null
+    });
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
 
   /**
    * 회원가입
@@ -106,6 +139,21 @@ export class UserController {
   }
 
   /**
+   * 이메일 회원탈퇴 인증
+   * @returns
+   */
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get("email-verify-signout")
+  async verifyEmailSignout(@UserInfo() user: User) {
+    await this.userService.deleteUser(user.id);
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
    * 회원탈퇴
    * @returns
    */
@@ -113,7 +161,7 @@ export class UserController {
   @ApiBearerAuth()
   @Delete("delete")
   async deleteUser(@UserInfo() user: User) {
-    await this.userService.deleteUser(user.id);
+    await this.userService.deleteUserVerify(user.id);
     return {
       success: true,
       message: "okay"
