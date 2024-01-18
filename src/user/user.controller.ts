@@ -99,6 +99,7 @@ export class UserController {
   @Post("logout")
   logout(@Req() req: any, @Res() res: any) {
     req.logout();
+    console.log(req.logout());
     res.clearCookie("connect.sid", { httpOnly: true });
     return {
       success: true,

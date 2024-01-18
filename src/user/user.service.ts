@@ -23,6 +23,10 @@ export class UserService {
     private jwtService: JwtService
   ) {}
 
+  async generateToken() {
+    return uuidv4();
+  }
+
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
@@ -51,13 +55,16 @@ export class UserService {
         }
       });
 
+      const emailVerifyToken = await this.generateToken();
+
       await this.userRepository.save({
         email,
         password: hashPassword,
         nickName,
         phone,
         name,
-        isEmailVerified: false
+        isEmailVerified: false,
+        emailVerifyToken
       });
 
       const mailOptions = {
