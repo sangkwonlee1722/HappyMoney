@@ -31,12 +31,12 @@ export class CommentService {
     return this.commentRepository.save(comment);
   }
 
-  async findAll(): Promise<Comment[]> {
-    return this.commentRepository.find();
-  }
-
-  async findOne(id: number): Promise<Comment> {
-    return this.commentRepository.findOneBy({ id });
+  async findCommentsByPost(postId: number): Promise<Comment[]> {
+    return this.commentRepository.find({
+      where: { post: { id: postId } },
+      relations: ["author"],
+      order: { createdAt: "DESC" }
+    });
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto): Promise<Comment> {

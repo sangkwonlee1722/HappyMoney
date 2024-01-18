@@ -30,12 +30,18 @@ export class CommentController {
   }
 
   /**
-   * 댓글 전체 조회
+   * 해당 게시물 댓글 조회
    * @returns
    */
-  @Get()
-  async findAll() {
-    return this.commentService.findAll();
+  @Get("post/:postId")
+  async findCommentsByPost(@Param("postId") postId: number) {
+    const comments = await this.commentService.findCommentsByPost(postId);
+    return comments.map((comment) => ({
+      content: comment.content,
+      authorNickName: comment.author.nickName,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt
+    }));
   }
 
   /**
