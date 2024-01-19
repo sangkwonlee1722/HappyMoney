@@ -1,0 +1,41 @@
+.rank-wrap h2 {
+  font-weight: bold;
+  letter-spacing: -4px;
+  font-size: 30px;
+}
+.rank-list-wrap {
+}
+.rank-list-wrap li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  position: relative;
+}
+.rank-list-wrap li a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.rank-list-wrap li .rank-name p {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000;
+}
+.rank-list-wrap li .rank-name p span {
+  color: #000f5d;
+}
+.rank-list-wrap .rank-price {
+  font-weight: bold;
+  text-align: right;
+}
+.rank-list-wrap .rank-price p {
+  font-size: 18px;
+  letter-spacing: -2px;
+  line-height: 16px;
+}
+.rank-list-wrap .rank-price span {
+  font-size: 12px;
+}
