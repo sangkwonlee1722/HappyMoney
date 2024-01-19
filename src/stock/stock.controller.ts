@@ -1,6 +1,7 @@
-import { Controller, Get } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { StockService } from "./stock.service";
 import { ApiTags } from "@nestjs/swagger";
+import { Stock } from "./entities/stock.entity";
 
 @ApiTags("OpenAPI")
 @Controller("stock")
@@ -37,12 +38,21 @@ export class StockController {
     return { list };
   }
 
-  @Get("stocks")
-  async getStocksFromPublicApi() {
-    const stocks = await this.stockService.getStocksFromPublicApi();
+  /**
+   * 주식 종목 키워드로 검색하기
+   * @param keyword
+   * @returns
+   */
+  @Get("search")
+  async getStocksBySearchKeyword(@Query("keyword") keyword: string) {
+    if (!keyword) {
+      throw new BadRequestException({ success: false, message: "키워드를 입력해주세요." });
+    }
+
+    const stocks: Stock[] = await this.stockService.findStocksByKeyword(keyword);
 
     return {
-      status: true,
+      success: true,
       message: "okay",
       data: stocks
     };

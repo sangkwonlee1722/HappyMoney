@@ -186,4 +186,13 @@ export class StockService {
 
     console.log("걸린 시간 : ", time);
   }
+
+  async findStocksByKeyword(keyword: string): Promise<Stock[]> {
+    const stocks: Stock[] = await this.stocksRepository
+      .createQueryBuilder("s")
+      .where("s.itms_nm LIKE :keyword OR s.srtn_cd = :exactKeyword", { keyword: `%${keyword}%`, exactKeyword: keyword })
+      .getMany();
+
+    return stocks;
+  }
 }
