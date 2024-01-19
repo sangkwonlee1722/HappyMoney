@@ -36,4 +36,15 @@ export class StockController {
     const list = await this.stockService.getStockRank();
     return { list };
   }
+
+  @Get("stocks")
+  async getStocksFromPublicApi() {
+    const stocks = await this.stockService.getStocksFromPublicApi();
+
+    return {
+      status: true,
+      message: "okay",
+      data: stocks
+    };
+  }
 }
