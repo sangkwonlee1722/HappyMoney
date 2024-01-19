@@ -35,25 +35,18 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
-  @Public()
   @Get("email-verify-signin")
-  async verifyEmailSignin() {
-    const allUser = await this.userService.find();
+  async verifyEmailSignin(@Query("email") email: string) {
+    const user = await this.userService.findUserByEmail(email);
 
-    const user = allUser.filter((user) => {
-      return user.emailVerifyToken !== null && user.isEmailVerified !== true;
-    });
-
-    const userVerify = user[0];
-
-    if (!userVerify) {
+    if (!user) {
       throw new NotFoundException("유저가 존재하지 않습니다.");
     }
 
-    await this.userService.updateUserVerify(userVerify.id, {
-      isEmailVerified: true,
-      emailVerifyToken: null
+    await this.userService.updateUserVerify(user.id, {
+      isEmailVerified: true
     });
+
     return {
       success: true,
       message: "okay"
@@ -98,9 +91,11 @@ export class UserController {
   @ApiBearerAuth()
   @Post("logout")
   logout(@Req() req: any, @Res() res: any) {
-    req.logout();
-    console.log(req.logout());
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    req.logOut();
+    // 로그아웃 풀기
     res.clearCookie("connect.sid", { httpOnly: true });
+    res.clearCookie(token);
     return {
       success: true,
       message: "okay"

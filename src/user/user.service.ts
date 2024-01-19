@@ -23,10 +23,6 @@ export class UserService {
     private jwtService: JwtService
   ) {}
 
-  async generateToken() {
-    return uuidv4();
-  }
-
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
@@ -55,22 +51,19 @@ export class UserService {
         }
       });
 
-      const emailVerifyToken = await this.generateToken();
-
       await this.userRepository.save({
         email,
         password: hashPassword,
         nickName,
         phone,
         name,
-        isEmailVerified: false,
-        emailVerifyToken
+        isEmailVerified: false
       });
 
       const mailOptions = {
         to: email,
         subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/api-docs#/User/UserController_verifyEmailSignin">인증하기</a>`
+        html: `인증링크 : <a href="http://localhost:3000/api-docs#/User/UserController_verifyEmailSignin?email=${email}">인증하기</a>`
       };
 
       await transporter.sendMail(mailOptions);
@@ -82,7 +75,6 @@ export class UserService {
   async login(email: string, password: string) {
     const user = await this.findUserByEmail(email);
 
-    console.log(user);
     if (user.isEmailVerified === false) {
       throw new NotFoundException("등록된 이메일 인증을 진행해주세요.");
     }
