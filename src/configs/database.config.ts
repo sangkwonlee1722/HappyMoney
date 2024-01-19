@@ -6,6 +6,7 @@ import { Notice } from "src/notice/entities/notice.entity";
 import { Account } from "src/accounts/entities/account.entity";
 import { Comment } from "src/comment/entities/comment.entity";
 import { Post } from "src/post/entities/post.entity";
+import { Stock } from "src/stock/entities/stock.entity";
 
 export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -21,7 +22,7 @@ export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
 
-    entities: [User, Notice, Account, Comment, Post],
+    entities: [User, Notice, Account, Comment, Post, Stock],
 
     logging: true
   })
