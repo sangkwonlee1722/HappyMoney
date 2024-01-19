@@ -11,7 +11,10 @@ import { UserModule } from "./user/user.module";
 import { StockModule } from "./stock/stock.module";
 import { NoticeModule } from "./notice/notice.module";
 import { CommentModule } from "./comment/comment.module";
+
 import { AuthModule } from "./auth/auth.module";
+
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -26,7 +29,10 @@ import { AuthModule } from "./auth/auth.module";
     StockModule,
     NoticeModule,
     CommentModule,
-    AuthModule
+
+    AuthModule,
+
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService]

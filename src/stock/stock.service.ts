@@ -1,18 +1,29 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { InjectRepository } from "@nestjs/typeorm";
 import axios from "axios";
+import { Stock } from "./entities/stock.entity";
+import { Repository, getConnection } from "typeorm";
+import { Cron } from "@nestjs/schedule";
 
 @Injectable()
 export class StockService {
-  private readonly domain = "https://openapi.koreainvestment.com:9443";
-  private readonly tkPath = "/oauth2/tokenP";
-  private readonly skPath = "/oauth2/Approval";
-  private readonly rankPath = "/uapi/domestic-stock/v1/quotations/volume-rank";
+  private readonly domain: string = "https://openapi.koreainvestment.com:9443";
+  private readonly tkPath: string = "/oauth2/tokenP";
+  private readonly skPath: string = "/oauth2/Approval";
+  private readonly rankPath: string = "/uapi/domestic-stock/v1/quotations/volume-rank";
+  private readonly publicBaseUrl: string = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService";
+  private readonly publicGetStocksApi: string = "/getStockPriceInfo";
   private token: string;
   private skToken: string;
   private tokenExpiresAt: Date;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+
+    @InjectRepository(Stock)
+    private readonly stocksRepository: Repository<Stock>
+  ) {}
 
   // Bearer token
   async getTk() {
@@ -114,5 +125,74 @@ export class StockService {
       console.log(error);
       throw error;
     }
+  }
+
+  // 주식 전체 목록 API 불러오기 (공공 데이터)
+  async getStocksFromPublicApi() {
+    const queryParams = {
+      serviceKey: this.configService.get<string>("PUBLIC_ACCESS_KEY"),
+      resultType: "json",
+      beginBasDt: new Date(),
+      numOfRows: 3000 // 전체 데이터를 어떻게 가져와야하나..?
+    };
+
+    try {
+      const stockList = await axios.get(`${this.publicBaseUrl}${this.publicGetStocksApi}`, {
+        params: queryParams
+      });
+
+      const data = stockList.data.response.body.items;
+
+      const stocks: Stock[] = data.item.map((stock: Stock) => {
+        return {
+          srtnCd: stock.srtnCd,
+          itmsNm: stock.itmsNm,
+          mrktCtg: stock.mrktCtg,
+          mrktTotAmt: stock.mrktTotAmt,
+          lstgStCnt: stock.lstgStCnt
+        };
+      });
+
+      return stocks;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException({
+        success: false,
+        message: "공공 데이터 API 호출에 실패하였습니다."
+      });
+    }
+  }
+
+  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  async saveStocks() {
+    console.log("스톡정보를 업데이트 합니다.");
+    let start = new Date();
+
+    const stocksList: Stock[] = await this.getStocksFromPublicApi();
+
+    await this.stocksRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Stock)
+      .values(stocksList)
+      .orUpdate(["srtn_cd", "itms_nm", "mrkt_ctg", "mrkt_tot_amt", "lstg_st_cnt"], "srtn_cd", {
+        skipUpdateIfNoValuesChanged: true,
+        upsertType: "on-conflict-do-update"
+      })
+      .execute();
+
+    let end = new Date();
+    const time = end.getTime() - start.getTime();
+
+    console.log("걸린 시간 : ", time);
+  }
+
+  async findStocksByKeyword(keyword: string): Promise<Stock[]> {
+    const stocks: Stock[] = await this.stocksRepository
+      .createQueryBuilder("s")
+      .where("s.itms_nm LIKE :keyword OR s.srtn_cd = :exactKeyword", { keyword: `%${keyword}%`, exactKeyword: keyword })
+      .getMany();
+
+    return stocks;
   }
 }
