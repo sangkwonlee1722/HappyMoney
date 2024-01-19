@@ -15,7 +15,7 @@ export class PostService {
     const { category, title, contents } = createPostDto;
     await this.postRepository.save({
       category,
-      user: { id: userId },
+      userId,
       nickName,
       title,
       contents

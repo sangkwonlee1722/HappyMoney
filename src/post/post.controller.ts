@@ -58,6 +58,9 @@ export class PostController {
   @Get(":id")
   async findOne(@Param("id") id: number) {
     const data = await this.postService.findOne(+id);
+    if (!data) {
+      throw new NotFoundException({ success: false, message: "해당 글이 없습니다." });
+    }
     return { success: true, message: "okay", data: data };
   }
 
@@ -80,7 +83,7 @@ export class PostController {
     }
     const isUpdated = await this.postService.update(+id, updatePostDto);
     if (!isUpdated) {
-      throw new BadRequestException({ success: false, message: "글쓴이가 아닙니다." });
+      throw new BadRequestException({ success: false, message: "오류 발생." });
     } else if (isUpdated) {
       return { success: true, message: "okay" };
     }
