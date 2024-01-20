@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <!-- 모의투자 헤더 -->
+    <script type="module" src="/js/stock-common.js"></script>
+    <script type="module" src="/js/stock-search.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/stock_main.css" />
+    <link rel="stylesheet" href="/css/stock-search.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="stock-header"></div>
+      <div id="main-content">
+        <div class="search-wrap">
+          <h2>검색 결과</h2>
+          <!-- 검색 결과 리스트 시작 -->
+          <ul class="search-list-wrap">
+            <!-- 검색 종목 -->
+            <li>
+              <a href="#none"></a>
+              <div class="stock-name-box">
+                <div class="market">KOSPI</div>
+                <div class="name-code">
+                  <div class="stock-name">현대차</div>
+                  <div class="stock-code">005930</div>
+                </div>
+              </div>
+              <div class="stock-info-box">
+                <div class="ttl-price">1조 1,535억</div>
+                <div class="stock-counts">47,374,837 주</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+</html>

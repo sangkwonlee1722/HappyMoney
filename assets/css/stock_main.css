@@ -3,8 +3,6 @@
   letter-spacing: -4px;
   font-size: 30px;
 }
-.rank-list-wrap {
-}
 .rank-list-wrap li {
   display: flex;
   justify-content: space-between;
