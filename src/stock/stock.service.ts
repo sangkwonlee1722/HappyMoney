@@ -163,7 +163,7 @@ export class StockService {
     }
   }
 
-  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("5 8 21 * * 1-6") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
@@ -185,12 +185,14 @@ export class StockService {
     const time = end.getTime() - start.getTime();
 
     console.log("걸린 시간 : ", time);
+    console.log(stocksList[0]);
   }
 
   async findStocksByKeyword(keyword: string): Promise<Stock[]> {
     const stocks: Stock[] = await this.stocksRepository
       .createQueryBuilder("s")
       .where("s.itms_nm LIKE :keyword OR s.srtn_cd = :exactKeyword", { keyword: `%${keyword}%`, exactKeyword: keyword })
+      .addOrderBy("CAST(s.mrkt_tot_amt AS SIGNED)", "DESC")
       .getMany();
 
     return stocks;
