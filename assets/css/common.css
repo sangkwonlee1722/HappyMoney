@@ -680,6 +680,10 @@ footer.hm-container.hm-fixed {
   align-items: center;
 }
 
+.list-info .comment .hiddien {
+  display: none;
+}
+
 .list-info .comment img {
   margin-right: 5px;
 }
