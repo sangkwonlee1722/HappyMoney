@@ -12,10 +12,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const response = await axiosInstance.get(`/api/user/email-verify-signin?email=${encodedEmail}`);
-    console.log(response);
-    console.log("ah");
-    alert("이메일 인증이 완료되었습니다.");
-    window.location.href = "/views/login.html";
+
+    if (response.data.success) {
+      alert("이메일 인증이 완료되었습니다.");
+      window.location.href = "/views/login.html";
+    } else {
+      alert("이메일 인증이 실패했습니다.");
+      return;
+    }
   } catch (error) {
     console.error("Error:", error.response);
   }
