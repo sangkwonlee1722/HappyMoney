@@ -34,6 +34,7 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
+  @Public()
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
@@ -45,11 +46,11 @@ export class UserController {
     await this.userService.updateUserVerify(user.id, {
       isEmailVerified: true
     });
-    res.redirect(HttpStatus.FOUND, "/views/signin-email-verify.html");
-    return {
+
+    return res.status(HttpStatus.OK).json({
       success: true,
       message: "okay"
-    };
+    });
   }
 
   /**
