@@ -1,0 +1,122 @@
+const signupBtn = document.querySelector(".signupBtn");
+const emailCheckBtn = document.getElementById("emailCheckBtn");
+const nickNameCheckBtn = document.getElementById("nickNameCheckBtn");
+
+emailCheckBtn.addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+
+  try {
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:3000",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const response = await axiosInstance.get("/api/user");
+    const users = response.data.data.users;
+
+    let emailExists = false;
+
+    users.forEach((user) => {
+      if (user.email === email) {
+        emailExists = true;
+      }
+    });
+
+    if (emailExists) {
+      alert("이미 존재하는 이메일입니다.");
+    } else {
+      alert("사용 가능한 이메일입니다.");
+    }
+  } catch (error) {
+    console.error("Error:", error.response);
+  }
+});
+
+nickNameCheckBtn.addEventListener("click", async () => {
+  const nickName = document.getElementById("nickName").value;
+
+  try {
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:3000",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const response = await axiosInstance.get("/api/user");
+    const users = response.data.data.users;
+
+    let nicknameExists = false;
+
+    users.forEach((user) => {
+      if (user.nickName === nickName) {
+        nicknameExists = true;
+      }
+    });
+
+    if (nicknameExists) {
+      alert("이미 존재하는 닉네임입니다.");
+    } else {
+      alert("사용 가능한 닉네임입니다.");
+    }
+  } catch (error) {
+    console.error("Error:", error.response);
+  }
+});
+
+signupBtn.addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const passwordCheck = document.getElementById("passwordCheck").value;
+  const name = document.getElementById("name").value;
+  const nickName = document.getElementById("nickName").value;
+  const phone = document.getElementById("phone").value;
+
+  const userInfo = {
+    email,
+    password,
+    passwordCheck,
+    name,
+    nickName,
+    phone
+  };
+
+  const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*"];
+
+  if (!email || !password || !passwordCheck || !name || !nickName || !phone) {
+    alert("빈 칸을 입력하세요.");
+  } else {
+    if (!specialCharacters.some((char) => password.includes(char))) {
+      alert("비밀번호에 특수문자를 포함하세요.");
+    }
+
+    if (password !== passwordCheck) {
+      alert("비밀번호를 다시 입력해주세요.");
+    } else if (password.length < 6) {
+      alert("비밀번호는 6자리 이상입니다.");
+    }
+  }
+
+  try {
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:3000",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const response = await axiosInstance.post("/api/user", userInfo);
+
+    if (response.data.success) {
+      alert("이메일 인증 후 로그인 해주세요..");
+      window.location.href = "/views/login.html";
+    } else {
+      alert(`${response.data.errorMessage}`);
+      window.location.href = "/page/join.html";
+    }
+  } catch (error) {
+    console.error("Error:", error.response);
+  }
+});

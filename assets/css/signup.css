@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+}
+
+.red {
+  color: red;
+}
+
+.signupModal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 80px;
+  border-radius: 8px;
+}
+
+.signup {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+
+.signupInput {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+}
+
+.signup {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.signupExplanation {
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.signupInput > .input {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  font-size: 10px;
+  margin-bottom: 5px;
+  width: 700px;
+}
+
+.signupInput > .input > input {
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  margin: 5px 0px;
+  padding-left: 10px;
+}
+
+.checkBtn {
+  width: 100px;
+  background-color: #eb5665;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  margin-top: 5px;
+  margin-left: auto;
+  height: 25px;
+}
+
+#emailInput > input {
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.signupBtn {
+  background-color: #000f5d;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  margin-top: 25px;
+  height: 30px;
+  width: 500px;
+}
