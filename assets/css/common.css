@@ -624,3 +624,78 @@ footer.hm-container.hm-fixed {
   height: 30px;
   width: 300px;
 }
+
+/* 게시판 양식 s */
+.board-title {
+  margin-top: 70px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+.board-title a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.contents {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.contents a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.list-info {
+  display: flex;
+}
+
+.list-info .classification {
+  margin-right: 50px;
+  font-weight: bold;
+  width: 70px;
+  display: flex;
+  justify-content: center;
+}
+
+.list-info .title {
+  margin-right: 10px;
+}
+
+.list-info .comment {
+  display: flex;
+  align-items: center;
+}
+
+.list-info .comment img {
+  margin-right: 5px;
+}
+
+.list-info .comment span {
+  margin-right: 50px;
+  color: #eb5665;
+}
+
+.list-info-2 {
+  display: flex;
+}
+
+.list-info-2 .author {
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  margin-right: 50px;
+}
