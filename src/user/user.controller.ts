@@ -45,7 +45,7 @@ export class UserController {
     await this.userService.updateUserVerify(user.id, {
       isEmailVerified: true
     });
-    res.redirect(HttpStatus.FOUND, "/signup-success");
+    res.redirect(HttpStatus.FOUND, "/views/signin-email-verify.html");
     return {
       success: true,
       message: "okay"

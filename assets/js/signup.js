@@ -2,9 +2,11 @@ const signupBtn = document.querySelector(".signupBtn");
 const emailCheckBtn = document.getElementById("emailCheckBtn");
 const nickNameCheckBtn = document.getElementById("nickNameCheckBtn");
 
+let emailCheck = false;
+let nickNameCheck = false;
+
 emailCheckBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
-
   try {
     const axiosInstance = axios.create({
       baseURL: "http://localhost:3000",
@@ -13,20 +15,23 @@ emailCheckBtn.addEventListener("click", async () => {
       }
     });
 
-    const response = await axiosInstance.get("/api/user");
-    const users = response.data.data.users;
-
     let emailExists = false;
 
+    const response = await axiosInstance.get("/api/user");
+    const users = response.data.data.users;
     users.forEach((user) => {
       if (user.email === email) {
         emailExists = true;
       }
     });
-
+    if (!email) {
+      alert("이메일을 작성해주세요.");
+      return;
+    }
     if (emailExists) {
       alert("이미 존재하는 이메일입니다.");
     } else {
+      emailCheck = true;
       alert("사용 가능한 이메일입니다.");
     }
   } catch (error) {
@@ -56,9 +61,14 @@ nickNameCheckBtn.addEventListener("click", async () => {
       }
     });
 
+    if (!nickName) {
+      alert("닉네임을 작성해주세요.");
+      return;
+    }
     if (nicknameExists) {
       alert("이미 존재하는 닉네임입니다.");
     } else {
+      nickNameCheck = true;
       alert("사용 가능한 닉네임입니다.");
     }
   } catch (error) {
@@ -97,6 +107,16 @@ signupBtn.addEventListener("click", async () => {
     } else if (password.length < 6) {
       alert("비밀번호는 6자리 이상입니다.");
     }
+  }
+
+  if (!emailCheck) {
+    alert("이메일 중복체크를 해주세요.");
+    return;
+  }
+
+  if (!nickNameCheck) {
+    alert("닉네임 중복체크를 해주세요.");
+    return;
   }
 
   try {
