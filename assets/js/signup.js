@@ -109,6 +109,16 @@ signupBtn.addEventListener("click", async () => {
     }
   }
 
+  if (!(nickName.length >= 2 && nickName.length <= 6)) {
+    alert("닉네임은 2자리 이상, 6자리 이하만 가능합니다.");
+    return;
+  }
+
+  if (!(name.length >= 2 && name.length <= 6)) {
+    alert("이름은 2자리 이상, 6자리 이하만 가능합니다.");
+    return;
+  }
+
   if (!emailCheck) {
     alert("이메일 중복체크를 해주세요.");
     return;
