@@ -111,6 +111,10 @@ signupBtn.addEventListener("click", async () => {
 
   if (!(nickName.length >= 2 && nickName.length <= 6)) {
     alert("닉네임은 2자리 이상, 6자리 이하만 가능합니다.");
+    if (name.includes(" ")) {
+      alert("띄어쓰기를 포함할 수 없습니다.");
+      return;
+    }
     return;
   }
 
@@ -126,6 +130,10 @@ signupBtn.addEventListener("click", async () => {
 
   if (!nickNameCheck) {
     alert("닉네임 중복체크를 해주세요.");
+    if (nickName.includes(" ")) {
+      alert("띄어쓰기를 포함할 수 없습니다.");
+      return;
+    }
     return;
   }
 
@@ -140,11 +148,11 @@ signupBtn.addEventListener("click", async () => {
     const response = await axiosInstance.post("/api/user", userInfo);
 
     if (response.data.success) {
-      alert("이메일 인증 후 로그인 해주세요..");
-      window.location.href = "/views/login.html";
+      alert("이메일 인증 후 로그인 해주세요.");
+      window.location.href = "/views/main.html";
     } else {
       alert(`${response.data.errorMessage}`);
-      window.location.href = "/page/join.html";
+      window.location.href = "/views/signin.html";
     }
   } catch (error) {
     console.error("Error:", error.response);
