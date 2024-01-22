@@ -624,6 +624,7 @@ footer.hm-container.hm-fixed {
   height: 30px;
   width: 300px;
 }
+/* ------stock header------ e */
 
 /* 게시판 양식 s */
 .contents-wrap {
@@ -705,6 +706,7 @@ footer.hm-container.hm-fixed {
   justify-content: center;
   margin-right: 50px;
 }
+/* 게시판 양식 e */
 
 /* 나의 계좌 양식 s */
 .account-header {
@@ -810,3 +812,4 @@ footer.hm-container.hm-fixed {
   cursor: pointer;
   background-color: #000f5d;
 }
+/* 나의 계좌 양식 e */
