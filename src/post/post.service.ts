@@ -23,10 +23,13 @@ export class PostService {
   }
 
   async findAll() {
-    const data = await this.postRepository.find({
-      select: ["id", "category", "nickName", "title", "createdAt"],
-      order: { createdAt: "DESC" }
-    });
+    const data = await this.postRepository
+      .createQueryBuilder("p")
+      .select(["p.id", "p.category", "p.nickName", "p.title", "p.createdAt"])
+      .loadRelationCountAndMap("p.commentNumbers", "p.comments")
+      .orderBy("p.createdAt", "DESC")
+      .getMany();
+
     return data;
   }
 

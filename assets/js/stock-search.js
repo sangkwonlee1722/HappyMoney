@@ -9,9 +9,9 @@ const keyword = urlParams.get('keyword')
 export const getSearchData = async (keyword) => {
   try {
     const apiUrl = `http://localhost:3000/api/stock/search?keyword=${keyword}`
-    const data = await axios.get(apiUrl);
+    const result = await axios.get(apiUrl);
 
-    const stocks = data.data.data;
+    const stocks = result.data.data;
     console.log('stocks: ', stocks);
 
     const mainDom = document.querySelector(".search-list-wrap");
