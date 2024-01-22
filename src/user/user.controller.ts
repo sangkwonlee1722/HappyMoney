@@ -34,6 +34,7 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
+
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
@@ -57,6 +58,7 @@ export class UserController {
    * @param createUserDto
    * @returns
    */
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     const { password, passwordCheck } = createUserDto;
@@ -73,6 +75,7 @@ export class UserController {
    * @param loginDto
    * @returns
    */
+
   @Post("login")
   async login(@Body() loginDto: loginDto) {
     const { email, password } = loginDto;
@@ -181,6 +184,7 @@ export class UserController {
    * 전체 유저 조회
    * @returns
    */
+
   @Get()
   async getUser() {
     const users = await this.userService.find();

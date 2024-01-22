@@ -28,12 +28,14 @@ export class AuthController {
    * 구글 로그인
    * @returns
    */
+
   @Get("google/login") // 구글 로그인으로 이동하는 라우터 메서드
   @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
   async googleAuth(@Req() req: any) {
     console.log("GET google/login - googleAuth 실행");
     await this.authService.googleLogin(req.email);
   }
+
   @Get("oauth2/redirect/google")
   @UseGuards(AuthGuard("google"))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
@@ -47,6 +49,7 @@ export class AuthController {
    * 네이버 로그인
    * @returns
    */
+
   @Get("login/naver")
   @UseGuards(AuthGuard("naver"))
   async loginNaver(
