@@ -21,9 +21,10 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Public } from "src/common/decorator/public.decorator";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
-import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+// import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
 @Controller("user")
@@ -87,7 +88,7 @@ export class UserController {
    * 로그아웃
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Post("logout")
   logout(@Req() req: any, @Res() res: any) {
@@ -106,7 +107,7 @@ export class UserController {
    * 내 정보 조회
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("mypage")
   async getUserInfo(@UserInfo() user: User) {
@@ -117,7 +118,7 @@ export class UserController {
    * 내 정보 수정
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Patch("mypage")
   async updateUserInfo(@UserInfo() user: User, @Body() updateUserDto: UpdateUserDto) {
@@ -154,7 +155,7 @@ export class UserController {
    * 이메일 회원탈퇴 인증
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("email-verify-signout")
   async verifyEmailSignout(@UserInfo() user: User) {
@@ -169,7 +170,7 @@ export class UserController {
    * 회원탈퇴
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Delete("delete")
   async deleteUser(@UserInfo() user: User) {

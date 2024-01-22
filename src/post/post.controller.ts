@@ -15,9 +15,10 @@ import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+// import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("Posts")
 @Controller("posts")
@@ -31,7 +32,7 @@ export class PostController {
    * @param nickName 닉네임
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Post()
   async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
@@ -69,7 +70,7 @@ export class PostController {
    * @Param id 게시글의 아이디
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Patch(":id")
   async update(@UserInfo() user: User, @Param("id") id: number, @Body() updatePostDto: UpdatePostDto) {
@@ -94,7 +95,7 @@ export class PostController {
    * @Param id 게시글의 아이디
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Delete(":id")
   async remove(@UserInfo() user: User, @Param("id") id: number) {
