@@ -63,10 +63,10 @@ export class UserService {
       const mailOptions = {
         to: email,
         subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/api-docs#/User/UserController_verifyEmailSignin?email=${email}">인증하기</a>`
+        html: `인증링크 : <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
       };
 
-      await transporter.sendMail(mailOptions);
+      transporter.sendMail(mailOptions);
     } catch (err: any) {
       console.error(err);
     }

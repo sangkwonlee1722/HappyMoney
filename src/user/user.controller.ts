@@ -12,7 +12,8 @@ import {
   Query,
   NotFoundException,
   Res,
-  Req
+  Req,
+  HttpStatus
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto, loginDto } from "./dto/create-user.dto";
@@ -33,8 +34,9 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
+  @Public()
   @Get("email-verify-signin")
-  async verifyEmailSignin(@Query("email") email: string) {
+  async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
 
     if (!user) {
@@ -45,10 +47,10 @@ export class UserController {
       isEmailVerified: true
     });
 
-    return {
+    return res.status(HttpStatus.OK).json({
       success: true,
       message: "okay"
-    };
+    });
   }
 
   /**
@@ -173,6 +175,21 @@ export class UserController {
   async deleteUser(@UserInfo() user: User) {
     await this.userService.deleteUserSendEmail(user.id);
     return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 전체 유저 조회
+   * @returns
+   */
+  @Public()
+  @Get()
+  async getUser() {
+    const users = await this.userService.find();
+    return {
+      data: { users },
       success: true,
       message: "okay"
     };

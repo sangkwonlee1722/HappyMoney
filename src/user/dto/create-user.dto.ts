@@ -1,5 +1,5 @@
 import { PickType } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, Matches } from "class-validator";
 
 // 회원가입
 export class CreateUserDto {
@@ -19,7 +19,7 @@ export class CreateUserDto {
    */
   @IsNotEmpty()
   @IsString()
-  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1 })
+  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 })
   password: string;
 
   /**
@@ -29,7 +29,7 @@ export class CreateUserDto {
    */
   @IsNotEmpty()
   @IsString()
-  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1 })
+  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 })
   passwordCheck: string;
 
   /**
