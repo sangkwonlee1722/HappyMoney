@@ -94,14 +94,17 @@ const hideAndShowBtn = () => {
   const signupBtn = document.getElementById("signupBtn");
   const mypageBtn = document.getElementById("mypageBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const signoutBtn = document.getElementById("signoutBtn");
   if (isTokenPresent()) {
     loginBtn.style.display = "none";
     signupBtn.style.display = "none";
     mypageBtn.style.display = "block";
     logoutBtn.style.display = "block";
+    signoutBtn.style.display = "block";
   } else {
     mypageBtn.style.display = "none";
     logoutBtn.style.display = "none";
+    signoutBtn.style.display = "none";
     loginBtn.style.display = "block";
     signupBtn.style.display = "block";
   }
