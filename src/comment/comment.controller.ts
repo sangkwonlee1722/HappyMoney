@@ -4,9 +4,10 @@ import { CommentService } from "./comment.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+// import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("comments")
 @Controller("comments")
@@ -18,7 +19,7 @@ export class CommentController {
    * @param createCommentDto
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Post(":postId")
   async create(@Param("postId") postId: number, @UserInfo() user: User, @Body() createCommentDto: CreateCommentDto) {
@@ -52,7 +53,7 @@ export class CommentController {
    */
   @Patch(":id")
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard("jwt"))
   async update(@UserInfo() user, @Param("id") commentId: number, @Body() updateCommentDto: UpdateCommentDto) {
     const updateComment = await this.commentService.update(user.id, commentId, updateCommentDto);
     return {
@@ -69,8 +70,8 @@ export class CommentController {
    */
   @Delete(":id")
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async remove(@UserInfo() user, @Param("id") commentId: number) {
+  @UseGuards(AuthGuard("jwt"))
+  async remove(@UserInfo() user: User, @Param("id") commentId: number) {
     await this.commentService.remove(user.id, commentId);
     return {
       success: true,

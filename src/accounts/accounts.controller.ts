@@ -5,11 +5,12 @@ import { UpdateAccountDto } from "./dto/update-account.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
-import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
+import { AuthGuard } from "@nestjs/passport";
+// import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("Accounts")
-@UseGuards(JwtAuthGuard)
+@UseGuards(AuthGuard("jwt"))
 @Controller("accounts")
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
