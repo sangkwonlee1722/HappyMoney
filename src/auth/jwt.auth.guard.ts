@@ -20,6 +20,14 @@ export class JwtAuthGuard extends AuthGuard("jwt") implements CanActivate {
       return true;
     }
 
+    // 토큰이 없어도 실행 가능함.
+    if (!isPublic) {
+      const request = context.switchToHttp().getRequest();
+      if (!request.headers.authorization) {
+        return true;
+      }
+    }
+
     const authenticated = super.canActivate(context);
 
     return authenticated;
