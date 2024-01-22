@@ -1,5 +1,6 @@
-#pagination {
+.pagination {
   display: flex;
+  justify-content: center;
   list-style: none;
   padding: 0;
 }
@@ -7,13 +8,6 @@
 .page-item {
   margin: 5px;
   cursor: pointer;
-}
-
-#pagination {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
 }
 
 .current-page {
