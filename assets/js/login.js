@@ -1,39 +1,55 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const body = document.body;
-  let modalCreated = false;
+const setCookie = (name, value, days) => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+};
 
-  window.login = () => {
-    if (!modalCreated) {
-      const overlay = document.createElement("div");
-      overlay.className = "overlay";
-      body.appendChild(overlay);
+const getCookie = (name) => {
+  const value = `Bearer ${document.cookie}`;
 
-      const temp_html = `
-      <div class="loginModal">
-        <div class="loginInput">
-          <div class="login">로그인</div>
-          <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
-          <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" />
-          <button class="loginConfirmBtn">로그인</button>
-          <div class="signupExplain">아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a></div>
+  const parts = value.split(`Bearer ${name}=`);
+
+  if (parts.length === 2) {
+    return parts.pop().split("Bearer ").shift().trim();
+  }
+
+  return undefined;
+};
+
+const body = document.body;
+let modalCreated = false;
+
+const login = () => {
+  if (!modalCreated) {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    body.appendChild(overlay);
+
+    const temp_html = `
+        <div class="loginModal">
+          <div class="loginInput">
+            <div class="login">로그인</div>
+            <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
+            <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" />
+            <button class="loginConfirmBtn">로그인</button>
+            <div class="signupExplain">아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a></div>
+          </div>
         </div>
-      </div>
-    `;
+      `;
 
-      body.insertAdjacentHTML("beforeend", temp_html);
-      modalCreated = true;
+    body.insertAdjacentHTML("beforeend", temp_html);
+    modalCreated = true;
 
-      overlay.addEventListener("click", () => {
-        body.removeChild(overlay);
-        body.removeChild(document.querySelector(".loginModal"));
-        modalCreated = false;
-      });
-    }
+    overlay.addEventListener("click", () => {
+      body.removeChild(overlay);
+      body.removeChild(document.querySelector(".loginModal"));
+      modalCreated = false;
+    });
 
     const loginConfirmBtn = document.querySelector(".loginConfirmBtn");
     loginConfirm(loginConfirmBtn);
-  };
-});
+  }
+};
 
 const loginConfirm = (loginConfirmBtn) => {
   loginConfirmBtn.addEventListener("click", async () => {
@@ -58,16 +74,9 @@ const loginConfirm = (loginConfirmBtn) => {
       if (response.data.success) {
         alert(`환영합니다.`);
         const accessToken = response.data.accessToken;
-        sessionStorage.setItem("accessToken", accessToken);
-        window.location.reload();
+        setCookie("accessToken", accessToken, 1);
+        window.location.href = "/views/main.html";
       }
-
-      const loginBtn = document.getElementById("loginBtn");
-      const signupBtn = document.getElementById("signupBtn");
-      const mypageBtn = document.getElementById("mypageBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-
-      handleButtonVisibility(loginBtn, signupBtn, mypageBtn, logoutBtn);
     } catch (error) {
       alert("아이디 또는 비밀번호가 틀렸습니다.");
       console.error("Error:", error.response);
@@ -76,20 +85,26 @@ const loginConfirm = (loginConfirmBtn) => {
 };
 
 const isTokenPresent = () => {
-  const token = sessionStorage.getItem("accessToken");
-  return token !== null;
+  const token = getCookie("accessToken");
+  return token !== undefined;
 };
 
-const handleButtonVisibility = (loginBtn, signupBtn, mypageBtn, logoutBtn) => {
+const hideAndShowBtn = () => {
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const mypageBtn = document.getElementById("mypageBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
   if (isTokenPresent()) {
     loginBtn.style.display = "none";
     signupBtn.style.display = "none";
     mypageBtn.style.display = "block";
     logoutBtn.style.display = "block";
   } else {
-    loginBtn.style.display = "block";
-    signupBtn.style.display = "block";
     mypageBtn.style.display = "none";
     logoutBtn.style.display = "none";
+    loginBtn.style.display = "block";
+    signupBtn.style.display = "block";
   }
 };
+
+hideAndShowBtn();
