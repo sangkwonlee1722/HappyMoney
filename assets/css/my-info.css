@@ -1,0 +1,53 @@
+.profile-title {
+  margin-bottom: 30px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.profile-contents-wrap {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.profile-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.profile-left span {
+  margin-bottom: 5px;
+}
+
+.profile-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.my-info-wrap button {
+  height: 30px;
+  border-color: #a9a9a9;
+  border: none;
+  color: #ffffff;
+  background-color: #a9a9a9;
+  border-radius: 5px;
+  padding-inline: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.my-info-wrap button:hover {
+  cursor: pointer;
+  background-color: #000f5d;
+}
+
+.my-activity-btns button {
+  margin-right: 15px;
+}

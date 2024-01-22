@@ -15,6 +15,7 @@ import { CommentModule } from "./comment/comment.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { ScheduleModule } from "@nestjs/schedule";
+import { TwitModule } from './twit/twit.module';
 
 @Module({
   imports: [
@@ -32,7 +33,9 @@ import { ScheduleModule } from "@nestjs/schedule";
 
     AuthModule,
 
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+
+    TwitModule
   ],
   controllers: [AppController],
   providers: [AppService]

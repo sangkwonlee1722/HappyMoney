@@ -67,3 +67,8 @@ async function signOut() {
   alert(signOut.message);
   window.location.href = '/page/main.html';
 }
+
+/* 숫자 함수 */
+export function addComma(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
