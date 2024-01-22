@@ -624,6 +624,7 @@ footer.hm-container.hm-fixed {
   height: 30px;
   width: 300px;
 }
+/* ------stock header------ e */
 
 /* 게시판 양식 s */
 .board-title {
@@ -703,3 +704,4 @@ footer.hm-container.hm-fixed {
   justify-content: center;
   margin-right: 50px;
 }
+/* 게시판 양식 e */
