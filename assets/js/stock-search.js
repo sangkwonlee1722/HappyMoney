@@ -1,4 +1,4 @@
-// import { addComma } from "./stock-rank";
+import { addComma } from "./common.js";
 
 /* 현재 주소에서 Query Keyword 추출 */
 const urlParams = new URLSearchParams(window.location.search);
@@ -73,7 +73,3 @@ const formatPrice = (number) => {
   return formattedNumber.join(' ');
 }
 
-/* 숫자 함수 */
-function addComma(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
