@@ -18,7 +18,6 @@ import {
 import { UserService } from "./user.service";
 import { CreateUserDto, loginDto } from "./dto/create-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { Public } from "src/common/decorator/public.decorator";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
@@ -35,7 +34,7 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
-  @Public()
+
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
@@ -59,7 +58,7 @@ export class UserController {
    * @param createUserDto
    * @returns
    */
-  @Public()
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     const { password, passwordCheck } = createUserDto;
@@ -76,7 +75,7 @@ export class UserController {
    * @param loginDto
    * @returns
    */
-  @Public()
+
   @Post("login")
   async login(@Body() loginDto: loginDto) {
     const { email, password } = loginDto;
@@ -185,7 +184,7 @@ export class UserController {
    * 전체 유저 조회
    * @returns
    */
-  @Public()
+
   @Get()
   async getUser() {
     const users = await this.userService.find();
