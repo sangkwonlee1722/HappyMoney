@@ -58,12 +58,4 @@ export class AuthController {
   ) {
     this.authService.OAuthLogin({ req, res });
   }
-
-  @Get("favicon.ico")
-  favicon(
-    @Req() req: Request & IOAuthUser, //
-    @Res() res: Response
-  ) {
-    res.status(204).end();
-  }
 }
