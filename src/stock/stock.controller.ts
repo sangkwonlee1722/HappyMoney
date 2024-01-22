@@ -2,7 +2,6 @@ import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { StockService } from "./stock.service";
 import { ApiTags } from "@nestjs/swagger";
 import { Stock } from "./entities/stock.entity";
-import { Public } from "src/common/decorator/public.decorator";
 
 @ApiTags("OpenAPI")
 @Controller("stock")
