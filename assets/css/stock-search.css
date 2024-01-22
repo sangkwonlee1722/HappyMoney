@@ -1,0 +1,62 @@
+.search-wrap h2 {
+  font-weight: bold;
+  letter-spacing: -4px;
+  font-size: 30px;
+}
+
+.search-list-wrap li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  position: relative;
+}
+
+.search-list-wrap li a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.stock-name-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.market {
+  font-size: 12px;
+  color: #797979;
+}
+
+.name-code {
+  display: flex;
+}
+
+.stock-name {
+  font-size: 22px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.stock-code {
+  display: flex;
+  align-items: flex-end;
+  color: #797979;
+  font-size: 12px;
+}
+
+.ttl-price {
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.stock-counts {
+  font-size: 12px;
+  color: #797979;
+  display: flex;
+  flex-direction: row-reverse;
+}

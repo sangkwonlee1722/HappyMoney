@@ -6,7 +6,7 @@ export class Stock extends BaseEntity {
   @Column({ comment: "해당 종목의 코드", unique: true })
   srtnCd: string;
 
-  @Column({ comment: "해당 종목 한글 이름" })
+  @Column({ comment: "해당 종목 한글 이름", unique: true })
   itmsNm: string;
 
   @Column({ comment: "시장 구분 KOSPI | KOSDAQ" })

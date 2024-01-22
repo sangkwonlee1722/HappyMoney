@@ -603,3 +603,24 @@ footer.hm-container.hm-fixed {
   padding: 20px 0;
 }
 /* ------footer------ e */
+
+/* ------stock header------ s */
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.stock-title {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.stock-search-bar {
+  border: solid 1px;
+  border-radius: 5px;
+  border-color: #797979;
+  height: 30px;
+  width: 300px;
+}

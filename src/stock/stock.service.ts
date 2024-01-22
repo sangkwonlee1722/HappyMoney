@@ -185,12 +185,14 @@ export class StockService {
     const time = end.getTime() - start.getTime();
 
     console.log("걸린 시간 : ", time);
+    console.log(stocksList[0]);
   }
 
   async findStocksByKeyword(keyword: string): Promise<Stock[]> {
     const stocks: Stock[] = await this.stocksRepository
       .createQueryBuilder("s")
       .where("s.itms_nm LIKE :keyword OR s.srtn_cd = :exactKeyword", { keyword: `%${keyword}%`, exactKeyword: keyword })
+      .addOrderBy("CAST(s.mrkt_tot_amt AS SIGNED)", "DESC")
       .getMany();
 
     return stocks;
