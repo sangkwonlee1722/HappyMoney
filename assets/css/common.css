@@ -626,15 +626,17 @@ footer.hm-container.hm-fixed {
 }
 
 /* 게시판 양식 s */
-.board-title {
+.contents-wrap {
   margin-top: 70px;
-  margin-bottom: 20px;
+}
+
+.board-title {
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   position: relative;
-  margin-bottom: 40px;
   align-items: center;
+  margin-bottom: 30px;
 }
 
 .board-title a {
@@ -702,4 +704,109 @@ footer.hm-container.hm-fixed {
   display: flex;
   justify-content: center;
   margin-right: 50px;
+}
+
+/* 나의 계좌 양식 s */
+.account-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.create-btn-description {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.create-btn-description button {
+  height: 30px;
+  border-color: #000f5d;
+  border: none;
+  color: #ffffff;
+  background-color: #000f5d;
+  border-radius: 5px;
+  padding-inline: 20px;
+  transition: background-color 0.3s ease;
+  width: 100px;
+  margin-bottom: 5px;
+}
+
+.create-btn-description button:hover {
+  cursor: pointer;
+  background-color: #a9a9a9;
+}
+
+.create-btn-description span {
+  font-size: 10px;
+  color: #eb5665;
+}
+
+.accounts {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.accounts a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.account-name span {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.account-name img {
+  z-index: 2;
+  cursor: pointer;
+}
+
+.account-left span {
+  color: #a9a9a9;
+  font-weight: bold;
+}
+
+.accounts-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.account-prices {
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px;
+  align-items: flex-end;
+}
+
+.account-prices .ttl-price {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.account-prices .calculate-price {
+  color: #eb5665;
+}
+
+.accounts-right button {
+  height: 30px;
+  border-color: #a9a9a9;
+  border: none;
+  color: #ffffff;
+  background-color: #a9a9a9;
+  border-radius: 5px;
+  padding-inline: 20px;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+.accounts-right button:hover {
+  cursor: pointer;
+  background-color: #000f5d;
 }
