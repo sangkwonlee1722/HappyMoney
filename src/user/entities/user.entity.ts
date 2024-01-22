@@ -3,6 +3,7 @@ import { Comment } from "src/comment/entities/comment.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Notice } from "src/notice/entities/notice.entity";
+import { Twit } from "src/twit/entities/twit.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 
 const role = {
@@ -53,4 +54,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.commentUser)
   comments: Comment[];
+
+  @OneToMany(() => Twit, (twit) => twit.sender)
+  sendtwits: Twit[];
+
+  @OneToMany(() => Twit, (twit) => twit.receiver)
+  receivetwits: Twit[];
 }
