@@ -19,7 +19,7 @@ export class CreateUserDto {
    */
   @IsNotEmpty()
   @IsString()
-  @Matches(/^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, { message: "비밀번호가 강력하지 않습니다." })
+  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 })
   password: string;
 
   /**
@@ -29,7 +29,7 @@ export class CreateUserDto {
    */
   @IsNotEmpty()
   @IsString()
-  @Matches(/^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, { message: "비밀번호가 강력하지 않습니다." })
+  @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 })
   passwordCheck: string;
 
   /**
