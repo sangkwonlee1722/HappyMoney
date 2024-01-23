@@ -47,10 +47,10 @@ export class UserController {
       isEmailVerified: true
     });
 
-    return res.status(HttpStatus.OK).json({
+    return {
       success: true,
       message: "okay"
-    });
+    };
   }
 
   /**
@@ -63,11 +63,19 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     const { password, passwordCheck } = createUserDto;
     if (password !== passwordCheck) throw new BadRequestException("비밀번호를 확인해주세요.");
-    await this.userService.createUser(createUserDto);
-    return {
-      success: true,
-      message: "okay"
-    };
+
+    try {
+      await this.userService.createUser(createUserDto);
+      return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response.message
+      };
+    }
   }
 
   /**

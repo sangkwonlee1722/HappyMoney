@@ -65,15 +65,8 @@ body {
   padding-left: 10px;
 }
 
-.checkBtn {
-  width: 100px;
-  background-color: #eb5665;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  margin-top: 5px;
-  margin-left: auto;
-  height: 25px;
+.check {
+  font-size: 15px;
 }
 
 #emailInput > input {
@@ -96,6 +89,7 @@ body {
 }
 
 .checkVerify {
+  font-size: 8px;
   margin-top: 5px;
   margin-left: 5px;
 }
