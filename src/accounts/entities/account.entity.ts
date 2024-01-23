@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
@@ -12,6 +12,7 @@ export class Account extends BaseEntity {
    */
   @IsString()
   @IsNotEmpty({ message: "계좌 이름을 지정해주세요." })
+  @MaxLength(6, { message: "계좌 이름은 6글자를 넘을 수 없습니다." })
   @Column({ nullable: false })
   name: string;
 
