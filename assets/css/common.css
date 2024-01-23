@@ -680,6 +680,7 @@ footer.hm-container.hm-fixed {
   display: flex;
   justify-content: space-between;
   position: relative;
+  margin-top: 30px;
 }
 
 .contents a {
