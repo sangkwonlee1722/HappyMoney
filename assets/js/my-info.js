@@ -1,4 +1,6 @@
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInRva2VuVHlwZSI6ImFjY2VzcyIsImlhdCI6MTcwNTkxMzM3NywiZXhwIjoxNzA1OTk5Nzc3fQ.4Qgzi2t8YVYwJzXvZUYk2lESGUBjuFwrK9PL2schyro"
+import getToken from "./common.js"
+
+const token = getToken()
 const apiBaseUrl = `http://localhost:3000/api/`
 
 
@@ -33,7 +35,9 @@ const getMyInfoByToken = async (token) => {
               </div>
               <div class="profile-right">
                 <span>가입일 : ${formattedDate}</span>
-                <button>수정하기</button>
+                <button class="hm-button me-2 hm-gray-color">
+                  <a href="#none" onclick="drPopupOpen('.check-password')">수정하기</a>
+                </button>
               </div>
             </div>
     `
@@ -45,3 +49,25 @@ const getMyInfoByToken = async (token) => {
 
 await getMyInfoByToken(token)
 
+/* 패스워드 체크 모달창 띄우기 */
+const passwordSubmitBtn = $('#submitPasswordBtn');
+
+passwordSubmitBtn.on('click', async function () {
+  const apiUrl = apiBaseUrl + 'user/check-password'
+  const password = $('#passwordChk').val()
+
+  try {
+    await axios.post(apiUrl, { password }, {
+      headers: {
+        'Authorization': token,
+      }
+    })
+    drPopupOpen('.hm-account-create')
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+    drPopupOpen('.check-password')
+  }
+  $('#passwordChk').val('');
+})

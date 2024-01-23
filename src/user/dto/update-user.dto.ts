@@ -1,3 +1,4 @@
+import { PickType } from "@nestjs/swagger";
 import { IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
 
 export class UpdateUserDto {
@@ -48,4 +49,9 @@ export class UpdateUserDto {
   @IsString()
   @IsStrongPassword({ minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 })
   newPasswordCheck: string;
+}
+
+export class PasswordCheck {
+  @IsNotEmpty({ message: "현재 비밀번호를 입력해주세요." })
+  password: string;
 }
