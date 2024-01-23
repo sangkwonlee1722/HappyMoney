@@ -1,36 +1,61 @@
-<script src="../../js/login.js" defer></script>
-<script src="../../js/logout.js" defer></script>
-<script src="../../js/signout.js" defer></script>
+<!-- 로그인 팝업 s -->
+<div class="hm-dim" onclick="drPopupClose(this)"></div>
+<div class="hm-popup-wrap hm-popup-login">
+  <div class="hm-popup-close" onclick="drPopupClose(this)"></div>
+  <div class="hm-popup-content">
+    <div class="loginModal">
+      <div class="loginInput">
+        <div class="login">로그인</div>
+        <div id="login-input-box">
+          <!-- <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
+          <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" /> -->
+        </div>
+        <button class="loginConfirmBtn" onclick="loginConfirm()">로그인</button>
+        <div class="signupExplain">
+          아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 로그인 팝업 e -->
 
 <div class="header">
-  <div class="header_wrap d-flex justify-content-start align-items-center">
+  <div class="header-wrap">
     <h2>
-      <a href="/views/main.html">
+      <a href="/views/main.html" class="img-wrap">
         <img src="/images/logo.png" alt="logo" />
       </a>
     </h2>
-    <ul class="hm-hd-gnb">
-      <li class="hm_on"><a href="#none">모의투자</a></li>
-      <li><a href="#none">공지사항</a></li>
-      <li><a href="#none">자유게시판</a></li>
-      <li><a href="#none">뉴스</a></li>
-    </ul>
-    <div class="d-flex w-100 align-items-center">
+    <div class="hm-input-wrap">
+      <input type="text" class="hm-input" id="all_search" name="all_search" placeholder="통합검색" />
+    </div>
+  </div>
+  <div class="sub-header-wrap">
+    <div class="sub-header-box">
+      <ul class="hm-hd-gnb">
+        <li class="hm_on"><a href="#none">모의투자</a></li>
+        <li><a href="#none">공지사항</a></li>
+        <li><a href="#none">자유게시판</a></li>
+        <li><a href="#none">뉴스</a></li>
+      </ul>
       <ul class="hm-hd-log justify-content-end w-100">
         <li>
-          <div class="hm-user-off d-flex" id="loginTab" style="display: none">
+          <div class="hm-user-off" id="loginTab" style="display: none">
             <!-- style="display: none"-->
-            <button type="button" class="btn btn-danger me-2" id="loginBtn" onclick="login()">로그인</button>
-            <button type="button" class="btn btn-danger" id="signupBtn">
-              <a href="/views/signup.html">회원가입</a>
+            <button type="button" class="hm-button hm-sub-color" id="loginBtn" onclick="drPopupOpen('.hm-popup-login')">
+              로그인
             </button>
-            <button type="button" class="btn btn-danger me-2" id="signoutBtn" onclick="signout()">회원탈퇴</button>
+            <!-- <button type="button" class="hm-button" id="signupBtn">
+              <a href="/views/signup.html">회원가입</a>
+            </button> -->
+            <!-- <button type="button" class="btn btn-danger me-2" id="signoutBtn" onclick="signout()">회원탈퇴</button> -->
           </div>
-          <div class="hm-user-on hm-user-off d-flex" id="logoutTab" style="display: none">
-            <button type="button" class="btn btn-success me-2" id="mypageBtn">
+          <div class="hm-user-on" id="logoutTab" style="display: none">
+            <button type="button" class="hm-button hm-sub-color" id="mypageBtn">
               <a href="/views/my-info.html">마이페이지</a>
             </button>
-            <button type="button" class="btn btn-success" id="logoutBtn" onclick="logout()">로그아웃</button>
+            <button type="button" class="hm-button hm-gray-color" id="logoutBtn" onclick="logout()">로그아웃</button>
           </div>
         </li>
       </ul>

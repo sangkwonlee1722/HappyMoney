@@ -4,6 +4,7 @@ import { StockService } from "./stock.service";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Stock } from "./entities/stock.entity";
+import { StockGateway } from "./stock.gateway";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { Stock } from "./entities/stock.entity";
     TypeOrmModule.forFeature([Stock])
   ],
   controllers: [StockController],
-  providers: [StockService]
+  providers: [StockService, StockGateway]
 })
 export class StockModule {}

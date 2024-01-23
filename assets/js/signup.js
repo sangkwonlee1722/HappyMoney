@@ -25,6 +25,8 @@ emailCheckBtn.addEventListener("click", async () => {
         emailExists = true;
       }
     });
+
+    console.log(email);
     if (!email) {
       alert("이메일을 작성해주세요.");
       return;
