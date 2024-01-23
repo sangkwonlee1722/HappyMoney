@@ -1,35 +1,25 @@
-<!-- <script src="../../js/login.js" defer></script>
-<script src="../../js/logout.js" defer></script>
-<script src="../../js/signout.js" defer></script> -->
-<!-- <script src="../../js/common.js" defer></script> -->
 <!-- 로그인 팝업 s -->
 <div class="hm-dim" onclick="drPopupClose(this)"></div>
 <div class="hm-popup-wrap hm-popup-login">
   <div class="hm-popup-close" onclick="drPopupClose(this)"></div>
-  <header>
-    <h1>비밀번호 변경</h1>
-  </header>
   <div class="hm-popup-content">
     <div class="loginModal">
       <div class="loginInput">
         <div class="login">로그인</div>
-        <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
-        <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" />
-        <button class="loginConfirmBtn">로그인</button>
+        <div id="login-input-box">
+          <!-- <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
+          <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" /> -->
+        </div>
+        <button class="loginConfirmBtn" onclick="loginConfirm()">로그인</button>
         <div class="signupExplain">
           아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a>
         </div>
       </div>
     </div>
   </div>
-  <!-- <footer>
-    <div class="d-flex justify-content-between hm-bg-white">
-      <a href="#none" class="hm-button me-2" onclick="drPopupClose(this)">취소</a>
-      <a href="#none" class="hm-button ms-2" onclick="drPopupClose(this)">저장</a>
-    </div>
-  </footer> -->
 </div>
 <!-- 로그인 팝업 e -->
+
 <div class="header">
   <div class="header-wrap">
     <h2>
