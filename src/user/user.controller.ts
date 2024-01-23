@@ -23,6 +23,7 @@ import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -169,6 +170,30 @@ export class UserController {
       throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
     }
 
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 내 비밀번호 수정
+   * @param user
+   * @param param1
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Patch("update-password")
+  async updatePassword(@UserInfo() user: User, @Body() updatePasswordDto: UpdatePasswordDto) {
+    const { newPassword, newPasswordCheck } = updatePasswordDto;
+    if (newPassword && newPassword !== newPasswordCheck) {
+      throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
+    }
+
+    const hashedPassword = await hash(String(newPassword), 10);
+
+    await this.userService.updatePassword(user.id, hashedPassword);
     return {
       success: true,
       message: "okay"

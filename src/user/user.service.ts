@@ -97,6 +97,12 @@ export class UserService {
     return updated;
   }
 
+  async updatePassword(id: number, password: string) {
+    const updated = await this.userRepository.update({ id }, { password });
+
+    return updated;
+  }
+
   async deleteUserSendEmail(id: number) {
     const user: User = await this.userRepository.findOne({
       where: { id }
