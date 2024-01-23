@@ -10,12 +10,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Content-Type": "application/json"
       }
     });
-
-    const response = await axiosInstance.get(`/api/user/email-verify-signin?email=${encodedEmail}`);
+    const response = await axiosInstance.get(`/api/user/email-verify-signout?email=${encodedEmail}`);
 
     if (response.data.success) {
-      alert("[happymoney] 정상적으로 회원가입 되었습니다.");
-      window.location.href = "/views/main.html";
+      alert("[happymoney] 정상적으로 회원탈퇴 되었습니다.");
     } else {
       alert("이메일 인증이 실패했습니다.");
       return;

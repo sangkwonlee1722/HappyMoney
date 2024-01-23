@@ -7,6 +7,7 @@ let nickNameCheck = false;
 
 emailCheckBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
+  const emailCheckVerify = document.getElementById("emailCheckVerify");
   try {
     const axiosInstance = axios.create({
       baseURL: "http://localhost:3000",
@@ -29,10 +30,14 @@ emailCheckBtn.addEventListener("click", async () => {
       return;
     }
     if (emailExists) {
-      alert("이미 존재하는 이메일입니다.");
+      emailCheckVerify.innerHTML = "중복된 이메일입니다.";
+      emailCheckVerify.style.color = "red";
+    } else if (!email.includes("@")) {
+      emailCheckVerify.innerHTML = "이메일 형식에 맞게 작성해주세요.";
     } else {
       emailCheck = true;
-      alert("사용 가능한 이메일입니다.");
+      emailCheckVerify.innerHTML = "사용 가능한 이메일입니다.";
+      emailCheckVerify.style.color = "green";
     }
   } catch (error) {
     console.error("Error:", error.response);
@@ -41,6 +46,7 @@ emailCheckBtn.addEventListener("click", async () => {
 
 nickNameCheckBtn.addEventListener("click", async () => {
   const nickName = document.getElementById("nickName").value;
+  const nickNameCheckVerify = document.getElementById("nickNameCheckVerify");
 
   try {
     const axiosInstance = axios.create({
@@ -62,14 +68,18 @@ nickNameCheckBtn.addEventListener("click", async () => {
     });
 
     if (!nickName) {
-      alert("닉네임을 작성해주세요.");
+      nickNameCheckVerify.innerHTML = "닉네임을 작성해주세요.";
       return;
+    } else {
+      nickNameCheckVerify.innerHTML = "";
     }
     if (nicknameExists) {
-      alert("이미 존재하는 닉네임입니다.");
+      nickNameCheckVerify.innerHTML = "중복된 닉네임입니다.";
+      nickNameCheckVerify.style.color = "red";
     } else {
       nickNameCheck = true;
-      alert("사용 가능한 닉네임입니다.");
+      nickNameCheckVerify.innerHTML = "사용 가능한 닉네임입니다.";
+      nickNameCheckVerify.style.color = "green";
     }
   } catch (error) {
     console.error("Error:", error.response);
@@ -83,6 +93,11 @@ signupBtn.addEventListener("click", async () => {
   const name = document.getElementById("name").value;
   const nickName = document.getElementById("nickName").value;
   const phone = document.getElementById("phone").value;
+
+  const passwordCheckVerify = document.getElementById("passwordCheckVerify");
+  const nickNameCheckVerify = document.getElementById("nickNameCheckVerify");
+  const emailCheckVerify = document.getElementById("emailCheckVerify");
+  const nameCheckVerify = document.getElementById("nameCheckVerify");
 
   const userInfo = {
     email,
@@ -98,35 +113,48 @@ signupBtn.addEventListener("click", async () => {
   if (!email || !password || !passwordCheck || !name || !nickName || !phone) {
     alert("빈 칸을 입력하세요.");
   } else {
-    if (!specialCharacters.some((char) => password.includes(char))) {
-      alert("비밀번호에 특수문자를 포함하세요.");
-    }
-
     if (password !== passwordCheck) {
-      alert("비밀번호를 다시 입력해주세요.");
+      passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
     } else if (password.length < 6) {
-      alert("비밀번호는 6자리 이상입니다.");
+      passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상입니다.";
+    } else if (!specialCharacters.some((char) => password.includes(char))) {
+      passwordCheckVerify.innerHTML = "특수문자를 포함하세요.";
+    } else {
+      passwordCheckVerify.innerHTML = "";
     }
   }
 
   if (!(nickName.length >= 2 && nickName.length <= 6)) {
-    alert("닉네임은 2자리 이상, 6자리 이하만 가능합니다.");
+    nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하입니다.";
+
     return;
+  } else {
+    nickNameCheckVerify.innerHTML = "";
   }
 
   if (!(name.length >= 2 && name.length <= 6)) {
-    alert("이름은 2자리 이상, 6자리 이하만 가능합니다.");
+    nameCheckVerify.innerHTML = "이름은 2자리 이상, 6자리 이하만 가능합니다.";
     return;
+  } else {
+    nameCheckVerify.innerHTML = "";
   }
 
   if (!emailCheck) {
-    alert("이메일 중복체크를 해주세요.");
+    emailCheckVerify.innerHTML = "이메일 중복체크를 해주세요.";
     return;
+  } else {
+    emailCheckVerify.innerHTML = "";
   }
 
   if (!nickNameCheck) {
-    alert("닉네임 중복체크를 해주세요.");
+    nickNameCheckVerify.innerHTML = "닉네임 중복체크를 해주세요.";
+    if (nickName.includes(" ")) {
+      nickNameCheckVerify.innerHTML = "띄어쓰기를 포함할 수 없습니다.";
+      return;
+    }
     return;
+  } else {
+    nickNameCheckVerify.innerHTML = "";
   }
 
   try {
@@ -140,11 +168,11 @@ signupBtn.addEventListener("click", async () => {
     const response = await axiosInstance.post("/api/user", userInfo);
 
     if (response.data.success) {
-      alert("이메일 인증 후 로그인 해주세요..");
-      window.location.href = "/views/login.html";
+      alert("이메일 인증 후 로그인 해주세요.");
+      window.location.href = "/views/main.html";
     } else {
       alert(`${response.data.errorMessage}`);
-      window.location.href = "/page/join.html";
+      window.location.href = "/views/signin.html";
     }
   } catch (error) {
     console.error("Error:", error.response);

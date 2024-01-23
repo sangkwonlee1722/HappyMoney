@@ -1,3 +1,7 @@
+<script src="../../js/login.js" defer></script>
+<script src="../../js/logout.js" defer></script>
+<script src="../../js/signout.js" defer></script>
+
 <div class="header">
   <div class="header_wrap d-flex justify-content-start align-items-center">
     <h2>
@@ -16,20 +20,17 @@
         <li>
           <div class="hm-user-off d-flex" id="loginTab" style="display: none">
             <!-- style="display: none"-->
-            <button type="button" class="btn btn-danger me-2">
-              <a href="/page/signin.html">로그인</a>
+            <button type="button" class="btn btn-danger me-2" id="loginBtn" onclick="login()">로그인</button>
+            <button type="button" class="btn btn-danger" id="signupBtn">
+              <a href="/views/signup.html">회원가입</a>
             </button>
-            <button type="button" class="btn btn-danger">
-              <a href="/page/signup.html">회원가입</a>
-            </button>
+            <button type="button" class="btn btn-danger me-2" id="signoutBtn" onclick="signout()">회원탈퇴</button>
           </div>
           <div class="hm-user-on hm-user-off d-flex" id="logoutTab" style="display: none">
-            <button type="button" class="btn btn-success me-2">
-              <a href="/page/myInfo.html">마이페이지</a>
+            <button type="button" class="btn btn-success me-2" id="mypageBtn">
+              <a href="/views/my-info.html">마이페이지</a>
             </button>
-            <button type="button" class="btn btn-success">
-              <a href="javascript:void(0);">로그아웃</a>
-            </button>
+            <button type="button" class="btn btn-success" id="logoutBtn" onclick="logout()">로그아웃</button>
           </div>
         </li>
       </ul>
