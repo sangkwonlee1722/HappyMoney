@@ -729,6 +729,13 @@ footer.hm-container.hm-fixed {
   justify-content: center;
   margin-right: 50px;
 }
+
+.none-contents {
+  width: 100%;
+  color: #777;
+  text-align: center;
+  font-size: 18px;
+}
 /* 게시판 양식 e */
 
 /* 나의 계좌 양식 s */
