@@ -1,6 +1,7 @@
 import { addComma } from "./common.js";
+import { getToken } from "./common.js"
 
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInRva2VuVHlwZSI6ImFjY2VzcyIsImlhdCI6MTcwNTkxMzM3NywiZXhwIjoxNzA1OTk5Nzc3fQ.4Qgzi2t8YVYwJzXvZUYk2lESGUBjuFwrK9PL2schyro"
+const token = getToken()
 const apiBaseUrl = `http://localhost:3000/api/`
 
 /* 나의 계좌 가져오는 함수 */
@@ -71,7 +72,7 @@ async function modifyAccountName() {
   const originalName = accountNameElement.find('span').text();
 
   const inputElement = $('<input>').val(originalName);
-  const saveButton = $('<button>').text('저장');
+  const saveButton = $('<button class="hm-button hm-sub-color">').text('저장');
 
   accountName.hide();
   modifyBtn.hide();

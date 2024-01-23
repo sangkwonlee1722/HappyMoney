@@ -21,14 +21,20 @@ export function drPopupClose(im) {
 $("#header_wrap").load("/views/common/header.html");
 $("#footer_wrap").load("/views/common/footer.html");
 
-// 세션 ID를 가져옵니다.
-export default function token() {
+// 토큰 가져오기
+export function getToken() {
   const token = `Bearer ${getCookie("accessToken")}`;
+
+  if (token === 'Bearer null') {
+    alert("로그인이 필요합니다.")
+    window.location.href = '/views/main.html';
+  }
+
   return token;
 }
 
 $(document).ready(async function () {
-  const token = await getCookie("accessToken");
+  const token = getCookie("accessToken");
   setTimeout(function () {
     // 세션 ID가 있는지 여부에 따라 탭을 토글합니다.
     if (token) {

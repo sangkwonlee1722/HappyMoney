@@ -16,6 +16,28 @@
     <title>HappyMoney</title>
   </head>
   <body>
+    <!-- 로그인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap hm-popup-login">
+      <div class="hm-popup-close" onclick="drPopupClose(this)"></div>
+      <div class="hm-popup-content">
+        <div class="loginModal">
+          <div class="loginInput">
+            <div class="login">로그인</div>
+            <div id="login-input-box">
+              <!-- <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
+          <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" /> -->
+            </div>
+            <button class="loginConfirmBtn" onclick="loginConfirm()">로그인</button>
+            <div class="signupExplain">
+              아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 로그인 팝업 e -->
+
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
@@ -23,8 +45,12 @@
         <div class="my-info-wrap">
           <div class="profile-wrap"></div>
           <div class="my-activity-btns">
-            <button class="hm-button hm-gray-color">내가 쓴 게시글</button>
-            <button class="hm-button hm-gray-color">내가 쓴 댓글</button>
+            <button class="hm-button hm-gray-color">
+              <a href="/views/my-posts.html">내가 쓴 게시글</a>
+            </button>
+            <button class="hm-button hm-gray-color">
+              <a href="/views/my-comments.html">내가 쓴 댓글</a>
+            </button>
           </div>
         </div>
         <!-- 나의 계좌 s-->

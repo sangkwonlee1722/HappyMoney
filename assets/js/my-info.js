@@ -1,4 +1,6 @@
-const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInRva2VuVHlwZSI6ImFjY2VzcyIsImlhdCI6MTcwNTkxMzM3NywiZXhwIjoxNzA1OTk5Nzc3fQ.4Qgzi2t8YVYwJzXvZUYk2lESGUBjuFwrK9PL2schyro"
+import { getToken } from "./common.js"
+
+const token = getToken()
 const apiBaseUrl = `http://localhost:3000/api/`
 
 
