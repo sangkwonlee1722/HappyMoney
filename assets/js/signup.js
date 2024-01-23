@@ -110,52 +110,52 @@ signupBtn.addEventListener("click", async () => {
 
   const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*"];
 
-  // if (!email || !password || !passwordCheck || !name || !nickName || !phone) {
-  //   alert("빈 칸을 입력하세요.");
-  // } else {
-  //   if (password !== passwordCheck) {
-  //     passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
-  //   } else if (password.length < 6) {
-  //     passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상입니다.";
-  //   } else if (!specialCharacters.some((char) => password.includes(char))) {
-  //     passwordCheckVerify.innerHTML = "특수문자를 포함하세요.";
-  //   } else {
-  //     passwordCheckVerify.innerHTML = "";
-  //   }
-  // }
+  if (!email || !password || !passwordCheck || !name || !nickName || !phone) {
+    alert("빈 칸을 입력하세요.");
+  } else {
+    if (password !== passwordCheck) {
+      passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
+    } else if (password.length < 6) {
+      passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상입니다.";
+    } else if (!specialCharacters.some((char) => password.includes(char))) {
+      passwordCheckVerify.innerHTML = "특수문자를 포함하세요.";
+    } else {
+      passwordCheckVerify.innerHTML = "";
+    }
+  }
 
-  // if (!(nickName.length >= 2 && nickName.length <= 6)) {
-  //   nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하입니다.";
+  if (!(nickName.length >= 2 && nickName.length <= 6)) {
+    nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하입니다.";
 
-  //   return;
-  // } else {
-  //   nickNameCheckVerify.innerHTML = "";
-  // }
+    return;
+  } else {
+    nickNameCheckVerify.innerHTML = "";
+  }
 
-  // if (!(name.length >= 2 && name.length <= 6)) {
-  //   nameCheckVerify.innerHTML = "이름은 2자리 이상, 6자리 이하만 가능합니다.";
-  //   return;
-  // } else {
-  //   nameCheckVerify.innerHTML = "";
-  // }
+  if (!(name.length >= 2 && name.length <= 6)) {
+    nameCheckVerify.innerHTML = "이름은 2자리 이상, 6자리 이하만 가능합니다.";
+    return;
+  } else {
+    nameCheckVerify.innerHTML = "";
+  }
 
-  // if (!emailCheck) {
-  //   emailCheckVerify.innerHTML = "이메일 중복체크를 해주세요.";
-  //   return;
-  // } else {
-  //   emailCheckVerify.innerHTML = "";
-  // }
+  if (!emailCheck) {
+    emailCheckVerify.innerHTML = "이메일 중복체크를 해주세요.";
+    return;
+  } else {
+    emailCheckVerify.innerHTML = "";
+  }
 
-  // if (!nickNameCheck) {
-  //   nickNameCheckVerify.innerHTML = "닉네임 중복체크를 해주세요.";
-  //   if (nickName.includes(" ")) {
-  //     nickNameCheckVerify.innerHTML = "띄어쓰기를 포함할 수 없습니다.";
-  //     return;
-  //   }
-  //   return;
-  // } else {
-  //   nickNameCheckVerify.innerHTML = "";
-  // }
+  if (!nickNameCheck) {
+    nickNameCheckVerify.innerHTML = "닉네임 중복체크를 해주세요.";
+    if (nickName.includes(" ")) {
+      nickNameCheckVerify.innerHTML = "띄어쓰기를 포함할 수 없습니다.";
+      return;
+    }
+    return;
+  } else {
+    nickNameCheckVerify.innerHTML = "";
+  }
 
   try {
     const axiosInstance = axios.create({
@@ -166,7 +166,7 @@ signupBtn.addEventListener("click", async () => {
     });
 
     const response = await axiosInstance.post("/api/user", userInfo);
-    console.log(response);
+
     if (response.data.success) {
       alert("이메일 인증 후 로그인 해주세요.");
       window.location.href = "/views/main.html";
