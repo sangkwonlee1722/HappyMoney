@@ -113,14 +113,12 @@ signupBtn.addEventListener("click", async () => {
   if (!email || !password || !passwordCheck || !name || !nickName || !phone) {
     alert("빈 칸을 입력하세요.");
   } else {
-    if (!specialCharacters.some((char) => password.includes(char))) {
-      passwordCheckVerify.innerHTML = "특수문자를 포함하세요.";
-    }
-
     if (password !== passwordCheck) {
       passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
     } else if (password.length < 6) {
       passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상입니다.";
+    } else if (!specialCharacters.some((char) => password.includes(char))) {
+      passwordCheckVerify.innerHTML = "특수문자를 포함하세요.";
     } else {
       passwordCheckVerify.innerHTML = "";
     }
