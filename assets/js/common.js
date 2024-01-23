@@ -21,7 +21,7 @@ $("#header_wrap").load("/views/common/header.html");
 $("#footer_wrap").load("/views/common/footer.html");
 
 // 토큰 가져오기
-export function getToken() {
+export default function getToken() {
   const token = `Bearer ${getCookie("accessToken")}`;
 
   if (token === 'Bearer null') {

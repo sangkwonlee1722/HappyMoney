@@ -1,4 +1,5 @@
-import { addComma, getToken } from "./common.js";
+import { addComma } from "./common.js";
+import getToken from "./common.js";
 
 const token = getToken()
 const apiBaseUrl = `http://localhost:3000/api/`
