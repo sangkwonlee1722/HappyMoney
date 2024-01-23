@@ -124,27 +124,30 @@ video {
   flex: 1;
   width: 1200px;
   margin: 0 auto;
-  margin-top: 6rem;
+  margin-top: 60px;
 }
 
 /* button */
+.hm-main-color {
+  background-color: #000f5d !important;
+}
+.hm-sub-color {
+  background-color: #eb5665 !important;
+}
+.hm-gray-color {
+  background-color: #888 !important;
+}
 .hm-button {
   position: relative;
-  display: flex;
-  justify-content: space-around;
   width: auto;
   text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
-  text-decoration: none;
-  overflow: hidden;
-  box-sizing: border-box;
-  border-radius: 8px;
-  line-height: 2rem;
-  background: #eb5665;
-}
-.hm-button a {
+  border-radius: 10px;
+  background-color: #000f5d;
+  border: 0;
   color: #fff;
+  padding: 0 16px;
+  line-height: 32px;
+  min-width: 100px;
 }
 
 /* Text field states s */
@@ -156,12 +159,13 @@ video {
 }
 .hm-input-wrap .hm-input {
   width: 100%;
-  height: 55px;
-  padding: 1.2rem 0 1.2rem 1.5rem;
+  height: 36px;
+  padding: 12px 0;
+  text-indent: 10px;
   border: 1px solid #d7d7d7;
   border-radius: 8px;
   color: #353839;
-  font-size: 1.4rem;
+  font-size: 14px;
   font-weight: 400;
   outline-style: b;
 }
@@ -187,10 +191,10 @@ input::placeholder {
 }
 .hm-textarea-wrap .hm-textarea {
   width: 100%;
-  padding: 1.2rem 1.5rem;
+  padding: 12px 15px;
   border: 1px solid #d7d7d7;
-  font-size: 1.4rem;
-  line-height: 2.1rem;
+  font-size: 14px;
+  line-height: 21px;
   border-radius: 8px;
 }
 
@@ -204,7 +208,7 @@ input::placeholder {
 .hm-checkbox input[type="checkbox"] + label {
   line-height: 18px;
   padding-left: 25px;
-  font-size: 1.4rem;
+  font-size: 14px;
 }
 .hm-checkbox input[type="checkbox"] + label::after {
   content: "";
@@ -248,17 +252,17 @@ input::placeholder {
   height: 60px;
   line-height: 60px;
   border-radius: 6px;
-  padding-left: 1.5rem;
+  padding-left: 15px;
 }
 .hm-checkbox-wrap-circle label {
-  font-size: 1.5rem;
+  font-size: 15px;
   font-weight: 600;
   width: 100%;
 }
 .hm-checkbox-wrap-circle input {
   width: 18px;
   height: 18px;
-  margin-right: 1rem;
+  margin-right: 10px;
   vertical-align: middle;
 }
 
@@ -344,13 +348,13 @@ input::placeholder {
 }
 .hm-popup-wrap {
   position: fixed;
-  background-color: #fff;
+  background-color: #d9d9d9;
   border-radius: 15px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 111;
-  padding: 5rem 4.5rem 4rem;
+  padding: 50px 45px 40px;
   color: #353839;
   display: none;
 }
@@ -366,15 +370,15 @@ input::placeholder {
   cursor: pointer;
 }
 .hm-popup-wrap header {
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
   height: auto;
 }
 .hm-popup-wrap header h1 {
   font-weight: 600;
-  font-size: 2.3rem;
+  font-size: 23px;
 }
 .hm-popup-wrap header p {
-  font-size: 1.5rem;
+  font-size: 15px;
   color: #505866;
   padding-top: 3px;
 }
@@ -382,7 +386,7 @@ input::placeholder {
   word-break: keep-all;
 }
 .hm-popup-wrap footer {
-  margin-top: 4rem;
+  margin-top: 30px;
 }
 
 .hm-dim.on {
@@ -404,23 +408,40 @@ input::placeholder {
   height: 90px;
   z-index: 100;
 }
-.header .header_wrap {
+.header .header-wrap {
   max-width: 1200px;
   height: 90px;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.header .header_wrap h2 {
-  min-width: 220px;
+.header .header-wrap h2 {
+  min-width: calc(100% - 200px);
 }
-.header .header_wrap h2 img {
+.header .header-wrap h2 .img-wrap {
+  display: block;
+  width: 220px;
+}
+.header .header-wrap h2 .img-wrap img {
   width: 100%;
 }
+.sub-header-wrap {
+  background-color: #d9d9d9;
+}
+.sub-header-box {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
 .hm-header-box {
-  height: 90px;
+  height: 142px;
 }
 .hm-hd-gnb {
   display: flex;
-  margin-left: 50px;
 }
 .hm-hd-gnb li {
   margin-right: 23px;
@@ -430,7 +451,7 @@ input::placeholder {
   font-size: 18px;
   font-weight: 500;
   white-space: nowrap;
-  color: #fff;
+  color: #000f5d;
 }
 .hm-hd-gnb li.hm_on a {
   font-weight: 700;
@@ -536,14 +557,14 @@ input::placeholder {
 /* ------header------ e */
 
 /* ------footer------ s */
-footer {
+#footer_wrap {
   background-color: #000f5d;
-  margin-top: 6rem;
+  margin-top: 60px;
 }
 .hm-footer-wrap {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 0rem;
+  padding: 20px 0;
   color: #fff;
   display: flex;
   align-items: center;
@@ -558,7 +579,7 @@ footer {
 }
 .hm-footer-wrap span {
   color: #626262;
-  line-height: 1.6rem;
+  line-height: 16px;
 }
 .hm-footer-wrap > div {
   display: inline-block;
@@ -568,15 +589,15 @@ footer {
 }
 .hm-footer-wrap .hm-footer-terms ul li {
   display: inline-block;
-  margin-right: 0.7rem;
+  margin-right: 7px;
 }
 .hm-footer-wrap .hm-footer-terms ul li:last-child {
   margin-right: 0;
 }
 .hm-footer-wrap .hm-footer-terms ul li a {
-  font-size: 1.3rem;
+  font-size: 13px;
   color: #626262;
-  line-height: 1.6rem;
+  line-height: 16px;
 }
 .hm-footer-wrap .hm-copy-right {
   color: #b7b7b7;
@@ -844,5 +865,89 @@ footer.hm-container.hm-fixed {
   cursor: pointer;
   background-color: #000f5d;
 }
-
 /* 나의 계좌 양식 e */
+
+/* 로그인 팝업 s */
+.blue {
+  margin-left: 5px;
+  color: rgb(93, 175, 243);
+}
+
+.loginModal {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #d9d9d9;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  height: 400px;
+  z-index: 1000;
+}
+
+.loginInput {
+  margin-bottom: 10px;
+}
+
+.loginInputValue {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-radius: 7px;
+  border: none;
+  font-size: 12px;
+  padding-left: 10px;
+  height: 30px;
+}
+
+.login {
+  color: black;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 25px;
+}
+
+.loginConfirmBtn {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px auto;
+  width: 400px;
+  border-radius: 7px;
+  border: none;
+  font-size: 12px;
+  padding-left: 10px;
+  height: 30px;
+  background-color: #000f5d;
+}
+
+.signupExplain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px auto;
+  font-size: 10px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* 로그인 팝업 e */
