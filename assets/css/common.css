@@ -759,14 +759,46 @@ footer.hm-container.hm-fixed {
   z-index: 0;
 }
 
+.account-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .account-name span {
   font-size: 25px;
   font-weight: bold;
+  margin-right: 5px;
 }
 
-.account-name img {
-  z-index: 2;
+.account-name .modify-img {
+  z-index: 1;
   cursor: pointer;
+}
+
+.account-name input {
+  z-index: 3;
+  border: solid 1px;
+  border-radius: 5px;
+  border-color: #797979;
+  height: 30px;
+  width: 150px;
+  margin-right: 10px;
+  padding-inline-start: 10px;
+}
+
+.account-name button {
+  z-index: 3;
+
+  height: 30px;
+  border-color: #eb5665;
+  border: none;
+  color: #ffffff;
+  background-color: #eb5665;
+  border-radius: 5px;
+  padding-inline: 20px;
+  transition: background-color 0.3s ease;
+  z-index: 1;
 }
 
 .account-left span {
@@ -793,7 +825,7 @@ footer.hm-container.hm-fixed {
 }
 
 .account-prices .calculate-price {
-  color: #eb5665;
+  color: #a9a9a9;
 }
 
 .accounts-right button {
@@ -812,4 +844,5 @@ footer.hm-container.hm-fixed {
   cursor: pointer;
   background-color: #000f5d;
 }
+
 /* 나의 계좌 양식 e */
