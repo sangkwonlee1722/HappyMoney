@@ -26,9 +26,9 @@ emailCheckBtn.addEventListener("click", async () => {
       }
     });
 
-    console.log(email);
     if (!email) {
       emailCheckVerify.innerHTML = "이메일을 작성해주세요.";
+      emailCheckVerify.style.color = "red";
       return;
     }
     if (emailExists) {
@@ -36,6 +36,7 @@ emailCheckBtn.addEventListener("click", async () => {
       emailCheckVerify.style.color = "red";
     } else if (!email.includes("@")) {
       emailCheckVerify.innerHTML = "이메일 형식에 맞게 작성해주세요.";
+      emailCheckVerify.style.color = "red";
     } else {
       emailCheck = true;
       emailCheckVerify.innerHTML = "사용 가능한 이메일입니다.";
@@ -71,13 +72,15 @@ nickNameCheckBtn.addEventListener("click", async () => {
 
     if (!nickName) {
       nickNameCheckVerify.innerHTML = "닉네임을 작성해주세요.";
+      emailCheckVerify.style.color = "red";
       return;
-    } else {
-      nickNameCheckVerify.innerHTML = "";
-    }
-    if (nicknameExists) {
+    } else if (nicknameExists) {
       nickNameCheckVerify.innerHTML = "중복된 닉네임입니다.";
       nickNameCheckVerify.style.color = "red";
+    } else if (!(nickName.length >= 2 && nickName.length <= 6)) {
+      nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하입니다.";
+      nickNameCheckVerify.style.color = "red";
+      return;
     } else {
       nickNameCheck = true;
       nickNameCheckVerify.innerHTML = "사용 가능한 닉네임입니다.";
@@ -177,6 +180,6 @@ signupBtn.addEventListener("click", async () => {
       window.location.href = "/views/signin.html";
     }
   } catch (error) {
-    console.error("Error:", error.response);
+    console.error("Error:", error.response.data.message);
   }
 });
