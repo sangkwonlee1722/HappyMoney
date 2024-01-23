@@ -653,6 +653,12 @@ footer.hm-container.hm-fixed {
 /* ------stock header------ e */
 
 /* 게시판 양식 s */
+.my-posts-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
 
 .board-title {
   font-weight: bold;
@@ -660,7 +666,6 @@ footer.hm-container.hm-fixed {
   justify-content: space-between;
   position: relative;
   align-items: center;
-  margin-bottom: 30px;
 }
 
 .board-title a {
