@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const commentClass = data[i].commentNumbers === 0 ? "comment hidden" : "comment";
         const listItem = `
     <li class="contents">
-       <a href="#none"></a>
+       <a href="post.read.html?id=${data[i].id}"></a>
        <div class="list-info">
          <div class="classification">${data[i].category}</div>
          <div class="title">${data[i].title}</div>
