@@ -33,7 +33,7 @@ const getMyInfoByToken = async (token) => {
               </div>
               <div class="profile-right">
                 <span>가입일 : ${formattedDate}</span>
-                <button>수정하기</button>
+                <button class="hm-button hm-gray-color">수정하기</button>
               </div>
             </div>
     `

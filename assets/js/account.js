@@ -41,7 +41,7 @@ const getMyAccountsByToken = async (token) => {
             <span class="ttl-price">${formatPrice} 원</span>
             <span class="calculate-price">+0 (0.0%)</span>
           </div>
-          <button>삭제</button>
+          <button class="hm-button hm-gray-color">삭제</button>
         </div>
       </li>
       <hr />
