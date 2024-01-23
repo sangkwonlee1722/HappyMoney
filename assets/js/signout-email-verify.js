@@ -10,9 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Content-Type": "application/json"
       }
     });
-
     const response = await axiosInstance.get(`/api/user/email-verify-signout?email=${encodedEmail}`);
-    console.log(response);
+
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원탈퇴 되었습니다.");
     } else {
