@@ -120,10 +120,10 @@ export class UserService {
       const mailOptions = {
         to: user.email,
         subject: "[happymoney] 회원탈퇴 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/api-docs#/User/UserController_verifyEmailSignout">탈퇴하기</a>`
+        html: `인증링크 : <a href="http://localhost:3000/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
       };
 
-      await transporter.sendMail(mailOptions);
+      transporter.sendMail(mailOptions);
     } catch (err: any) {
       console.error(err);
     }
