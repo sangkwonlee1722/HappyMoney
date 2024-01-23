@@ -36,14 +36,12 @@ $(document).ready(async function () {
       $("#loginTab").hide();
       $("#logoutTab").show();
     } else {
-      console.log(token);
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
       $("#logoutTab").hide();
     }
 
     const inputBox = document.querySelector("#login-input-box");
-    console.log(inputBox);
 
     const temp_html = `
       <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소" />
