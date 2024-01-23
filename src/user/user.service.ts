@@ -91,8 +91,8 @@ export class UserService {
     };
   }
 
-  async updateUserInfo(id: number, nickName: string, phone: string, password: string) {
-    const updated = await this.userRepository.update({ id }, { nickName, phone, password });
+  async updateUserInfo(id: number, nickName: string, phone: string) {
+    const updated = await this.userRepository.update({ id }, { nickName, phone });
 
     return updated;
   }

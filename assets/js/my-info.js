@@ -71,3 +71,41 @@ passwordSubmitBtn.on("click", async function () {
   }
   $("#passwordChk").val("");
 });
+
+/* 내 정보 수정하기 */
+const updateMyInfo = $("#updateMyInfo");
+
+updateMyInfo.on("click", async function () {
+  const apiUrl = apiBaseUrl + "user/mypage";
+  const phone = String($("#phone").val());
+  const nickName = $("#nickName").val();
+
+  if (!phone.includes("-")) {
+    alert("휴대폰 번호에는 하이픈(-)이 포함되어야 합니다.");
+    return;
+  }
+
+  if (nickName.includes(" ")) {
+    alert("닉네임에는 공백을 사용할 수 없습니다.");
+    return;
+  }
+
+  const updateInfo = {
+    phone,
+    nickName
+  };
+
+  try {
+    await axios.patch(apiUrl, updateInfo, {
+      headers: {
+        Authorization: token
+      }
+    });
+    window.location.reload();
+  } catch (error) {
+    console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+  $("#passwordChk").val("");
+});
