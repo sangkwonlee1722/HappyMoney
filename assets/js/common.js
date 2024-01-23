@@ -1,5 +1,6 @@
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
+window.loginConfirm = loginConfirm;
 window.logout = logout;
 
 //팝업 열기
@@ -40,8 +41,35 @@ $(document).ready(async function () {
       $('#loginTab').show();
       $('#logoutTab').hide();
     }
+
+    const inputBox = document.querySelector('#login-input-box');
+    console.log(inputBox)
+
+    const temp_html = `
+      <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
+      <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" />
+      `;
+    inputBox.innerHTML = temp_html;
   }, 100);
 });
+
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+};
+
+const getCookie = (name) => {
+  const value = `Bearer ${document.cookie}`;
+
+  const parts = value.split(`Bearer ${name}=`);
+
+  if (parts.length === 2) {
+    return parts.pop().split("Bearer ").shift().trim();
+  }
+
+  return undefined;
+};
 
 function getCookie(name) {
   // 쿠키 문자열을 가져옵니다.
@@ -65,6 +93,41 @@ function getCookie(name) {
   // 주어진 이름에 해당하는 쿠키를 찾지 못한 경우 null을 반환합니다.
   return null;
 }
+
+
+// 로그인
+async function loginConfirm() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const userInfo = {
+    email,
+    password
+  };
+
+  try {
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:3000",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const response = await axiosInstance.post("/api/user/login", userInfo);
+    console.log(response)
+
+    if (response.data.success) {
+      alert(`환영합니다.`);
+      const accessToken = response.data.accessToken;
+      setCookie("accessToken", accessToken, 1);
+      window.location.href = "/views/main.html";
+    }
+  } catch (error) {
+    alert("아이디 또는 비밀번호가 틀렸습니다.");
+    console.error("Error:", error.response);
+  }
+};
+
 
 // 로그아웃
 export function logout() {

@@ -26,15 +26,8 @@ const login = () => {
     body.appendChild(overlay);
 
     const temp_html = `
-        <div class="loginModal">
-          <div class="loginInput">
-            <div class="login">로그인</div>
             <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
             <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" />
-            <button class="loginConfirmBtn">로그인</button>
-            <div class="signupExplain">아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a></div>
-          </div>
-        </div>
       `;
 
     body.insertAdjacentHTML("beforeend", temp_html);
