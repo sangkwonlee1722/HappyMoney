@@ -154,10 +154,9 @@ export class UserController {
    * 이메일 회원탈퇴 인증
    * @returns
    */
-  @UseGuards(AuthGuard("jwt"))
-  @ApiBearerAuth()
   @Get("email-verify-signout")
-  async verifyEmailSignout(@UserInfo() user: User) {
+  async verifyEmailSignout(@Query("email") email: string) {
+    const user = await this.userService.findUserByEmail(email);
     await this.userService.deleteUser(user.id);
     return {
       success: true,
