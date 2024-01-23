@@ -832,6 +832,12 @@ footer.hm-container.hm-fixed {
   color: #a9a9a9;
 }
 
+.account-pop-text {
+  color: #666;
+  font-size: 12px;
+  line-height: 20px;
+}
+
 /* 나의 계좌 양식 e */
 
 /* 로그인 팝업 s */

@@ -12,8 +12,7 @@ export function drPopupOpen(popName) {
 //팝업 닫기
 export function drPopupClose(im) {
   $("body").css("overflow", "auto");
-  $(im).closest(".hm-popup-wrap").css("display", "none");
-  $(im).next(".hm-popup-wrap").css("display", "none");
+  $(".hm-popup-wrap").css("display", "none");
   $(".hm-dim").css("display", "none");
 }
 

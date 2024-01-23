@@ -16,27 +16,34 @@
     <title>HappyMoney</title>
   </head>
   <body>
-    <!-- 로그인 팝업 s -->
+    <!-- 팝업 예시 s -->
     <div class="hm-dim" onclick="drPopupClose(this)"></div>
-    <div class="hm-popup-wrap hm-popup-login">
-      <div class="hm-popup-close" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap hm-account-create">
+      <header>
+        <h1>계좌 만들기</h1>
+      </header>
       <div class="hm-popup-content">
-        <div class="loginModal">
-          <div class="loginInput">
-            <div class="login">로그인</div>
-            <div id="login-input-box">
-              <!-- <input type="email" class="loginInputValue" id="email" placeholder="이메일 주소" />
-          <input type="password" class="loginInputValue" id="password" placeholder="비밀번호" /> -->
-            </div>
-            <button class="loginConfirmBtn" onclick="loginConfirm()">로그인</button>
-            <div class="signupExplain">
-              아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a>
-            </div>
-          </div>
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input" id="accountName" name="accountName" placeholder="계좌 이름" />
         </div>
+        <p class="account-pop-text mt-2">
+          ※ 계좌 이름은 <span style="color: #eb5665">최대 6글자까지</span> 작성이 가능합니다.
+        </p>
+        <p class="account-pop-text">
+          ※ 계좌 개설 시 <span style="color: #eb5665">가상 머니 1억 원</span>을 지급해드립니다.
+        </p>
+        <p class="account-pop-text">
+          ※ 계좌는 계정 당 <span style="color: #eb5665">최대 3개 까지만</span> 개설이 가능합니다.
+        </p>
       </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="accountCreate" onclick="drPopupClose(this)">만들기</a>
+        </div>
+      </footer>
     </div>
-    <!-- 로그인 팝업 e -->
+    <!-- 팝업 예시 e -->
 
     <div class="hm-container">
       <header id="header_wrap"></header>
@@ -58,7 +65,9 @@
           <div class="account-header">
             <h2 class="board-title">나의 계좌</h2>
             <div class="create-btn-description">
-              <button class="hm-button hm-main-color">계좌 개설</button>
+              <button class="hm-button hm-main-color" id="createAccountBtn" onclick="drPopupOpen('.hm-account-create')">
+                계좌 만들기
+              </button>
               <span>* 계좌 당 3개의 계좌를 개설할 수 있습니다.</span>
             </div>
           </div>

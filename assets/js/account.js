@@ -1,5 +1,4 @@
-import { addComma } from "./common.js";
-import { getToken } from "./common.js"
+import { addComma, getToken } from "./common.js";
 
 const token = getToken()
 const apiBaseUrl = `http://localhost:3000/api/`
@@ -71,7 +70,7 @@ async function modifyAccountName() {
 
   const originalName = accountNameElement.find('span').text();
 
-  const inputElement = $('<input>').val(originalName);
+  const inputElement = $('<input >').val(originalName);
   const saveButton = $('<button class="hm-button hm-sub-color">').text('저장');
 
   accountName.hide();
@@ -130,6 +129,29 @@ deleteBtn.on('click', async function () {
 
   } catch (error) {
     console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+})
+
+
+/* 계좌 만들기 */
+const createAccountBtn = $('#accountCreate')
+
+createAccountBtn.on('click', async function () {
+  const accountName = $('#accountName').val()
+
+  const apiUrl = apiBaseUrl + 'accounts'
+
+  try {
+    await axios.post(apiUrl, { name: accountName }, {
+      headers: {
+        'Authorization': token,
+      }
+    })
+    window.location.reload();
+  } catch (error) {
+    console.error(error)
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
