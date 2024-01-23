@@ -16,6 +16,31 @@
     <title>HappyMoney</title>
   </head>
   <body>
+    <!-- 내 정보 수정 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap hm-mypage-update">
+      <header>
+        <h1>내 정보 수정</h1>
+      </header>
+      <div class="hm-popup-content">
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input updateInput" id="name" name="name" placeholder="이름" />
+        </div>
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input updateInput" id="phone" name="phone" placeholder="휴대폰 번호" />
+        </div>
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input updateInput" id="nickName" name="nickName" placeholder="닉네임" />
+        </div>
+      </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="updateMyInfo" onclick="drPopupClose(this)">수정하기</a>
+        </div>
+      </footer>
+    </div>
+
     <!-- 계좌 만들기 팝업 s -->
     <div class="hm-dim" onclick="drPopupClose(this)"></div>
     <div class="hm-popup-wrap hm-account-create">
@@ -63,8 +88,8 @@
         </div>
       </footer>
     </div>
-    <!-- 내 정보 수정 팝업 / 비밀번호 체크 팝업 e -->
 
+    <!-- 내 정보 수정 팝업 / 비밀번호 체크 팝업 e -->
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
@@ -93,6 +118,7 @@
           </div>
           <ul class="accounts-list"></ul>
         </div>
+
         <!-- 내 정보 페이지 e -->
       </div>
       <footer id="footer_wrap"></footer>

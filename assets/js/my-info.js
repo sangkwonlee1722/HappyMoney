@@ -1,28 +1,25 @@
-import getToken from "./common.js"
+import getToken from "./common.js";
 
-const token = getToken()
-const apiBaseUrl = `http://localhost:3000/api/`
-
+const token = getToken();
+const apiBaseUrl = `http://localhost:3000/api/`;
 
 /* 내 정보 가져오는 함수 */
 const getMyInfoByToken = async (token) => {
-
   const apiUrl = apiBaseUrl + "user/mypage";
 
   try {
     const result = await axios.get(apiUrl, {
       headers: {
-        'Authorization': token,
+        Authorization: token
       }
     });
 
     const { createdAt, email, name, nickName, phone } = result.data;
-    const formattedDate = createdAt.split("T")[0]
+    const formattedDate = createdAt.split("T")[0];
 
-    const mainDom = document.querySelector(".profile-wrap")
+    const mainDom = document.querySelector(".profile-wrap");
 
-    mainDom.innerHTML =
-      `
+    mainDom.innerHTML = `
     <h2 class="profile-title">프로필</h2>
             <div class="profile-contents-wrap">
               <div class="profile-left">
@@ -40,34 +37,37 @@ const getMyInfoByToken = async (token) => {
                 </button>
               </div>
             </div>
-    `
-
+    `;
   } catch (error) {
     console.error("에러 발생:", error);
   }
 };
 
-await getMyInfoByToken(token)
+await getMyInfoByToken(token);
 
 /* 패스워드 체크 모달창 띄우기 */
-const passwordSubmitBtn = $('#submitPasswordBtn');
+const passwordSubmitBtn = $("#submitPasswordBtn");
 
-passwordSubmitBtn.on('click', async function () {
-  const apiUrl = apiBaseUrl + 'user/check-password'
-  const password = $('#passwordChk').val()
+passwordSubmitBtn.on("click", async function () {
+  const apiUrl = apiBaseUrl + "user/check-password";
+  const password = $("#passwordChk").val();
 
   try {
-    await axios.post(apiUrl, { password }, {
-      headers: {
-        'Authorization': token,
+    await axios.post(
+      apiUrl,
+      { password },
+      {
+        headers: {
+          Authorization: token
+        }
       }
-    })
-    drPopupOpen('.hm-account-create')
+    );
+    drPopupOpen(".hm-mypage-update");
   } catch (error) {
-    console.error(error)
+    console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
-    drPopupOpen('.check-password')
+    drPopupOpen(".check-password");
   }
-  $('#passwordChk').val('');
-})
+  $("#passwordChk").val("");
+});

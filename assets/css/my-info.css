@@ -35,3 +35,12 @@
 .my-activity-btns button {
   margin-right: 15px;
 }
+
+.hm-input-wrap > .updateInput {
+  width: 100%;
+  margin: 5px;
+}
+
+.hm-mypage-update {
+  width: 400px;
+}
