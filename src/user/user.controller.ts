@@ -22,7 +22,7 @@ import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -47,10 +47,10 @@ export class UserController {
       isEmailVerified: true
     });
 
-    return res.status(HttpStatus.OK).json({
+    return {
       success: true,
       message: "okay"
-    });
+    };
   }
 
   /**
@@ -63,11 +63,19 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     const { password, passwordCheck } = createUserDto;
     if (password !== passwordCheck) throw new BadRequestException("비밀번호를 확인해주세요.");
-    await this.userService.createUser(createUserDto);
-    return {
-      success: true,
-      message: "okay"
-    };
+
+    try {
+      await this.userService.createUser(createUserDto);
+      return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response.message
+      };
+    }
   }
 
   /**
@@ -122,7 +130,7 @@ export class UserController {
   @Patch("mypage")
   async updateUserInfo(@UserInfo() user: User, @Body() updateUserDto: UpdateUserDto) {
     const { nickName, phone, password, newPassword, newPasswordCheck } = updateUserDto;
-    const userInfo = await this.userService.findUserByEmail(user.email);
+
     const allUser = await this.userService.find();
 
     allUser.forEach((user) => {
@@ -131,12 +139,6 @@ export class UserController {
       }
     });
 
-    const isPasswordValid = await compare(password, userInfo.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
-    }
-
     if (newPassword && newPassword !== newPasswordCheck) {
       throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
     }
@@ -144,6 +146,29 @@ export class UserController {
     const hashedPassword = await hash(String(newPassword), 10);
 
     await this.userService.updateUserInfo(user.id, nickName, phone, hashedPassword);
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 내 정보 수정 시 비밀번호 체크
+   * @param user
+   * @param param1
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Post("check-password")
+  async checkPassword(@UserInfo() user: User, @Body() { password }: PasswordCheck) {
+    const userInfo = await this.userService.findUserByEmail(user.email);
+    const isPasswordValid = await compare(password, userInfo.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
+    }
+
     return {
       success: true,
       message: "okay"

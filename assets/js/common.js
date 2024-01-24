@@ -1,3 +1,5 @@
+export const baseUrl = 'http://localhost:3000/api/'
+
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
 window.loginConfirm = loginConfirm;
@@ -33,7 +35,7 @@ export default function getToken() {
 }
 
 $(document).ready(async function () {
-  const token = await getCookie("accessToken");
+  const token = getCookie("accessToken");
   setTimeout(function () {
     // 세션 ID가 있는지 여부에 따라 탭을 토글합니다.
     if (token) {
@@ -41,7 +43,6 @@ $(document).ready(async function () {
       $("#loginTab").hide();
       $("#logoutTab").show();
     } else {
-      console.log(token);
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
       $("#logoutTab").hide();

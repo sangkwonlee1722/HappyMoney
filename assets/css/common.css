@@ -134,14 +134,19 @@ video {
 .hm-sub-color {
   background-color: #eb5665 !important;
 }
-.hm-gray-color {
+.hm-button.hm-gray-color {
   background-color: #888 !important;
 }
+
+.hm-button:hover {
+  background-color: #000f5d;
+}
+
 .hm-button {
   position: relative;
   width: auto;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #000f5d;
   border: 0;
   color: #fff;
@@ -648,8 +653,11 @@ footer.hm-container.hm-fixed {
 /* ------stock header------ e */
 
 /* 게시판 양식 s */
-.contents-wrap {
-  margin-top: 70px;
+.my-posts-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .board-title {
@@ -658,7 +666,6 @@ footer.hm-container.hm-fixed {
   justify-content: space-between;
   position: relative;
   align-items: center;
-  margin-bottom: 30px;
 }
 
 .board-title a {
@@ -673,6 +680,7 @@ footer.hm-container.hm-fixed {
   display: flex;
   justify-content: space-between;
   position: relative;
+  margin-top: 30px;
 }
 
 .contents a {
@@ -727,6 +735,13 @@ footer.hm-container.hm-fixed {
   justify-content: center;
   margin-right: 50px;
 }
+
+.none-contents {
+  width: 100%;
+  color: #777;
+  text-align: center;
+  font-size: 18px;
+}
 /* 게시판 양식 e */
 
 /* 나의 계좌 양식 s */
@@ -734,6 +749,7 @@ footer.hm-container.hm-fixed {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .create-btn-description {
@@ -742,27 +758,10 @@ footer.hm-container.hm-fixed {
   align-items: flex-end;
 }
 
-.create-btn-description button {
-  height: 30px;
-  border-color: #000f5d;
-  border: none;
-  color: #ffffff;
-  background-color: #000f5d;
-  border-radius: 5px;
-  padding-inline: 20px;
-  transition: background-color 0.3s ease;
-  width: 100px;
-  margin-bottom: 5px;
-}
-
-.create-btn-description button:hover {
-  cursor: pointer;
-  background-color: #a9a9a9;
-}
-
 .create-btn-description span {
   font-size: 10px;
   color: #eb5665;
+  margin-top: 5px;
 }
 
 .accounts {
@@ -799,27 +798,22 @@ footer.hm-container.hm-fixed {
 
 .account-name input {
   z-index: 3;
-  border: solid 1px;
-  border-radius: 5px;
-  border-color: #797979;
-  height: 30px;
-  width: 150px;
+  width: 100%;
+  height: 36px;
+  padding: 12px 0;
+  text-indent: 10px;
+  border: 1px solid #d7d7d7;
+  border-radius: 8px;
+  color: #353839;
+  font-size: 14px;
+  font-weight: 400;
+  outline-style: b;
+
   margin-right: 10px;
-  padding-inline-start: 10px;
 }
 
 .account-name button {
   z-index: 3;
-
-  height: 30px;
-  border-color: #eb5665;
-  border: none;
-  color: #ffffff;
-  background-color: #eb5665;
-  border-radius: 5px;
-  padding-inline: 20px;
-  transition: background-color 0.3s ease;
-  z-index: 1;
 }
 
 .account-left span {
@@ -849,22 +843,12 @@ footer.hm-container.hm-fixed {
   color: #a9a9a9;
 }
 
-.accounts-right button {
-  height: 30px;
-  border-color: #a9a9a9;
-  border: none;
-  color: #ffffff;
-  background-color: #a9a9a9;
-  border-radius: 5px;
-  padding-inline: 20px;
-  transition: background-color 0.3s ease;
-  z-index: 1;
+.account-pop-text {
+  color: #666;
+  font-size: 12px;
+  line-height: 20px;
 }
 
-.accounts-right button:hover {
-  cursor: pointer;
-  background-color: #000f5d;
-}
 /* 나의 계좌 양식 e */
 
 /* 로그인 팝업 s */
