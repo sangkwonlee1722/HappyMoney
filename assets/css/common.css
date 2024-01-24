@@ -653,8 +653,11 @@ footer.hm-container.hm-fixed {
 /* ------stock header------ e */
 
 /* 게시판 양식 s */
-.contents-wrap {
-  margin-top: 70px;
+.my-posts-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .board-title {
@@ -663,7 +666,6 @@ footer.hm-container.hm-fixed {
   justify-content: space-between;
   position: relative;
   align-items: center;
-  margin-bottom: 30px;
 }
 
 .board-title a {
@@ -678,6 +680,7 @@ footer.hm-container.hm-fixed {
   display: flex;
   justify-content: space-between;
   position: relative;
+  margin-top: 30px;
 }
 
 .contents a {
@@ -732,6 +735,13 @@ footer.hm-container.hm-fixed {
   justify-content: center;
   margin-right: 50px;
 }
+
+.none-contents {
+  width: 100%;
+  color: #777;
+  text-align: center;
+  font-size: 18px;
+}
 /* 게시판 양식 e */
 
 /* 나의 계좌 양식 s */
@@ -739,6 +749,7 @@ footer.hm-container.hm-fixed {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 30px;
 }
 
 .create-btn-description {

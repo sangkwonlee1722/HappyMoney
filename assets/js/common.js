@@ -1,3 +1,5 @@
+export const baseUrl = 'http://localhost:3000/api/'
+
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
 window.loginConfirm = loginConfirm;
