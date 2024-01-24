@@ -46,7 +46,7 @@
     <!-- 계좌 만들기 팝업 e -->
 
     <!-- 내 정보 수정 / 비밀번호 체크 팝업 s -->
-    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+
     <div class="hm-popup-wrap check-password">
       <header>
         <h1>내 정보 수정하기</h1>
@@ -63,8 +63,8 @@
         </div>
       </footer>
     </div>
-    <!-- 내 정보 수정 팝업 / 비밀번호 체크 팝업 e -->
 
+    <!-- 내 정보 수정 팝업 / 비밀번호 체크 팝업 e -->
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
@@ -93,9 +93,85 @@
           </div>
           <ul class="accounts-list"></ul>
         </div>
+
         <!-- 내 정보 페이지 e -->
       </div>
       <footer id="footer_wrap"></footer>
+    </div>
+
+    <!-- 비밀번호 수정 팝업 s -->
+
+    <div class="hm-popup-wrap hm-password-update">
+      <header>
+        <h1>비밀번호 변경</h1>
+      </header>
+      <div class="hm-popup-content">
+        <div class="hm-input-wrap">
+          <input
+            type="password"
+            class="hm-input updateInput"
+            id="newPassword"
+            name="newPassword"
+            placeholder="새로운 비밀번호"
+          />
+        </div>
+        <div class="hm-input-wrap">
+          <input
+            type="password"
+            class="hm-input updateInput"
+            id="newPasswordCheck"
+            name="newPasswordCheck"
+            placeholder="새로운 비밀번호 확인"
+          />
+        </div>
+      </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="updatePassword" onclick="drPopupClose(this)">변경하기</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- 비밀번호 수정 / 비밀번호 체크 팝업 s -->
+
+    <div class="hm-popup-wrap check-password-update">
+      <header>
+        <h1>비밀번호 수정하기</h1>
+      </header>
+      <div class="hm-popup-content">
+        <div class="hm-input-wrap">
+          <input type="password" class="hm-input" id="updatePasswordChk" placeholder="현재 비밀번호를 입력해주세요." />
+        </div>
+      </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="submitUpdatePasswordBtn" onclick="drPopupClose(this)">확인</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- 내 정보 수정 팝업 s -->
+
+    <div class="hm-popup-wrap hm-mypage-update">
+      <header>
+        <h1>내 정보 수정</h1>
+      </header>
+      <div class="hm-popup-content">
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input updateInput" id="phone" name="phone" placeholder="휴대폰 번호" />
+        </div>
+        <div class="hm-input-wrap">
+          <input type="text" class="hm-input updateInput" id="nickName" name="nickName" placeholder="닉네임" />
+        </div>
+      </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="updateMyInfo" onclick="drPopupClose(this)">수정하기</a>
+        </div>
+      </footer>
     </div>
   </body>
 </html>

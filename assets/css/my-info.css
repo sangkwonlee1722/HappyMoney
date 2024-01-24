@@ -1,3 +1,7 @@
+.my-info-wrap {
+  margin-bottom: 4rem;
+}
+
 .profile-title {
   margin-bottom: 30px;
   font-weight: bold;
@@ -34,4 +38,13 @@
 
 .my-activity-btns button {
   margin-right: 15px;
+}
+
+.hm-input-wrap > .updateInput {
+  width: 100%;
+  margin: 5px;
+}
+
+.hm-mypage-update {
+  width: 400px;
 }
