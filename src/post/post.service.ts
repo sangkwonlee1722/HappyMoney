@@ -41,6 +41,18 @@ export class PostService {
     return data;
   }
 
+  async findMyPostsById(userId: number) {
+    const posts: Post[] = await this.postRepository
+      .createQueryBuilder("p")
+      .where("p.userId=:userId", { userId })
+      .select(["p.id", "p.category", "p.nickName", "p.title", "p.createdAt"])
+      .loadRelationCountAndMap("p.commentNumbers", "p.comments")
+      .orderBy("p.createdAt", "DESC")
+      .getMany();
+
+    return posts;
+  }
+
   async update(id: number, updatePostDto: UpdatePostDto) {
     const data = await this.postRepository.update({ id }, updatePostDto);
     return data.affected;

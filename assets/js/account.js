@@ -155,5 +155,7 @@ createAccountBtn.on('click', async function () {
     console.error(error)
     const errorMessage = error.response.data.message;
     alert(errorMessage);
+    drPopupOpen('.hm-account-create')
   }
+  $('#accountName').val('');
 })

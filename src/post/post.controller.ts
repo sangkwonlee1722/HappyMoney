@@ -52,6 +52,24 @@ export class PostController {
   }
 
   /**
+   * 내가 쓴 게시글 조회
+   * @param user
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Get("my")
+  async findMyPosts(@UserInfo() user: User) {
+    const data = await this.postService.findMyPostsById(user.id);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
    * 게시글 상세 조회
    * @Param id 게시글의 아이디
    * @returns 상세 글
