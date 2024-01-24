@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Content-Type": "application/json"
       }
     });
-
+    alert("[happymoney] 정상적으로 회원가입 되었습니다.");
+    window.close();
     const response = await axiosInstance.get(`/api/user/email-verify-signin?email=${encodedEmail}`);
 
     if (response.data.success) {
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.close();
     } else {
       alert("이메일 인증이 실패했습니다.");
-      return;
     }
   } catch (error) {
     console.error("Error:", error.response);
