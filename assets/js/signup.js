@@ -129,6 +129,8 @@ signupBtn.addEventListener("click", async () => {
   if (!(name.length >= 2 && name.length <= 6)) {
     nameCheckVerify.innerHTML = "이름은 2자리 이상, 6자리 이하만 가능합니다.";
     return;
+  } else if (name.includes(" ")) {
+    nameCheckVerify.innerHTML = "이름에는 공백을 사용할 수 없습니다..";
   }
 
   if (!emailCheck) {
@@ -139,14 +141,14 @@ signupBtn.addEventListener("click", async () => {
   if (!nickNameCheck) {
     nickNameCheckVerify.innerHTML = "닉네임 중복체크를 해주세요.";
     if (nickName.includes(" ")) {
-      nickNameCheckVerify.innerHTML = "띄어쓰기를 포함할 수 없습니다.";
+      nickNameCheckVerify.innerHTML = "닉네임에는 공백을 사용할 수 없습니다.";
       return;
     }
     return;
   }
 
   if (phone.includes(" ")) {
-    phoneCheckVerify.innerHTML = "띄어쓰기를 포함할 수 없습니다.";
+    phoneCheckVerify.innerHTML = "휴대폰 번호에는 공백을 사용할 수 없습니다.";
     return;
   } else if (!phone.includes("-")) {
     phoneCheckVerify.innerHTML = "하이픈(-)을 입력해주세요.";

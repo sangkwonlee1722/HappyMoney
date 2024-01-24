@@ -1,0 +1,64 @@
+/* 쪽지 조회 s */
+.twit-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.twit-title-wrap h2 {
+  font-weight: bold;
+}
+.twit-tab {
+  display: flex;
+}
+.twit-tab li {
+  font-size: 20px;
+  margin-left: 15px;
+  color: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.twit-tab li.on {
+  color: #000f5d;
+  border-bottom: 1px solid #000f5d;
+}
+.contents.name {
+  font-weight: bold;
+  color: #000f5d;
+}
+.twit-wrap .list-info {
+  width: calc(100% - 140px);
+}
+.twit-wrap .list-info-2 {
+  width: 130px;
+}
+.twit-wrap .list-info .classification {
+  margin-right: 20px;
+  width: 100px;
+}
+.twit-wrap .list-info .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100% - 120px);
+}
+/* 쪽지 조회 e */
+
+/* 쪽지 상세 조회 s */
+.twit-dt-top {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+.twit-dt-top .dt-top-l ul {
+  display: flex;
+  padding: 10px 0;
+}
+.twit-dt-top .dt-top-l ul dt {
+  margin-right: 40px;
+}
+.twit-dt-bottom {
+  padding: 50px 30px;
+}
+/* 쪽지 상세 조회 e */

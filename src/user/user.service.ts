@@ -91,8 +91,14 @@ export class UserService {
     };
   }
 
-  async updateUserInfo(id: number, nickName: string, phone: string, password: string) {
-    const updated = await this.userRepository.update({ id }, { nickName, phone, password });
+  async updateUserInfo(id: number, nickName: string, phone: string) {
+    const updated = await this.userRepository.update({ id }, { nickName, phone });
+
+    return updated;
+  }
+
+  async updatePassword(id: number, password: string) {
+    const updated = await this.userRepository.update({ id }, { password });
 
     return updated;
   }
@@ -161,5 +167,10 @@ export class UserService {
 
   async updateUserVerify(userId: number, updateData: Partial<User>): Promise<void> {
     await this.userRepository.update(userId, updateData);
+  }
+
+  // 닉네임으로 해당 아이디 받아오기
+  async findUserByNickname(nickname: string): Promise<User | undefined> {
+    return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 }
