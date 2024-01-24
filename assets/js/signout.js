@@ -33,5 +33,8 @@ async function signout() {
 
 const signoutBtn = document.getElementById("signoutBtn");
 signoutBtn.addEventListener("click", () => {
-  signout();
+  const userConfirmed = window.confirm("정말로 회원탈퇴 하시겠습니까?");
+  if (userConfirmed) {
+    signout();
+  }
 });

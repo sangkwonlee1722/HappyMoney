@@ -102,7 +102,7 @@ updateMyInfo.on("click", async function () {
       Authorization: token
     }
   });
-  console.log(user.data.phone, user.data.nickName);
+
   const phone = String($("#phone").val());
   const nickName = $("#nickName").val();
 
