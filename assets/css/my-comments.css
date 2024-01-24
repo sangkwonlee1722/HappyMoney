@@ -1,0 +1,49 @@
+.comment {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.comment a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.mc-contents-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.my-comments {
+  font-weight: bold;
+}
+
+.comment-date {
+  font-size: 12px;
+}
+
+.mc-posts {
+  display: flex;
+  flex-direction: row;
+  color: #777;
+  margin-top: 10px;
+}
+
+.posts-title {
+  margin-right: 10px;
+}
+
+.comment-icon {
+  margin-right: 5px;
+}
+
+.comment-number {
+  color: #eb5665;
+}
+
+.mc-btn-wrap {
+  z-index: 3;
+}

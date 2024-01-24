@@ -8,8 +8,6 @@
     <script type="module" src="/js/bootstrap.min.js"></script>
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/main-page.js"></script>
-    <!-- <script type="module" src="../js/login.js" defer></script>
-    <script type="module" src="../js/logout.js" defer></script> -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/main-page.css" />
@@ -30,8 +28,12 @@
               다양한 사람들과 의견을 교류해보세요 !
             </p>
             <div class="service-btn-wrap">
-              <button class="stock-btn">모의 주식 투자하기</button>
-              <button class="community-btn">커뮤니티 바로가기</button>
+              <button class="hm-button hm-sub-color">
+                <a href="/views/stock_main.html"> 모의 주식 투자하기 </a>
+              </button>
+              <button class="hm-button hm-sub-color">
+                <a href="/views/post.html"> 커뮤니티 바로가기 </a>
+              </button>
             </div>
           </div>
         </div>
@@ -40,7 +42,7 @@
         <!-- 공지사항, 게시판, 뉴스 s -->
         <div class="community-services-wrap">
           <!-- 공지사항 -->
-          <div class="contents-wrap">
+          <div class="contents-wrap nt-wrap">
             <h2 class="board-title">
               <a href="#none"></a>
               공지사항
@@ -51,7 +53,7 @@
           <!-- 자유게시판 -->
           <div class="contents-wrap">
             <h2 class="board-title">
-              <a href="post.html"></a>
+              <a href="/views/post.html"></a>
               자유 게시판
               <img src="../images/go-icon.png" style="height: 30px" />
             </h2>
