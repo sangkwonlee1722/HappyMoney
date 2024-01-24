@@ -935,3 +935,16 @@ footer.hm-container.hm-fixed {
 }
 
 /* 로그인 팝업 e */
+
+.foundPasswordAndUser {
+  text-align: center;
+}
+
+.styled-link {
+  display: inline-block;
+  margin: 10px;
+  padding: 5px 10px;
+  font-size: 13px;
+  text-decoration: none;
+  color: white;
+}
