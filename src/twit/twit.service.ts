@@ -4,18 +4,19 @@ import { User } from "src/user/entities/user.entity";
 import { Twit } from "./entities/twit.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class TwitService {
+  findUserByNickname: any;
   constructor(
     @InjectRepository(Twit)
     private readonly twitRepository: Repository<Twit>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userService: UserService
   ) {}
 
-  async sendTwit({ id }: User, { contents, receiveNickname }: CreateTwitDto) {
-    const receiver = await this.findUserByNickname(receiveNickname);
+  async sendTwit({ id, nickName }: User, { contents, receiveNickname }: CreateTwitDto) {
+    const receiver = await this.userService.findUserByNickname(receiveNickname);
 
     if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
@@ -24,6 +25,8 @@ export class TwitService {
     const sendTwit = await this.twitRepository.save({
       senderId: id,
       receiveId: receiver.id,
+      senderName: nickName,
+      receiverName: receiver.nickName,
       contents
     });
 
@@ -75,10 +78,5 @@ export class TwitService {
     if (!deleteReceiveTwit) throw new BadRequestException({ success: false, message: "삭제할 수 없습니다." });
 
     return deleteReceiveTwit;
-  }
-
-  // 닉네임으로 해당 아이디 받아오기
-  async findUserByNickname(nickname: string): Promise<User | undefined> {
-    return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 }
