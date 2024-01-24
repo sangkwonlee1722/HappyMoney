@@ -246,15 +246,15 @@ export class UserController {
 
   @Patch("found-password")
   async foundPassword(@Body() foundPasswordDto: foundPasswordDto) {
-    const { email } = foundPasswordDto;
+    const { email, phone } = foundPasswordDto;
     const user = await this.userService.findUserByEmail(email);
 
-    if (!user) {
-      throw new NotFoundException("존재하지 않는 회원입니다.");
+    if (!user || user.email !== email || user.phone !== phone) {
+      throw new NotFoundException("존재하지 않는 회원이거나 정보가 일치하지 않습니다.");
     }
 
     try {
-      await this.userService.sendTemporaryPassword(email);
+      await this.userService.sendTemporaryPassword(email, phone);
       return {
         success: true,
         message: "okay"

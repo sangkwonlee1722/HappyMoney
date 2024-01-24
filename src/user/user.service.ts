@@ -156,7 +156,7 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.userRepository.findOne({
-      select: ["id", "email", "password", "name", "role", "isEmailVerified"],
+      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
       where: [{ email }]
     });
   }
@@ -174,15 +174,15 @@ export class UserService {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 
-  async sendTemporaryPassword(email: string) {
+  async sendTemporaryPassword(email: string, phone: string) {
     const user: User = await this.findUserByEmail(email);
     const temporaryPassword = Math.floor(100000 + Math.random() * 900000).toString();
 
     const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
     const hashPassword = hashSync(temporaryPassword, hashRound);
 
-    if (!user) {
-      throw new NotFoundException("존재하지 않는 회원입니다.");
+    if (!user || user.email !== email || user.phone !== phone) {
+      throw new NotFoundException("존재하지 않는 회원이거나 정보가 일치하지 않습니다.");
     }
 
     try {
