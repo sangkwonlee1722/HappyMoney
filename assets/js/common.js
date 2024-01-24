@@ -55,7 +55,7 @@ $(document).ready(async function () {
       <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호" />
       `;
     inputBox.innerHTML = temp_html;
-  }, 100);
+  }, 50);
 });
 
 function setCookie(name, value, days) {
