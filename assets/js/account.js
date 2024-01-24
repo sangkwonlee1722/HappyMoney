@@ -19,36 +19,44 @@ const getMyAccountsByToken = async (token) => {
 
     const mainDom = document.querySelector(".accounts-list")
 
-    mainDom.innerHTML = accounts
-      .map(account => {
-        const { id, name, point, accountNumber } = account;
+    if (accounts.length !== 0) {
 
-        const formatPrice = addComma(point)
-        // 현재 가치 확인 로직 확인 필요
-        return `
-        <li class="accounts" data-id="${id}">
-        <a href="#none"></a>
-        <div class="accounts-left">
-          <div class="account-name">
-            <span>${name}</span>
-            <div class="modify-img">
-              <img src="../images/modify-pencil.png" />
-            </div>
-          </div>
-          <span>${accountNumber}</span>
-        </div>
-        <div class="accounts-right">
-          <div class="account-prices">
-            <span class="ttl-price">${formatPrice} 원</span>
-            <span class="calculate-price">+0 (0.0%)</span>
-          </div>
-          <button class="hm-button hm-gray-color">삭제</button>
-        </div>
-      </li>
-      <hr />
-        `
-      }).join("")
+      mainDom.innerHTML = accounts
+        .map(account => {
+          const { id, name, point, accountNumber } = account;
 
+          const formatPrice = addComma(point)
+          // 현재 가치 확인 로직 확인 필요
+          return `
+      <li class="accounts" data-id="${id}">
+      <a href="#none"></a>
+      <div class="accounts-left">
+        <div class="account-name">
+          <span>${name}</span>
+          <div class="modify-img">
+            <img src="../images/modify-pencil.png" />
+          </div>
+        </div>
+        <span>${accountNumber}</span>
+      </div>
+      <div class="accounts-right">
+        <div class="account-prices">
+          <span class="ttl-price">${formatPrice} 원</span>
+          <span class="calculate-price">+0 (0.0%)</span>
+        </div>
+        <button class="hm-button hm-gray-color delete-comment-btn" onclick="drPopupOpen('.delete-account-chk')">삭제</button>
+      </div>
+    </li>
+    <hr />
+      `
+        }).join("")
+    } else {
+      mainDom.innerHTML = `
+      <div class="none-contents">
+        <span>개설한 계좌가 없습니다.</span>
+      </div>
+      `
+    }
   } catch (error) {
     console.error("에러 발생:", error);
   }
@@ -113,9 +121,16 @@ async function updateAccountName(newName, token, accountId) {
 }
 
 /* 계좌 삭제 */
-const deleteBtn = $('.accounts-right').find('button');
-deleteBtn.on('click', async function () {
-  const accountId = $(this).closest('.accounts').attr('data-id');
+$('.delete-comment-btn').on('click', function () {
+  const account = $(this).closest('li');
+  const accountId = account.attr('data-id');
+
+  $('#delete-contents').on('click', function () {
+    deleteAccount(accountId);
+  });
+});
+
+async function deleteAccount(accountId) {
   const apiUrl = apiBaseUrl + `accounts/${accountId}`;
 
   try {
@@ -125,15 +140,14 @@ deleteBtn.on('click', async function () {
       }
     })
 
-    $(this).closest('.accounts').next('hr').remove();
-    $(this).closest('.accounts').remove();
+    window.location.reload()
 
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
-})
+}
 
 
 /* 계좌 만들기 */
