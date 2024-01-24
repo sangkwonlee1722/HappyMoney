@@ -12,8 +12,7 @@ export function drPopupOpen(popName) {
 //팝업 닫기
 export function drPopupClose(im) {
   $("body").css("overflow", "auto");
-  $(im).closest(".hm-popup-wrap").css("display", "none");
-  $(im).next(".hm-popup-wrap").css("display", "none");
+  $(".hm-popup-wrap").css("display", "none");
   $(".hm-dim").css("display", "none");
 }
 
@@ -21,9 +20,15 @@ export function drPopupClose(im) {
 $("#header_wrap").load("/views/common/header.html");
 $("#footer_wrap").load("/views/common/footer.html");
 
-// 세션 ID를 가져옵니다.
-export default function token() {
+// 토큰 가져오기
+export default function getToken() {
   const token = `Bearer ${getCookie("accessToken")}`;
+
+  if (token === 'Bearer null') {
+    alert("로그인이 필요합니다.")
+    window.location.href = '/views/main.html';
+  }
+
   return token;
 }
 
@@ -43,7 +48,6 @@ $(document).ready(async function () {
     }
 
     const inputBox = document.querySelector("#login-input-box");
-    console.log(inputBox);
 
     const temp_html = `
       <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소" />

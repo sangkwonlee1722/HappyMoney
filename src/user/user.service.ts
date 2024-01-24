@@ -162,4 +162,9 @@ export class UserService {
   async updateUserVerify(userId: number, updateData: Partial<User>): Promise<void> {
     await this.userRepository.update(userId, updateData);
   }
+
+  // 닉네임으로 해당 아이디 받아오기
+  async findUserByNickname(nickname: string): Promise<User | undefined> {
+    return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
+  }
 }

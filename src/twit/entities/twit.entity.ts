@@ -13,6 +13,14 @@ export class Twit extends BaseEntity {
   @Column({ nullable: false })
   receiveId: number;
 
+  @IsString()
+  @Column({ nullable: false })
+  senderName: string;
+
+  @IsString()
+  @Column({ nullable: false })
+  receiverName: string;
+
   /**
    * 쪽지 메세지
    * @example "안녕하세요~!"
