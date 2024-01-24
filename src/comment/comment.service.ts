@@ -63,6 +63,19 @@ export class CommentService {
     if (comment.commentUser.id !== userId)
       throw new UnauthorizedException({ success: false, message: "댓글 수정 권한이 없습니다." });
 
-    await this.commentRepository.delete(commentId);
+    await this.commentRepository.softRemove(comment);
+  }
+
+  async getMyAllComments(userId: number): Promise<Comment[]> {
+    const comments = await this.commentRepository
+      .createQueryBuilder("c")
+      .leftJoin("c.post", "cp")
+      .loadRelationCountAndMap("cp.commentNumbers", "cp.comments")
+      .leftJoin("c.commentUser", "cu")
+      .where("cu.id=:userId", { userId })
+      .select(["c.id", "c.createdAt", "c.updatedAt", "c.content", "cp.title", "cp.id"])
+      .getMany();
+
+    return comments;
   }
 }
