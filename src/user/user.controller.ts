@@ -24,7 +24,7 @@ import { User } from "./entities/user.entity";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
-import { foundPasswordDto } from "./dto/found-password.dto";
+import { foundPasswordDto, foundEmaildDto } from "./dto/found.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -240,22 +240,48 @@ export class UserController {
 
   /**
    * 비밀번호 찾기
-   * @param createUserDto
    * @returns
    */
-
-  @Patch("found-password")
+  @Post("found-password")
   async foundPassword(@Body() foundPasswordDto: foundPasswordDto) {
-    const { email, phone } = foundPasswordDto;
+    const { email } = foundPasswordDto;
     const user = await this.userService.findUserByEmail(email);
 
-    if (!user || user.email !== email || user.phone !== phone) {
-      throw new NotFoundException("존재하지 않는 회원이거나 정보가 일치하지 않습니다.");
+    if (!user) {
+      throw new NotFoundException("회원이 아닙니다.");
     }
 
     try {
-      await this.userService.sendTemporaryPassword(email, phone);
+      await this.userService.sendTemporaryPassword(email);
       return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: error.response
+      };
+    }
+  }
+
+  /**
+   * 이메일 찾기
+   * @returns
+   */
+  @Post("found-email")
+  async foundEmail(@Body() foundEmaildDto: foundEmaildDto) {
+    const { phone } = foundEmaildDto;
+    const user = await this.userService.findUserByPhone(phone);
+
+    if (!user) {
+      throw new NotFoundException("회원이 아닙니다.");
+    }
+
+    try {
+      return {
+        user,
         success: true,
         message: "okay"
       };

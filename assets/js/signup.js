@@ -30,16 +30,20 @@ emailCheckBtn.addEventListener("click", async () => {
     if (!email) {
       emailCheckVerify.innerHTML = "이메일을 작성해주세요.";
       emailCheckVerify.style.color = "red";
+      return;
     } else if (emailExists) {
       emailCheckVerify.innerHTML = "중복된 이메일입니다.";
       emailCheckVerify.style.color = "red";
+      return;
     } else if (!email.includes("@")) {
       emailCheckVerify.innerHTML = "이메일 형식에 맞게 작성해주세요.";
       emailCheckVerify.style.color = "red";
+      return;
     } else {
       emailCheck = true;
       emailCheckVerify.innerHTML = "사용 가능한 이메일입니다.";
       emailCheckVerify.style.color = "blue";
+      return;
     }
   } catch (error) {
     console.error("Error:", error.response);
@@ -72,16 +76,20 @@ nickNameCheckBtn.addEventListener("click", async () => {
     if (!nickName) {
       nickNameCheckVerify.innerHTML = "닉네임을 작성해주세요.";
       nickNameCheckVerify.style.color = "red";
+      return;
     } else if (nicknameExists) {
       nickNameCheckVerify.innerHTML = "중복된 닉네임입니다.";
       nickNameCheckVerify.style.color = "red";
+      return;
     } else if (!(nickName.length >= 2 && nickName.length <= 6)) {
       nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하입니다.";
       nickNameCheckVerify.style.color = "red";
+      return;
     } else {
       nickNameCheck = true;
       nickNameCheckVerify.innerHTML = "사용 가능한 닉네임입니다.";
       nickNameCheckVerify.style.color = "blue";
+      return;
     }
   } catch (error) {
     console.error("Error:", error.response);
@@ -114,41 +122,51 @@ signupBtn.addEventListener("click", async () => {
   if (!email) {
     emailCheckVerify.innerHTML = "이메일을 작성해주세요.";
     emailCheckVerify.style.color = "red";
+    return;
   }
 
   if (password !== passwordCheck) {
     passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
     passwordCheckVerify.style.color = "red";
+    return;
   } else if (password.length < 6) {
     passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상만 가능합니다.";
     passwordCheckVerify.style.color = "red";
+    return;
   }
 
   if (!(nickName.length >= 2 && nickName.length <= 6)) {
     nickNameCheckVerify.innerHTML = "닉네임은 2자리 이상 6자리 이하만 가능합니다.";
     nickNameCheckVerify.style.color = "red";
+    return;
   } else if (!nickNameCheck) {
     nickNameCheckVerify.innerHTML = "닉네임 중복체크를 해주세요.";
     nickNameCheckVerify.style.color = "red";
+    return;
   } else if (nickName.includes(" ")) {
     nickNameCheckVerify.innerHTML = "닉네임에는 공백을 사용할 수 없습니다.";
     nickNameCheckVerify.style.color = "red";
+    return;
   }
 
   if (!(name.length >= 2 && name.length <= 6)) {
     nameCheckVerify.innerHTML = "이름은 2자리 이상, 6자리 이하만 가능합니다.";
     nameCheckVerify.style.color = "red";
+    return;
   } else if (name.includes(" ")) {
     nameCheckVerify.innerHTML = "이름에는 공백을 사용할 수 없습니다..";
     nameCheckVerify.style.color = "red";
+    return;
   } else if (/[0-9]/.test(name)) {
     nameCheckVerify.innerHTML = "이름에는 숫자를 포함할 수 없습니다.";
     nameCheckVerify.style.color = "red";
+    return;
   }
 
   if (!emailCheck) {
     emailCheckVerify.innerHTML = "이메일 중복체크를 해주세요.";
     emailCheckVerify.style.color = "red";
+    return;
     return;
   }
 

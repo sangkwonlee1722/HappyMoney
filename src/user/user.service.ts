@@ -1,4 +1,11 @@
-import { ConflictException, Injectable, NotFoundException, Req, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  Req,
+  UnauthorizedException
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -161,6 +168,13 @@ export class UserService {
     });
   }
 
+  async findUserByPhone(phone: string) {
+    return await this.userRepository.find({
+      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
+      where: [{ phone }]
+    });
+  }
+
   async findUserByNickName(nickName: string) {
     return await this.userRepository.findOneBy({ nickName });
   }
@@ -174,14 +188,18 @@ export class UserService {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 
-  async sendTemporaryPassword(email: string, phone: string) {
+  async sendTemporaryPassword(email: string) {
     const user: User = await this.findUserByEmail(email);
     const temporaryPassword = Math.floor(100000 + Math.random() * 900000).toString();
 
     const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
     const hashPassword = hashSync(temporaryPassword, hashRound);
 
-    if (!user || user.email !== email || user.phone !== phone) {
+    // if (!email && !phone) {
+    //   throw new BadRequestException("이메일 또는 휴대폰 번호를 입력해주세요.");
+    // }
+    // || user.email !== email || user.phone !== phone
+    if (!user) {
       throw new NotFoundException("존재하지 않는 회원이거나 정보가 일치하지 않습니다.");
     }
 
@@ -206,7 +224,7 @@ export class UserService {
 
       const mailOptions = {
         to: user.email,
-        subject: "[happymoney] 임시 비밀번호 - ",
+        subject: "[happymoney] 임시 비밀번호 ",
         html: `임시 비밀번호: <strong>${temporaryPassword}</strong>`
       };
 
