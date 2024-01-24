@@ -33,10 +33,10 @@ const getMyInfoByToken = async (token) => {
               </div>
               <div class="profile-right">
                 <span>가입일 : ${formattedDate}</span>
-                <button class="hm-button me-2 hm-gray-color">
+                <button class="hm-button hm-gray-color">
                   <a href="#none" onclick="drPopupOpen('.check-password')">수정하기</a>
                 </button>
-                 <button class="hm-button me-2 hm-gray-color">
+                 <button class="hm-button hm-gray-color">
                  <a href="#none" onclick="drPopupOpen('.check-password-update')">비밀번호 변경</a>
                </button>
               </div>

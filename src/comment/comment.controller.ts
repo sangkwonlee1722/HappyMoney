@@ -30,6 +30,24 @@ export class CommentController {
   }
 
   /**
+   * 내가 작성한 댓글 조회
+   * @param user
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Get("my")
+  async getMyAllComments(@UserInfo() user: User) {
+    const comments = await this.commentService.getMyAllComments(user.id);
+
+    return {
+      success: true,
+      message: "okay",
+      data: comments
+    };
+  }
+
+  /**
    * 댓글 전체 조회
    * @returns
    */

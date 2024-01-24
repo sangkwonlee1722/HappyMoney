@@ -30,10 +30,21 @@
   flex-direction: row;
   color: #777;
   margin-top: 10px;
+  align-items: center;
+}
+
+.mc-posts img {
+  width: 12px;
+  height: 12px;
+}
+
+.mc-posts span {
+  font-size: 11px;
 }
 
 .posts-title {
-  margin-right: 10px;
+  font-size: 12px;
+  margin-right: 11px;
 }
 
 .comment-icon {
