@@ -24,6 +24,7 @@ import { User } from "./entities/user.entity";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { foundPasswordDto } from "./dto/found-password.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -235,5 +236,35 @@ export class UserController {
       success: true,
       message: "okay"
     };
+  }
+
+  /**
+   * 비밀번호 찾기
+   * @param createUserDto
+   * @returns
+   */
+
+  @Patch("found-password")
+  async foundPassword(@Body() foundPasswordDto: foundPasswordDto) {
+    const { email } = foundPasswordDto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException("존재하지 않는 회원입니다.");
+    }
+
+    try {
+      await this.userService.sendTemporaryPassword(email);
+      return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: error.response
+      };
+    }
   }
 }

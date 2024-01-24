@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request, Response } from "express";
 import { UserService } from "../user/user.service";
@@ -29,7 +29,7 @@ export class AuthController {
    * @returns
    */
 
-  @Get("google/login") // 구글 로그인으로 이동하는 라우터 메서드
+  @Post("google/login") // 구글 로그인으로 이동하는 라우터 메서드
   @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
   async googleAuth(@Req() req: any) {
     console.log("GET google/login - googleAuth 실행");

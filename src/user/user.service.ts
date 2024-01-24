@@ -173,4 +173,46 @@ export class UserService {
   async findUserByNickname(nickname: string): Promise<User | undefined> {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
+
+  async sendTemporaryPassword(email: string) {
+    const user: User = await this.findUserByEmail(email);
+    const temporaryPassword = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
+    const hashPassword = hashSync(temporaryPassword, hashRound);
+
+    if (!user) {
+      throw new NotFoundException("존재하지 않는 회원입니다.");
+    }
+
+    try {
+      const transporter = createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: true,
+        auth: {
+          type: "OAuth2",
+          user: this.configService.get<string>("GMAIL_OAUTH_USER"),
+          clientId: this.configService.get<string>("GMAIL_OAUTH_CLIENT_ID"),
+          clientSecret: this.configService.get<string>("GAMIL_OAUTH_CLIENT_SECRET"),
+          refreshToken: this.configService.get<string>("GAMIL_OAUTH_REFRESH_TOKEN")
+        }
+      });
+
+      await this.userRepository.update(user.id, {
+        password: hashPassword
+      });
+
+      const mailOptions = {
+        to: user.email,
+        subject: "[happymoney] 임시 비밀번호 - ",
+        html: `임시 비밀번호: <strong>${temporaryPassword}</strong>`
+      };
+
+      transporter.sendMail(mailOptions);
+    } catch (err: any) {
+      console.error(err);
+    }
+  }
 }
