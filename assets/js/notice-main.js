@@ -9,13 +9,13 @@ const getNoticeData = async () => {
 
     mainDom.innerHTML = latestNotices
       .map((notice) => {
-        const { title, createdAt } = notice;
+        const { id, title, createdAt } = notice;
 
         const formattedDate = createdAt.split("T")[0];
 
         return `
         <li class="contents">
-          <a href="#none"></a>
+          <a href="http://localhost:3000/views/notice-page.html#${id}"></a>
           <div class="list-info">
             <div class="classification">NOTICE</div>
             <div class="title">${title}</div>
