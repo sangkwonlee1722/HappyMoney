@@ -97,7 +97,7 @@ signupBtn.addEventListener("click", async () => {
   const passwordCheck = document.getElementById("passwordCheck").value;
   const name = document.getElementById("name").value;
   const nickName = document.getElementById("nickName").value;
-  const phone = document.getElementById("phone").value;
+  const phone = document.getElementById("signupInputPhone").value;
 
   const passwordCheckVerify = document.getElementById("passwordCheckVerify");
   const nickNameCheckVerify = document.getElementById("nickNameCheckVerify");
@@ -147,11 +147,8 @@ signupBtn.addEventListener("click", async () => {
     return;
   }
 
-  if (phone.includes(" ")) {
-    phoneCheckVerify.innerHTML = "휴대폰 번호에는 공백을 사용할 수 없습니다.";
-    return;
-  } else if (!phone.includes("-")) {
-    phoneCheckVerify.innerHTML = "하이픈(-)을 입력해주세요.";
+  if (!phone.includes("-") || phone.length !== 13) {
+    phoneCheckVerify.innerHTML = "휴대폰 번호 양식에 맞게 작성해주세요.";
     return;
   }
 
@@ -203,6 +200,5 @@ signupBtn.addEventListener("click", async () => {
     } else {
       console.error("Error:", error.response);
     }
-    console.error("Error:", error.response);
   }
 });
