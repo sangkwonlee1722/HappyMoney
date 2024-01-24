@@ -126,7 +126,7 @@ export function logout() {
 
   alert("로그아웃 되었습니다.");
 
-  window.location.reload();
+  window.location.href = '/views/main.html';
 }
 function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;

@@ -35,17 +35,17 @@ export class TwitService {
   }
 
   async getSendTwit({ id }: User) {
-    const getSends = await this.twitRepository.find({ where: { senderId: id } });
+    const getSends = await this.twitRepository.find({ where: { senderId: id }, order: { createdAt: "DESC" } });
 
-    if (getSends.length === 0) return { message: "보낸 쪽지가 없습니다." };
+    if (getSends.length === 0) return { success: false, message: "보낸 쪽지가 없습니다." };
 
     return getSends;
   }
 
   async getReceiveTwit({ id }: User) {
-    const getReceives = await this.twitRepository.find({ where: { receiveId: id } });
+    const getReceives = await this.twitRepository.find({ where: { receiveId: id }, order: { createdAt: "DESC" } });
 
-    if (getReceives.length === 0) return { message: "받은 쪽지가 없습니다." };
+    if (getReceives.length === 0) return { success: false, message: "받은 쪽지가 없습니다." };
 
     return getReceives;
   }
