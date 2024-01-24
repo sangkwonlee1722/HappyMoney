@@ -35,7 +35,6 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
-
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
@@ -139,12 +138,6 @@ export class UserController {
         throw new UnauthorizedException("이미 존재하는 닉네임입니다.");
       }
     });
-
-    // if (newPassword && newPassword !== newPasswordCheck) {
-    //   throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
-    // }
-
-    // const hashedPassword = await hash(String(newPassword), 10);
 
     await this.userService.updateUserInfo(user.id, nickName, phone);
     return {

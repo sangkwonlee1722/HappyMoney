@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const email = queryParams.get("email");
 
   const encodedEmail = encodeURIComponent(email);
+
   try {
     const axiosInstance = axios.create({
       baseURL: "http://localhost:3000",
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원가입 되었습니다.");
-      window.location.href = "/views/main.html";
+      window.close();
     } else {
       alert("이메일 인증이 실패했습니다.");
       return;

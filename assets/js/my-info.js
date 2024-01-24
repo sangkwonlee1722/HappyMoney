@@ -21,6 +21,7 @@ const getMyInfoByToken = async (token) => {
 
     mainDom.innerHTML = `
     <h2 class="profile-title">프로필</h2>
+    
             <div class="profile-contents-wrap">
               <div class="profile-left">
                 <div class="names">
@@ -50,7 +51,7 @@ await getMyInfoByToken(token);
 
 /* 패스워드 체크 모달창 띄우기 */
 const passwordSubmitBtn = $("#submitPasswordBtn");
-console.log(passwordSubmitBtn);
+
 passwordSubmitBtn.on("click", async function () {
   const apiUrl = apiBaseUrl + "user/check-password";
   const password = $("#passwordChk").val();
@@ -75,21 +76,45 @@ passwordSubmitBtn.on("click", async function () {
   $("#passwordChk").val("");
 });
 
+/* 내 정보 가져오기 */
+async function getUserInfo() {
+  const apiUrl = apiBaseUrl + "user/mypage";
+  const user = await axios.get(apiUrl, {
+    headers: {
+      Authorization: token
+    }
+  });
+
+  const phone = String($("#phone").val(user.data.phone));
+  const nickName = $("#nickName").val(user.data.nickName);
+}
+
+getUserInfo();
+
 /* 내 정보 수정하기 */
 const updateMyInfo = $("#updateMyInfo");
-console.log(updateMyInfo);
+
 updateMyInfo.on("click", async function () {
   const apiUrl = apiBaseUrl + "user/mypage";
+
+  const user = await axios.get(apiUrl, {
+    headers: {
+      Authorization: token
+    }
+  });
+  console.log(user.data.phone, user.data.nickName);
   const phone = String($("#phone").val());
   const nickName = $("#nickName").val();
 
-  if (!phone.includes("-")) {
-    alert("휴대폰 번호에는 하이픈(-)이 포함되어야 합니다.");
+  if (!phone.includes("-") || phone.length !== 13) {
+    alert("휴대폰 번호 양식에 맞게 작성해주세요.");
+    drPopupOpen(".hm-mypage-update");
     return;
   }
 
   if (nickName.includes(" ")) {
     alert("닉네임에는 공백을 사용할 수 없습니다.");
+    drPopupOpen(".hm-mypage-update");
     return;
   }
 
@@ -110,13 +135,14 @@ updateMyInfo.on("click", async function () {
     console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
+    drPopupOpen(".hm-mypage-update");
   }
   $("#passwordChk").val("");
 });
 
 /* 패스워드 체크 모달창 띄우기 */
 const submitUpdatePasswordBtn = $("#submitUpdatePasswordBtn");
-console.log(submitUpdatePasswordBtn);
+
 submitUpdatePasswordBtn.on("click", async function () {
   const apiUrl = apiBaseUrl + "user/check-password";
   const password = $("#updatePasswordChk").val();
@@ -143,7 +169,7 @@ submitUpdatePasswordBtn.on("click", async function () {
 
 /* 비밀번호 변경하기 */
 const updatePassword = $("#updatePassword");
-console.log(updatePassword);
+
 updatePassword.on("click", async function () {
   const apiUrl = apiBaseUrl + "user/update-password";
   const newPassword = $("#newPassword").val();
@@ -151,9 +177,11 @@ updatePassword.on("click", async function () {
 
   if (newPassword !== newPasswordCheck) {
     alert("비밀번호를 다시 입력하세요.");
+    drPopupOpen(".hm-password-update");
     return;
   } else if (newPassword.length < 6) {
     alert("비밀번호는 6자 이상입니다.");
+    drPopupOpen(".hm-password-update");
     return;
   }
 
@@ -174,5 +202,6 @@ updatePassword.on("click", async function () {
     console.error(error);
     const errorMessage = error.response.data.message[0];
     alert(errorMessage);
+    drPopupOpen(".hm-password-update");
   }
 });

@@ -21,7 +21,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "비밀번호는 특수문자를 포함해야 합니다." }
   )
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
@@ -34,7 +34,7 @@ export class CreateUserDto {
    */
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "비밀번호는 특수문자를 포함해야 합니다." }
   )
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
