@@ -23,6 +23,7 @@ import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -129,23 +130,23 @@ export class UserController {
   @ApiBearerAuth()
   @Patch("mypage")
   async updateUserInfo(@UserInfo() user: User, @Body() updateUserDto: UpdateUserDto) {
-    const { nickName, phone, password, newPassword, newPasswordCheck } = updateUserDto;
+    const { nickName, phone } = updateUserDto;
 
     const allUser = await this.userService.find();
 
-    allUser.forEach((user) => {
-      if (user.nickName === nickName) {
+    allUser.forEach((users) => {
+      if (users.nickName === nickName && users.id !== user.id) {
         throw new UnauthorizedException("이미 존재하는 닉네임입니다.");
       }
     });
 
-    if (newPassword && newPassword !== newPasswordCheck) {
-      throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
-    }
+    // if (newPassword && newPassword !== newPasswordCheck) {
+    //   throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
+    // }
 
-    const hashedPassword = await hash(String(newPassword), 10);
+    // const hashedPassword = await hash(String(newPassword), 10);
 
-    await this.userService.updateUserInfo(user.id, nickName, phone, hashedPassword);
+    await this.userService.updateUserInfo(user.id, nickName, phone);
     return {
       success: true,
       message: "okay"
@@ -169,6 +170,30 @@ export class UserController {
       throw new UnauthorizedException("비밀번호를 다시 입력해주세요.");
     }
 
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 내 비밀번호 수정
+   * @param user
+   * @param param1
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Patch("update-password")
+  async updatePassword(@UserInfo() user: User, @Body() updatePasswordDto: UpdatePasswordDto) {
+    const { newPassword, newPasswordCheck } = updatePasswordDto;
+    if (newPassword && newPassword !== newPasswordCheck) {
+      throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
+    }
+
+    const hashedPassword = await hash(String(newPassword), 10);
+
+    await this.userService.updatePassword(user.id, hashedPassword);
     return {
       success: true,
       message: "okay"
