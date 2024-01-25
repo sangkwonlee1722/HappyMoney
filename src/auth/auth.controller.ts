@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Header, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request, Response } from "express";
 import { UserService } from "../user/user.service";
@@ -32,25 +32,32 @@ export class AuthController {
   @Get("google/login") // 구글 로그인으로 이동하는 라우터 메서드
   @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
   async googleAuth(@Req() req: any) {
-    console.log("GET google/login - googleAuth 실행");
-    // await this.authService.googleLogin(req.email);
+    await this.authService.googleLogin(req.email);
   }
 
   @Get("oauth2/redirect/google")
   @UseGuards(AuthGuard("google"))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
-    console.log("GET oauth2/redirect/google - googleAuthRedirect 실행");
-    // const jwt = await this.authService.login(req.user);
-    // res.set("authorization", jwt.access_token);
+    const jwt = await this.authService.googleLogin(req);
+
     const { user } = req;
-    return res.send(user); // 화면에 표시.
+    return res.send({ user, jwt }); // 화면에 표시.
   }
 
-  @Get("test123")
-  @UseGuards(AuthGuard("jwt"))
-  async test123(@Res() res: any) {
-    res.json("success");
-  }
+  // @Get("kakao-login-page")
+  // @Header("Content-Type", "text/html")
+  // async kakaoRedirect(@Res() res: Response): Promise<void> {
+  //   const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.KAKAO_CODE_REDIRECT_URI}`;
+  //   res.redirect(url);
+  // }
+
+  // @Get("kakao")
+  // @UseGuards(AuthGuard("kakao"))
+  // async getKakaoInfo(@Query() query: { code }) {
+  //   const cliendid = process.env.KAKAO_CLIENT_ID;
+  //   const redirectUri = process.env.KAKAO_CODE_REDIRECT_URI;
+  //   await this.authService.kakaoLogin(cliendid, redirectUri, query.code);
+  // }
 
   /**
    * 네이버 로그인

@@ -12,6 +12,7 @@ import { AuthModule } from "src/auth/auth.module";
 
 @Module({
   imports: [
+    AuthModule,
     PassportModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
