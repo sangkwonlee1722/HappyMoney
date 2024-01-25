@@ -24,14 +24,23 @@ foundEmaildBtn.addEventListener("click", async () => {
         alert("회원이 아닙니다.");
       }
 
+      function maskEmail(email) {
+        const [username, domain] = email.split("@");
+        const maskedUsername =
+          username.length >= 5 ? `${username.substring(0, 3)}***` : `${username.substring(0, 2)}**`;
+        return `${maskedUsername}@${domain}`;
+      }
+
       if (response.data.success) {
         const allEmail = response.data.user;
         allEmail.forEach((email) => {
+          const maskedEmail = maskEmail(email.email);
+
           const emailDiv = document.createElement("div");
           emailDiv.style.color = "grey";
           emailDiv.style.borderBottom = "1px solid #000";
           emailDiv.style.fontSize = "15px";
-          emailDiv.textContent = `● ${email.email} ●`;
+          emailDiv.textContent = `● ${maskedEmail} ●`;
           showEmailModal.style.border = "1px solid rgb(122,122,122)";
           showEmailModal.appendChild(emailDiv);
         });

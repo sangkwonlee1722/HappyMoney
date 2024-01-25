@@ -110,7 +110,7 @@ async function loginConfirm() {
     if (response.data.success) {
       alert(`환영합니다.`);
       const accessToken = response.data.accessToken;
-      setCookie("accessToken", accessToken, 1);
+      setCookie("accessToken", accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
       window.location.href = "/views/main.html";
     }
   } catch (error) {

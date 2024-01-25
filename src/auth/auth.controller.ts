@@ -29,7 +29,7 @@ export class AuthController {
    * @returns
    */
 
-  @Post("google/login") // 구글 로그인으로 이동하는 라우터 메서드
+  @Get("google/login") // 구글 로그인으로 이동하는 라우터 메서드
   @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
   async googleAuth(@Req() req: any) {
     console.log("GET google/login - googleAuth 실행");
@@ -40,9 +40,16 @@ export class AuthController {
   @UseGuards(AuthGuard("google"))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
     console.log("GET oauth2/redirect/google - googleAuthRedirect 실행");
-
+    const jwt = await this.authService.login(req.user);
+    res.set("authorization", jwt.access_token);
     const { user } = req;
     return res.send(user); // 화면에 표시.
+  }
+
+  @Get("test123")
+  @UseGuards(AuthGuard("jwt"))
+  async test123(@Res() res: any) {
+    res.json("success");
   }
 
   /**
@@ -50,12 +57,12 @@ export class AuthController {
    * @returns
    */
 
-  @Get("login/naver")
-  @UseGuards(AuthGuard("naver"))
-  async loginNaver(
-    @Req() req: Request & IOAuthUser, //
-    @Res() res: Response
-  ) {
-    this.authService.OAuthLogin({ req, res });
-  }
+  // @Get("login/naver")
+  // @UseGuards(AuthGuard("naver"))
+  // async loginNaver(
+  //   @Req() req: Request & IOAuthUser, //
+  //   @Res() res: Response
+  // ) {
+  //   this.authService.OAuthLogin({ req, res });
+  // }
 }
