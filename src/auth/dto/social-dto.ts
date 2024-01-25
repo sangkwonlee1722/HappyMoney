@@ -13,6 +13,11 @@ export class socialLoginDto {
   @IsEmail({}, { message: "이메일 형식으로 작성해주세요." })
   @IsNotEmpty({ message: "이메일을 작성해주세요." })
   email: string;
+  /**
+   * 비밀번호
+   * @example "Abcde123!"
+   * @requires true
+   */
 
   /**
    * 이름
@@ -22,22 +27,4 @@ export class socialLoginDto {
   @IsNotEmpty({ message: "이름을 작성해주세요." })
   @IsString()
   name: string;
-
-  /**
-   * 닉네임
-   * @example "주식의왕"
-   * @requires true
-   */
-  @IsNotEmpty({ message: "닉네임을 작성해주세요." })
-  @IsString()
-  nickName: string;
-
-  /**
-   * 핸드폰 번호
-   * @example "010-1111-1111"
-   * @requires true
-   */
-  @IsNotEmpty({ message: "휴대폰 번호를 작성해주세요." })
-  @IsString()
-  phone: string;
 }

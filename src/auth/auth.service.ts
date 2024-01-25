@@ -1,17 +1,20 @@
-import { Injectable, Req } from "@nestjs/common";
+import { ConflictException, Injectable, Req } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
-import { firstValueFrom } from "rxjs";
-// import {
-//   IAuthServiceGetAccessToken,
-//   IAuthServiceSetRefreshToken,
-// } from "./interfaces/auth-service.interface";
+import { socialLoginDto } from "./dto/social-dto";
+import { User } from "src/user/entities/user.entity";
+import { Repository } from "typeorm";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
   constructor(
+    // @InjectRepository(User)
+    // private readonly userRepository: Repository<User>,
     private readonly userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly configService: ConfigService
+
     // private http: HttpService
   ) {}
 
@@ -30,20 +33,19 @@ export class AuthService {
   // }
 
   async googleLogin(@Req() req: any) {
-    if (!req.user) {
-      console.log("ha");
-      return "ha";
-    }
     const { email } = req.user;
-
+    const name = req.user.firstName + req.user.lastName;
     const user = await this.userService.findUserByEmail(email); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
+    if (user) {
+      throw new ConflictException("이미 존재하는 회원입니다.");
+    }
 
+    console.log(user);
+    console.log(req.user);
+    console.log(name);
     // JWT 토큰에 포함될 payload
     const payload = {
-      id: user.id,
-      email: user.email,
-      nickName: user.nickName,
-      name: user.name
+      name: name
     };
 
     return {

@@ -29,10 +29,15 @@ export class AuthController {
    * @returns
    */
 
-  @Get("google/login") // 구글 로그인으로 이동하는 라우터 메서드
-  @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
+  @Get("google/login")
+  @UseGuards(AuthGuard("google"))
   async googleAuth(@Req() req: any) {
     await this.authService.googleLogin(req.email);
+
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 
   @Get("oauth2/redirect/google")
@@ -41,7 +46,12 @@ export class AuthController {
     const jwt = await this.authService.googleLogin(req);
 
     const { user } = req;
-    return res.send({ user, jwt }); // 화면에 표시.
+    return {
+      accessToken: jwt,
+      data: user,
+      success: true,
+      message: "okay"
+    };
   }
 
   // @Get("kakao-login-page")

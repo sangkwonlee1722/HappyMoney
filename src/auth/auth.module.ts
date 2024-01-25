@@ -12,12 +12,12 @@ import { AuthController } from "./auth.controller";
 import { JwtNaverStrategy } from "./social-naver.strategy";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/user/entities/user.entity";
-import { UserModule } from "src/user/user.module";
+import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
   imports: [
+    PassportModule,
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: "jwt", session: false }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -25,16 +25,15 @@ import { UserModule } from "src/user/user.module";
         secret: config.get<string>("JWT_SECRET"),
         signOptions: { expiresIn: "1d" }
       })
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true // Make the ConfigModule global
     })
   ],
+
   controllers: [
     AuthController //컨트롤러 주입,
   ],
 
   providers: [
+    JwtStrategy,
     JwtGoogleStrategy, //google소셜로그인
     JwtNaverStrategy, //naver소셜로그인
     JwtKakaoStrategy, //kakao소셜로그인
