@@ -21,7 +21,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "비밀번호는 특수문자를 포함해야 합니다." }
   )
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
@@ -34,7 +34,7 @@ export class CreateUserDto {
    */
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "비밀번호는 특수문자를 포함해야 합니다." }
   )
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
@@ -69,4 +69,22 @@ export class CreateUserDto {
 }
 
 // 로그인
-export class loginDto extends PickType(CreateUserDto, ["email", "password"] as const) {}
+export class loginDto {
+  /**
+   * 이메일
+   * @example "test@test.com"
+   * @requires true
+   */
+  @IsEmail({}, { message: "이메일 형식으로 작성해주세요." })
+  @IsNotEmpty({ message: "이메일을 작성해주세요." })
+  email: string;
+  /**
+   * 비밀번호
+   * @example "Abcde123!"
+   * @requires true
+   */
+
+  @IsString()
+  @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
+  password: string;
+}

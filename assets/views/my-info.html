@@ -9,13 +9,31 @@
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/my-info.js"></script>
     <script type="module" src="/js/account.js"></script>
+    <script type="module" src="../js/signout.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/my-info.css" />
-    <link rel="stylesheet" href="/css/login.css" />
     <title>HappyMoney</title>
   </head>
   <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-popup-wrap delete-account-chk">
+      <header>
+        <h1>계좌 삭제</h1>
+      </header>
+      <div class="hm-popup-content">
+        <p class="mt-2" style="color: #eb5665">계좌의 잔액과 거래내역은 복구할 수 없습니다.</p>
+        <p>그래도 삭제하시겠습니까?</p>
+      </div>
+      <footer>
+        <div class="d-flex justify-content-between hm-bg-white">
+          <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+          <a href="#none" class="hm-button ms-2" id="delete-contents" onclick="drPopupClose(this)">삭제</a>
+        </div>
+      </footer>
+    </div>
+    <!-- 삭제 확인 팝업 e -->
+
     <!-- 계좌 만들기 팝업 s -->
     <div class="hm-dim" onclick="drPopupClose(this)"></div>
     <div class="hm-popup-wrap hm-account-create">
@@ -70,6 +88,7 @@
       <div id="main-content">
         <!-- 프로필 s -->
         <div class="my-info-wrap">
+          <button type="button" class="hm-button ms-2" id="signoutBtn">회원탈퇴</button>
           <div class="profile-wrap"></div>
           <div class="my-activity-btns">
             <button class="hm-button hm-gray-color">
