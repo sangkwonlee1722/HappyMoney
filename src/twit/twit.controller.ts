@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Query } from "@nestjs/common";
 import { TwitService } from "./twit.service";
 import { CreateTwitDto } from "./dto/create-twit.dto";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiBearerAuth()
 @ApiTags("Twits")
@@ -32,12 +33,13 @@ export class TwitController {
    * @returns
    */
   @Get("getSend")
-  async getSendTwit(@UserInfo() user: User) {
-    const getSends = await this.twitService.getSendTwit(user);
+  async getSendTwit(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { getTwits, count } = await this.twitService.getSendTwit(user, query);
     return {
       success: true,
       message: "okay",
-      data: getSends
+      list: getTwits,
+      total: count
     };
   }
 
@@ -46,12 +48,13 @@ export class TwitController {
    * @returns
    */
   @Get("getReceive")
-  async getReceiveTwit(@UserInfo() user: User) {
-    const getReceives = await this.twitService.getReceiveTwit(user);
+  async getReceiveTwit(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { getTwits, count } = await this.twitService.getReceiveTwit(user, query);
     return {
       success: true,
       message: "okay",
-      data: getReceives
+      list: getTwits,
+      total: count
     };
   }
 

@@ -28,14 +28,15 @@ async function getTwitData(url, name, time) {
       },
     };
     const result = await axios.get(url, config);
-    const list = result.data.data;
+    const list = result.data.list;
+    const success = result.data.success;
 
     $('.contents.name .classification').text(name);
     $('.contents.name .list-info-2').text(time);
 
     const mainDom = document.querySelector("#twitList");
 
-    if (list.success === false) {
+    if (success === false) {
       return mainDom.innerHTML = `<div class="text-center">${list.message}</div>`;
     }
 
