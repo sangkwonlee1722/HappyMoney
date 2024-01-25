@@ -42,6 +42,10 @@ $(document).ready(async function () {
       // 세션 ID가 있으면 로그인 상태로 간주하고 로그인 탭을 표시합니다.
       $("#loginTab").hide();
       $("#logoutTab").show();
+
+      setTimeout(() => {
+        registerNotificationService()
+      }, 1000);
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
@@ -113,6 +117,8 @@ async function loginConfirm() {
       const accessToken = response.data.accessToken;
       setCookie("accessToken", accessToken, 1);
       window.location.href = "/views/main.html";
+
+
     }
   } catch (error) {
     alert("아이디 또는 비밀번호가 틀렸습니다.");
@@ -135,4 +141,50 @@ function deleteCookie(name) {
 // 숫자 함수
 export function addComma(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+// 알림 권한 확인 및 서비스 워크 등록
+async function registerNotificationService() {
+  console.log('실행이 안되나요?')
+  try {
+    const status = await Notification.requestPermission();
+    console.log("Notification 상태", status);
+
+    if (status === "denied") {
+      alert("Notification 거부됨");
+    } else if (navigator.serviceWorker) {
+      const registration = await navigator.serviceWorker.register("sw.js");
+      const subscribeOptions = {
+        userVisibleOnly: true,
+        applicationServerKey: 'BJoW2C5jQj4J7ijvAzoLhAccxODbLiiphl2PLWe_6cIcpsutw7ntsD33_oxmmK94l3Zg1dun0kIn5pNlku-URVc'
+      };
+      const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+      postSubscription(pushSubscription);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+
+// 구독 정보를 user 테이블에 저장하는 함수
+async function postSubscription(pushSubscription) {
+  console.log('pushSubscription: ', pushSubscription);
+  const apiUrl = baseUrl + "user/subscription"
+  const token = getToken()
+
+  try {
+    await axios.patch(apiUrl, {
+      subscription: pushSubscription
+    }, {
+      headers: {
+        'Authorization': token,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
 }

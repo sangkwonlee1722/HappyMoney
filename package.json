@@ -66,6 +66,7 @@
     "typeorm": "^0.3.19",
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.1",
+    "web-push": "^3.6.7",
     "ws": "^8.16.0"
   },
   "devDependencies": {
@@ -78,6 +79,7 @@
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
+    "@types/web-push": "^3.6.3",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.42.0",
