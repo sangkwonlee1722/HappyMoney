@@ -33,15 +33,15 @@ export class AuthController {
   @UseGuards(AuthGuard("google")) // 여기에서 가드로 가고 googleStrategy에서 validate호출
   async googleAuth(@Req() req: any) {
     console.log("GET google/login - googleAuth 실행");
-    await this.authService.googleLogin(req.email);
+    // await this.authService.googleLogin(req.email);
   }
 
   @Get("oauth2/redirect/google")
   @UseGuards(AuthGuard("google"))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
     console.log("GET oauth2/redirect/google - googleAuthRedirect 실행");
-    const jwt = await this.authService.login(req.user);
-    res.set("authorization", jwt.access_token);
+    // const jwt = await this.authService.login(req.user);
+    // res.set("authorization", jwt.access_token);
     const { user } = req;
     return res.send(user); // 화면에 표시.
   }
