@@ -218,6 +218,7 @@ export class UserController {
   async deleteUser(@UserInfo() user: User) {
     await this.userService.deleteUserSendEmail(user.id);
     return {
+      user,
       success: true,
       message: "okay"
     };

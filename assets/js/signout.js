@@ -17,9 +17,10 @@ async function signout() {
     });
 
     const response = await axiosInstance.delete("/api/user/delete");
-
     if (response.data.success) {
-      deleteCookie("accessToken");
+      if (!response.data.user.isEmailVerified) {
+        deleteCookie("accessToken");
+      }
       alert("이메일 인증 후 회원탈퇴가 진행됩니다.");
       window.location.reload();
     } else {
