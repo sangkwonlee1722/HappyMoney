@@ -123,7 +123,8 @@ async function loginConfirm() {
 export function logout() {
   deleteCookie("accessToken");
   alert("로그아웃 되었습니다.");
-  window.location.reload();
+
+  window.location.href = '/views/main.html';
 }
 export function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
