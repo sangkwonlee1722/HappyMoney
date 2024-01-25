@@ -6,6 +6,7 @@ import { Notice } from "src/notice/entities/notice.entity";
 import { Twit } from "src/twit/entities/twit.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 import { IsNotEmpty } from "class-validator";
+import { Push } from "src/push/entities/push.entity";
 
 const role = {
   User: "user",
@@ -65,4 +66,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Twit, (twit) => twit.receiver)
   receivetwits: Twit[];
+
+  @OneToMany(() => Push, (push) => push.user, { cascade: ["soft-remove"] })
+  pushNotis: Push[];
 }
