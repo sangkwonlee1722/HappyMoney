@@ -1,5 +1,6 @@
 import { PickType } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
+import { IsJSON, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
+import { User } from "../entities/user.entity";
 
 export class UpdateUserDto {
   // /**
@@ -55,3 +56,5 @@ export class PasswordCheck {
   @IsNotEmpty({ message: "현재 비밀번호를 입력해주세요." })
   password: string;
 }
+
+export class SubscriptionDto extends PickType(User, ["subscription"]) {}
