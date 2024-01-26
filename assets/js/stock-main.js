@@ -1,5 +1,5 @@
 import token from '../js/common.js'
-console.log(token());
+import io from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 async function rankListData() {
   const stockUrl = "http://localhost:3000/api/stock/stockRank";
@@ -7,7 +7,7 @@ async function rankListData() {
   try {
     const stockList = await axios.get(stockUrl);
     const list = stockList.data.list.output.slice(0, 10);
-    console.log(list);
+    // console.log(list);
 
     const mainDom = document.querySelector(".rank-list-wrap");
     mainDom.innerHTML = list
@@ -39,3 +39,22 @@ function addComma(number) {
 }
 
 document.addEventListener("DOMContentLoaded", rankListData);
+
+const params = new URLSearchParams(window.location.search);
+const tr_key = params.get("code");
+
+const socket = io('ws://localhost:3000/ws/stock', {
+  transports: ['websocket'],
+});
+
+// 연결 성공 시 동작
+socket.on('connect', () => {
+  console.log('Connected to server');
+
+  // 메시지 전송
+  socket.emit('asking_price', tr_key);
+});
+
+socket.on('asking_price', (data) => {
+  // console.log('Received asking_price:', data);
+})
