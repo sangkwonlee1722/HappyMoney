@@ -49,7 +49,7 @@ export class CommentService {
         const pushData: Push = em.create(Push, {
           userId: post.userId,
           servcieType: ServiceType.Comment,
-          contents: post.title
+          contents1: post.title
         });
 
         await em.save(Push, pushData);
@@ -113,8 +113,11 @@ export class CommentService {
 
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
-    // const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
 
-    // await this.pushService.sendPush(userSubscription, payload);
+    const url = `http://localhost:3000/views/twit/twit.html`;
+    const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`, url);
+    console.log("payload: ", payload);
+
+    await this.pushService.sendPush(userSubscription, payload);
   }
 }

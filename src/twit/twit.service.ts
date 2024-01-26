@@ -44,7 +44,8 @@ export class TwitService {
       const pushData: Push = em.create(Push, {
         userId: receiver.id,
         servcieType: ServiceType.Twit,
-        contents: sendTwit.contents
+        contents1: sendTwit.contents,
+        contents2: sendTwit.senderName
       });
 
       await em.save(Push, pushData);
@@ -123,7 +124,7 @@ export class TwitService {
 
   async sendTwitPush(sendTwit: Twit, receiver: User) {
     const userSubscription = Object(receiver.subscription);
-    const url = `http://localhost:3000/views/twit/twit.html`;
+    const url = `http://localhost:3000/views/twit/twit-detail.html?send=false&id=${sendTwit.id}`;
     const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`, url);
     console.log("payload: ", payload);
 
