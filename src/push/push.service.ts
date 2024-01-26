@@ -8,12 +8,16 @@ import { Comment } from "src/comment/entities/comment.entity";
 import { Post } from "src/post/entities/post.entity";
 import { Notice } from "src/notice/entities/notice.entity";
 import { Twit } from "src/twit/entities/twit.entity";
+import { ConfigService } from "@nestjs/config";
+import { sendNotification } from "web-push";
 
 @Injectable()
 export class PushService {
   constructor(
     @InjectRepository(Push)
-    private readonly pushRepository: Repository<Push>
+    private readonly pushRepository: Repository<Push>,
+
+    private readonly configService: ConfigService
   ) {}
 
   create(createPushDto: CreatePushDto) {
@@ -21,13 +25,7 @@ export class PushService {
   }
 
   async findAllMyPushNoti(userId: number): Promise<Push[]> {
-    const pushNotis = await this.pushRepository
-      .createQueryBuilder("p")
-      .leftJoinAndSelect(Notice, "n", 'p.serviceId = n.id AND p.servcieType = "게시글"')
-      .leftJoinAndSelect(Comment, "c", 'p.serviceId = c.id AND p.servcieType = "댓글"')
-      .leftJoinAndSelect(Twit, "t", 'p.serviceId = t.id AND p.servcieType = "쪽지"')
-      .where("p.userId=:userId", { userId })
-      .getMany();
+    const pushNotis = await this.pushRepository.createQueryBuilder("p").where("p.userId=:userId", { userId }).getMany();
 
     return pushNotis;
   }
@@ -42,5 +40,22 @@ export class PushService {
 
   remove(id: number) {
     return `This action removes a #${id} push`;
+  }
+
+  async sendPush(userSubscription, payload: string) {
+    const options = {
+      TTL: 24 * 60 * 60,
+      vapidDetails: {
+        subject: "mailto:chzhgod@gmail.com",
+        publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
+        privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
+      }
+    };
+
+    try {
+      await sendNotification(userSubscription, payload, options);
+    } catch (error) {
+      console.error("WebPushError:", error);
+    }
   }
 }
