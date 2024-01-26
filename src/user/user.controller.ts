@@ -237,7 +237,7 @@ export class UserController {
       message: "okay"
     };
   }
-  
+
   /**
    * 구독 정보 저장
    * @param param0
@@ -258,7 +258,7 @@ export class UserController {
       success: true,
       message: "okay"
     };
-
+  }
   /**
    * 비밀번호 찾기
    * @param createUserDto
@@ -287,6 +287,5 @@ export class UserController {
         message: error.response
       };
     }
-
   }
 }

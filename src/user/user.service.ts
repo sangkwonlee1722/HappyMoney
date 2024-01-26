@@ -175,12 +175,11 @@ export class UserService {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 
-
   async saveSubscription(subscription: string, id: number) {
     console.log("id: ", id);
     console.log("subscription: ", subscription);
     await this.userRepository.update({ id }, { subscription });
-    
+  }
   async sendTemporaryPassword(email: string) {
     const user: User = await this.findUserByEmail(email);
     const temporaryPassword = Math.floor(100000 + Math.random() * 900000).toString();
@@ -221,6 +220,5 @@ export class UserService {
     } catch (err: any) {
       console.error(err);
     }
-
   }
 }
