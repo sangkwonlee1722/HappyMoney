@@ -9,7 +9,7 @@ import { AuthService } from "./auth.service";
 import { JwtKakaoStrategy } from "./social-kakao-strategy";
 import { JwtGoogleStrategy } from "./social-google.strategy";
 import { AuthController } from "./auth.controller";
-// import { JwtNaverStrategy } from "./social-naver.strategy";
+import { JwtNaverStrategy } from "./social-naver.strategy";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/user/entities/user.entity";
 import { JwtStrategy } from "./jwt.strategy";
@@ -41,7 +41,7 @@ import { EmailModule } from "src/email/email.module";
     // JwtNaverStrategy, //naver소셜로그인
     JwtKakaoStrategy, //kakao소셜로그인
 
-    // JwtNaverStrategy, //naver소셜로그인
+    JwtNaverStrategy, //naver소셜로그인
     // JwtKakaoStrategy, //kakao소셜로그인
     // AuthResolver, //resolver 주입
     AuthService, //service 주입
