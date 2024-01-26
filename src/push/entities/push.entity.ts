@@ -11,10 +11,6 @@ export enum ServiceType {
   Twit = "쪽지"
 }
 
-export enum MessageType {
-  Comment = "회원님이 작성한 게시글에 댓글이 달렸습니다."
-}
-
 @Entity({ name: "push" })
 export class Push extends BaseEntity {
   @Column({ nullable: false })
@@ -25,9 +21,6 @@ export class Push extends BaseEntity {
 
   @Column({ nullable: false, default: false })
   isRead: boolean;
-
-  @Column({ nullable: false })
-  message: string;
 
   @Column({ nullable: false })
   contents: string;

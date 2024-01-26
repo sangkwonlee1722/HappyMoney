@@ -7,7 +7,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { Post } from "src/post/entities/post.entity";
 import { PostService } from "src/post/post.service";
-import { MessageType, Push, ServiceType } from "src/push/entities/push.entity";
+import { Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
@@ -52,7 +52,6 @@ export class CommentService {
         const pushData: Push = em.create(Push, {
           userId: post.userId,
           servcieType: ServiceType.Comment,
-          message: MessageType.Comment,
           contents: post.title
         });
 
