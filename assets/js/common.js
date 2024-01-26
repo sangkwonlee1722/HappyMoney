@@ -45,7 +45,7 @@ $(document).ready(async function () {
 
       setTimeout(() => {
         registerNotificationService()
-      }, 1000);
+      }, 100);
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
@@ -148,13 +148,16 @@ async function registerNotificationService() {
     const status = await Notification.requestPermission();
     console.log("Notification 상태", status);
 
+    const vapidPublicKey = await getVAPIDPublicKey();
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
     if (status === "denied") {
       alert("알림을 거부 설정이 완료되었습니다.");
     } else if (navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.register("sw.js");
       const subscribeOptions = {
         userVisibleOnly: true,
-        applicationServerKey: 'BJoW2C5jQj4J7ijvAzoLhAccxODbLiiphl2PLWe_6cIcpsutw7ntsD33_oxmmK94l3Zg1dun0kIn5pNlku-URVc'
+        applicationServerKey: convertedVapidKey
       };
       const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
       postSubscription(pushSubscription);
@@ -185,4 +188,34 @@ async function postSubscription(pushSubscription) {
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
+}
+
+async function getVAPIDPublicKey() {
+  const apiUrl = baseUrl + "push/VAPIDKeys"
+
+  const token = getToken()
+  const result = await axios.get(apiUrl, {
+    headers: {
+      'Authorization': token,
+    },
+  })
+
+  const publicKey = result.data.publicKey
+  return publicKey
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
 }

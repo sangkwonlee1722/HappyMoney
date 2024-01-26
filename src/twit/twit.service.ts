@@ -28,7 +28,6 @@ export class TwitService {
 
     if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
-    console.log(receiver);
 
     const sendTwit: Twit = this.twitRepository.create({
       senderId: id,
@@ -41,8 +40,6 @@ export class TwitService {
     /* 쪽지 발송 시 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       await em.save(Twit, sendTwit);
-
-      console.log(sendTwit);
 
       const pushData: Push = em.create(Push, {
         userId: receiver.id,
@@ -125,7 +122,6 @@ export class TwitService {
   }
 
   async sendTwitPush(sendTwit: Twit, receiver: User) {
-    console.log("sendTwit: ", sendTwit);
     const userSubscription = Object(receiver.subscription);
     const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`);
 
