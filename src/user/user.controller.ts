@@ -22,7 +22,7 @@ import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
-import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
+import { PasswordCheck, SubscriptionDto, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { foundPasswordDto, foundEmaildDto } from "./dto/found.dto";
 import { AuthGuard } from "@nestjs/passport";
@@ -238,6 +238,27 @@ export class UserController {
       message: "okay"
     };
   }
+  
+  /**
+   * 구독 정보 저장
+   * @param param0
+   * @param user
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Patch("subscription")
+  async saveSubscription(@Body() { subscription }: SubscriptionDto, @UserInfo() user: User) {
+    const existUser = await this.userService.findUserById(user.id);
+    if (!existUser) {
+      throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
+    }
+
+    await this.userService.saveSubscription(subscription, user.id);
+    return {
+      success: true,
+      message: "okay"
+    };
 
   /**
    * 비밀번호 찾기
@@ -265,6 +286,7 @@ export class UserController {
         message: error.response
       };
     }
+
   }
 
   /**

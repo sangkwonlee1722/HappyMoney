@@ -5,6 +5,8 @@ import { Post } from "src/post/entities/post.entity";
 import { Notice } from "src/notice/entities/notice.entity";
 import { Twit } from "src/twit/entities/twit.entity";
 import { Column, Entity, OneToMany } from "typeorm";
+import { IsNotEmpty } from "class-validator";
+import { Push } from "src/push/entities/push.entity";
 
 const role = {
   User: "user",
@@ -43,6 +45,10 @@ export class User extends BaseEntity {
   @Column({ type: "enum", nullable: false, enum: role, default: role.User })
   role: role;
 
+  @IsNotEmpty()
+  @Column({ type: "simple-json", nullable: true, default: null })
+  subscription: string;
+
   @OneToMany(() => Account, (account) => account.user, { cascade: ["soft-remove"] })
   accounts: Account[];
 
@@ -60,4 +66,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Twit, (twit) => twit.receiver)
   receivetwits: Twit[];
+
+  @OneToMany(() => Push, (push) => push.user, { cascade: ["soft-remove"] })
+  pushNotis: Push[];
 }

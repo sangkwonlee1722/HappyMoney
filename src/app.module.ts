@@ -15,7 +15,10 @@ import { CommentModule } from "./comment/comment.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { ScheduleModule } from "@nestjs/schedule";
+
 import { TwitModule } from "./twit/twit.module";
+
+import { PushModule } from "./push/push.module";
 
 @Module({
   imports: [
@@ -32,7 +35,10 @@ import { TwitModule } from "./twit/twit.module";
     CommentModule,
     AuthModule,
     ScheduleModule.forRoot(),
-    TwitModule
+
+    TwitModule,
+
+    PushModule
   ],
   controllers: [AppController],
   providers: [AppService]

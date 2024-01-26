@@ -122,7 +122,7 @@ video {
 }
 #main-content {
   flex: 1;
-  width: 1200px;
+  width: 1000px;
   margin: 0 auto;
   margin-top: 60px;
 }
@@ -414,7 +414,7 @@ input::placeholder {
   z-index: 100;
 }
 .header .header-wrap {
-  max-width: 1200px;
+  max-width: 1000px;
   height: 90px;
   margin: 0 auto;
   display: flex;
@@ -435,7 +435,7 @@ input::placeholder {
   background-color: #d9d9d9;
 }
 .sub-header-box {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -447,6 +447,7 @@ input::placeholder {
 }
 .hm-hd-gnb {
   display: flex;
+  line-height: 32px;
 }
 .hm-hd-gnb li {
   margin-right: 23px;
@@ -567,7 +568,7 @@ input::placeholder {
   margin-top: 60px;
 }
 .hm-footer-wrap {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px 0;
   color: #fff;

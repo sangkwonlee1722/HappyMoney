@@ -16,9 +16,22 @@
   <body>
     <div class="hm-container">
       <header id="header_wrap"></header>
-      <div id="main-content">
+      <div id="main-content" class="twit-content">
         <div id="stock-header"></div>
-        <div class="twit-wrap" id="twitsendWrap"></div>
+        <div class="twit-wrap" id="twitsendWrap">
+          <dl class="mb-2 ms-3">
+            <dt>받는사람</dt>
+            <dd id="receiverPersonName">Money</dd>
+          </dl>
+          <hr />
+          <div class="hm-textarea-wrap mt-3">
+            <p style="color: #222; font-size: 14px; font-weight: bold" class="mb-2 ms-3">내용</p>
+            <textarea name="" class="hm-textarea" cols="30" rows="12" id="sendContent"></textarea>
+          </div>
+          <div class="hm-button-wrap text-end mt-2">
+            <button class="hm-button" id="sendTwit">보내기</button>
+          </div>
+        </div>
       </div>
       <footer id="footer_wrap"></footer>
     </div>
