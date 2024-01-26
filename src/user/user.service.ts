@@ -176,7 +176,6 @@ export class UserService {
   }
 
   async saveSubscription(subscription: JSON, id: number) {
-    console.log("subscription: ", subscription);
     await this.userRepository.update({ id }, { subscription });
   }
 

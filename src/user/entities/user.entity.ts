@@ -47,7 +47,7 @@ export class User extends BaseEntity {
 
   @IsNotEmpty()
   @Column({ type: "simple-json", nullable: true, default: null })
-  subscription: JSON;
+  subscription?: JSON;
 
   @OneToMany(() => Account, (account) => account.user, { cascade: ["soft-remove"] })
   accounts: Account[];

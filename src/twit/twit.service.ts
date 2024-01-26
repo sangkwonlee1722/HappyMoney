@@ -2,10 +2,13 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { CreateTwitDto } from "./dto/create-twit.dto";
 import { User } from "src/user/entities/user.entity";
 import { Twit } from "./entities/twit.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { InjectEntityManager, InjectRepository } from "@nestjs/typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { UserService } from "src/user/user.service";
 import { PaginatePostDto } from "src/common/dto/paginate.dto";
+import { Push, ServiceType } from "src/push/entities/push.entity";
+import { Payload } from "src/push/push-config";
+import { PushService } from "src/push/push.service";
 
 @Injectable()
 export class TwitService {
@@ -13,7 +16,11 @@ export class TwitService {
   constructor(
     @InjectRepository(Twit)
     private readonly twitRepository: Repository<Twit>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly pushService: PushService,
+
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager
   ) {}
 
   async sendTwit({ id, nickName }: User, { contents, receiveNickname }: CreateTwitDto) {
@@ -21,9 +28,8 @@ export class TwitService {
 
     if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
-    console.log(receiver);
 
-    const sendTwit = await this.twitRepository.save({
+    const sendTwit: Twit = this.twitRepository.create({
       senderId: id,
       receiveId: receiver.id,
       senderName: nickName,
@@ -31,7 +37,22 @@ export class TwitService {
       contents
     });
 
-    console.log(sendTwit);
+    /* 쪽지 발송 시 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
+    await this.entityManager.transaction(async (em) => {
+      await em.save(Twit, sendTwit);
+
+      const pushData: Push = em.create(Push, {
+        userId: receiver.id,
+        servcieType: ServiceType.Twit,
+        contents: sendTwit.contents
+      });
+
+      await em.save(Push, pushData);
+    });
+    /* 쪽지 발송 시 푸시-알림 테이블에 데이터 추가 트랜잭션 e */
+
+    await this.sendTwitPush(sendTwit, receiver);
+
     return sendTwit;
   }
 
@@ -98,5 +119,12 @@ export class TwitService {
     if (!deleteReceiveTwit) throw new BadRequestException({ success: false, message: "삭제할 수 없습니다." });
 
     return deleteReceiveTwit;
+  }
+
+  async sendTwitPush(sendTwit: Twit, receiver: User) {
+    const userSubscription = Object(receiver.subscription);
+    const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`);
+
+    await this.pushService.sendPush(userSubscription, payload);
   }
 }

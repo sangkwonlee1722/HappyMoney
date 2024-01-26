@@ -6,13 +6,17 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
+import { ConfigService } from "@nestjs/config";
 
 @ApiTags("push")
 @UseGuards(AuthGuard("jwt"))
 @ApiBearerAuth()
 @Controller("push")
 export class PushController {
-  constructor(private readonly pushService: PushService) {}
+  constructor(
+    private readonly pushService: PushService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Post()
   create(@Body() createPushDto: CreatePushDto) {
@@ -29,9 +33,13 @@ export class PushController {
     };
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.pushService.findOne(+id);
+  @Get("VAPIDKeys")
+  getVAPIDKeys() {
+    const keys = {
+      publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
+      privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
+    };
+    return keys;
   }
 
   @Patch(":id")
