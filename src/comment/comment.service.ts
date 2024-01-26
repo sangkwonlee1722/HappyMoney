@@ -11,7 +11,6 @@ import { Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
-import { sendNotification } from "web-push";
 
 @Injectable()
 export class CommentService {
@@ -54,29 +53,6 @@ export class CommentService {
         });
 
         await em.save(Push, pushData);
-
-        const options = {
-          TTL: 24 * 60 * 60,
-          vapidDetails: {
-            subject: "mailto:chzhgod@gmail.com",
-            publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
-            privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
-          }
-        };
-
-        const payload = {
-          title: "HAPPY MONEY",
-          body: "제발되기를 ㅎㅎㅎ",
-          tag: "댓글"
-        };
-
-        const jsonPayload = JSON.stringify(payload); // 수정해봐요 !!
-
-        try {
-          // await sendNotification(pushSubscription, jsonPayload, options);
-        } catch (error) {
-          console.error("WebPushError:", error);
-        }
       }
     });
     /* 푸시-알림 테이블에 데이터 추가 트랜잭션 e */
