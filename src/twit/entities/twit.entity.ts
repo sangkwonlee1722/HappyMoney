@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsString, IsBoolean, IsNumber } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
+import { Push } from "src/push/entities/push.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 @Entity({ name: "twits" })
 export class Twit extends BaseEntity {

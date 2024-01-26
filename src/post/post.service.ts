@@ -36,7 +36,7 @@ export class PostService {
   async findOne(id: number) {
     const data = await this.postRepository.findOne({
       where: { id },
-      relations: ["comments"]
+      relations: ["comments", "user"]
     });
     return data;
   }
