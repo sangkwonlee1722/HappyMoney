@@ -247,12 +247,15 @@ export class UserController {
    */
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
-  @Post("subscription")
+  @Patch("subscription")
   async saveSubscription(@Body() { subscription }: SubscriptionDto, @UserInfo() user: User) {
-    console.log("apfhdapfhd ", subscription);
     const existUser = await this.userService.findUserById(user.id);
     if (!existUser) {
       throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
+    }
+
+    if (JSON.stringify(existUser.subscription) === JSON.stringify(subscription)) {
+      return;
     }
 
     await this.userService.saveSubscription(subscription, user.id);
@@ -261,6 +264,7 @@ export class UserController {
       message: "okay"
     };
   }
+
   /**
    * 비밀번호 찾기
    * @returns
