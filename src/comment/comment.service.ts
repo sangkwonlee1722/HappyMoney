@@ -17,11 +17,8 @@ export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
 
     private readonly postService: PostService,
-    private readonly configService: ConfigService,
     private readonly pushService: PushService,
 
     @InjectEntityManager()
@@ -117,8 +114,7 @@ export class CommentService {
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
     const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
-    const jsonPayload = payload.getJsonPayload();
 
-    await this.pushService.sendPush(userSubscription, jsonPayload);
+    await this.pushService.sendPush(userSubscription, payload);
   }
 }

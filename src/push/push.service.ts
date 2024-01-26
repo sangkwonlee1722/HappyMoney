@@ -10,6 +10,7 @@ import { Notice } from "src/notice/entities/notice.entity";
 import { Twit } from "src/twit/entities/twit.entity";
 import { ConfigService } from "@nestjs/config";
 import { sendNotification } from "web-push";
+import { Payload } from "./push-config";
 
 @Injectable()
 export class PushService {
@@ -42,7 +43,7 @@ export class PushService {
     return `This action removes a #${id} push`;
   }
 
-  async sendPush(userSubscription, payload: string) {
+  async sendPush(userSubscription, payload: Payload) {
     const options = {
       TTL: 24 * 60 * 60,
       vapidDetails: {
@@ -52,8 +53,10 @@ export class PushService {
       }
     };
 
+    const jsonPayload = payload.getJsonPayload();
+
     try {
-      await sendNotification(userSubscription, payload, options);
+      await sendNotification(userSubscription, jsonPayload, options);
     } catch (error) {
       console.error("WebPushError:", error);
     }
