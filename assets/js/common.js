@@ -164,17 +164,16 @@ async function registerNotificationService() {
   }
 }
 
-
 // 구독 정보를 user 테이블에 저장하는 함수
 async function postSubscription(pushSubscription) {
 
   const subscription = pushSubscription.toJSON();
-  console.log('subscription: ', subscription);
+
   const apiUrl = baseUrl + "user/subscription"
   const token = getToken()
 
   try {
-    await axios.post(apiUrl, {
+    await axios.patch(apiUrl, {
       subscription
     }, {
       headers: {

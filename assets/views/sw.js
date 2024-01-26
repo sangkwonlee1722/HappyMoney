@@ -7,7 +7,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const urlToOpen = "https://naver.com";
+  const urlToOpen = "http://localhost:3000/views/main.html";
   event.waitUntil(
     self.clients
       .matchAll({
