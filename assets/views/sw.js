@@ -1,14 +1,14 @@
 self.addEventListener("push", (event) => {
-  console.log('event: ', event);
-  let { title, body, tag } = JSON.parse(event.data && event.data.text());
+  const { title, body, tag, data } = JSON.parse(event.data && event.data.text());
+  console.log('title: ', data);
   event.waitUntil(
-    self.registration.showNotification(title || "", { body, tag })
+    self.registration.showNotification(title || "", { body, tag, data })
   );
 });
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const urlToOpen = "http://localhost:3000/views/main.html";
+  const urlToOpen = event.notification.data.url || "http://localhost:3000/views/main.html";
   event.waitUntil(
     self.clients
       .matchAll({
@@ -16,14 +16,13 @@ self.addEventListener("notificationclick", function (event) {
         includeUncontrolled: true
       })
       .then(function (clientList) {
-        console.log('clientList: ', clientList);
         if (clientList.length > 0) {
           return clientList[0]
             .focus()
             .then((client) => client.navigate(urlToOpen));
         }
-        console.log("여기는 실행이 안되나요?")
         return self.clients.openWindow(urlToOpen);
       })
   );
 });
+

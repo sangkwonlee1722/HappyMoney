@@ -113,8 +113,8 @@ export class CommentService {
 
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
-    const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
+    // const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
 
-    await this.pushService.sendPush(userSubscription, payload);
+    // await this.pushService.sendPush(userSubscription, payload);
   }
 }
