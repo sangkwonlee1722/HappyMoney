@@ -5,6 +5,7 @@ import { Twit } from "./entities/twit.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserService } from "src/user/user.service";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class TwitService {
@@ -34,20 +35,39 @@ export class TwitService {
     return sendTwit;
   }
 
-  async getSendTwit({ id }: User) {
-    const getSends = await this.twitRepository.find({ where: { senderId: id } });
+  async getSendTwit({ id }: User, dto: PaginatePostDto) {
+    const [getTwits, count] = await this.twitRepository.findAndCount({
+      where: { senderId: id, isDeletedBySender: false },
+      skip: dto.take * (dto.page - 1),
+      take: dto.take,
+      order: {
+        createdAt: dto.order__createdAt
+      }
+    });
 
-    if (getSends.length === 0) return { message: "보낸 쪽지가 없습니다." };
+    if (getTwits.length === 0) return { success: false, message: "보낸 쪽지가 없습니다." };
 
-    return getSends;
+    return {
+      getTwits,
+      count
+    };
   }
 
-  async getReceiveTwit({ id }: User) {
-    const getReceives = await this.twitRepository.find({ where: { receiveId: id } });
+  async getReceiveTwit({ id }: User, dto: PaginatePostDto) {
+    const [getTwits, count] = await this.twitRepository.findAndCount({
+      where: { receiveId: id, isDeletedByReceiver: false },
+      skip: dto.take * (dto.page - 1),
+      take: dto.take,
+      order: {
+        createdAt: dto.order__createdAt
+      }
+    });
+    if (getTwits.length === 0) return { success: false, message: "받은 쪽지가 없습니다." };
 
-    if (getReceives.length === 0) return { message: "받은 쪽지가 없습니다." };
-
-    return getReceives;
+    return {
+      getTwits,
+      count
+    };
   }
 
   async getTwitDetail(id: number, user: User) {

@@ -24,6 +24,7 @@ import { User } from "./entities/user.entity";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, SubscriptionDto, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { foundPasswordDto } from "./dto/found-password.dto";
 import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("User")
@@ -35,7 +36,6 @@ export class UserController {
    * 이메일 회원가입 인증
    * @returns
    */
-
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
     const user = await this.userService.findUserByEmail(email);
@@ -140,12 +140,6 @@ export class UserController {
       }
     });
 
-    // if (newPassword && newPassword !== newPasswordCheck) {
-    //   throw new UnauthorizedException("새로운 비밀번호를 확인해주세요.");
-    // }
-
-    // const hashedPassword = await hash(String(newPassword), 10);
-
     await this.userService.updateUserInfo(user.id, nickName, phone);
     return {
       success: true,
@@ -243,6 +237,7 @@ export class UserController {
       message: "okay"
     };
   }
+  
   /**
    * 구독 정보 저장
    * @param param0
@@ -263,5 +258,35 @@ export class UserController {
       success: true,
       message: "okay"
     };
+
+  /**
+   * 비밀번호 찾기
+   * @param createUserDto
+   * @returns
+   */
+
+  @Patch("found-password")
+  async foundPassword(@Body() foundPasswordDto: foundPasswordDto) {
+    const { email } = foundPasswordDto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException("존재하지 않는 회원입니다.");
+    }
+
+    try {
+      await this.userService.sendTemporaryPassword(email);
+      return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: error.response
+      };
+    }
+
   }
 }

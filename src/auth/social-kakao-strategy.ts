@@ -1,26 +1,19 @@
 // import { PassportStrategy } from "@nestjs/passport";
 // import { Profile, Strategy } from "passport-kakao";
 
-// export class JwtKakaoStrategy extends PassportStrategy(Strategy, "kakao") {
-//   constructor() {
-//     super({
-//       clientID: process.env.KAKAO_CLIENT_ID,
-//       clientSecret: process.env.KAKAO_CLIENT_SECRET,
-//       callbackURL: process.env.KAKAO_CALLBACK_URL,
-//       scope: ["account_email", "profile_nickname"]
-//     });
-//   }
+// const passport = require('passport')
+// const KakaoStrategy = require('passport-kakao').Strategy
 
-//   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-//     // 토큰과 프로파일을 한번 확인해보자
-//     console.log("accessToken: ", accessToken);
-//     console.log("refreshToken: ", refreshToken);
-//     console.log(profile);
-
-//     return {
-//       email: profile._json.kakao_account.email,
-//       password: String(profile.id),
-//       nickname: profile.displayName
-//     };
+// passport.use(new KakaoStrategy({
+//     clientID : process.env.kakaoClientID,
+//     clientSecret: process.env.kakaoClientSecret, // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
+//     callbackURL : process.env.kakaoCallbackURL
+//   },
+//   (accessToken, refreshToken, profile, done) => {
+//     // 사용자의 정보는 profile에 들어있다.
+//     User.findOrCreate(..., (err, user) => {
+//       if (err) { return done(err) }
+//       return done(null, user)
+//     })
 //   }
-// }
+// ))

@@ -1,4 +1,4 @@
-export const baseUrl = 'http://localhost:3000/api/'
+export const baseUrl = "http://localhost:3000/api/";
 
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
@@ -26,9 +26,9 @@ $("#footer_wrap").load("/views/common/footer.html");
 export default function getToken() {
   const token = `Bearer ${getCookie("accessToken")}`;
 
-  if (token === 'Bearer null') {
-    alert("로그인이 필요합니다.")
-    window.location.href = '/views/main.html';
+  if (token === "Bearer null") {
+    alert("로그인이 필요합니다.");
+    window.location.href = "/views/main.html";
   }
 
   return token;
@@ -110,7 +110,6 @@ async function loginConfirm() {
     });
 
     const response = await axiosInstance.post("/api/user/login", userInfo);
-    console.log(response);
 
     if (response.data.success) {
       alert(`환영합니다.`);
@@ -129,12 +128,11 @@ async function loginConfirm() {
 // 로그아웃
 export function logout() {
   deleteCookie("accessToken");
-
   alert("로그아웃 되었습니다.");
 
-  window.location.reload();
+  window.location.href = '/views/main.html';
 }
-function deleteCookie(name) {
+export function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
 }
 

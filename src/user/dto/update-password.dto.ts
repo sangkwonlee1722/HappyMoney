@@ -10,7 +10,7 @@ export class UpdatePasswordDto {
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "특수문자를 포함해야합니다." }
   )
   newPassword: string;
@@ -23,7 +23,7 @@ export class UpdatePasswordDto {
   @IsNotEmpty({ message: "비밀번호를 작성해주세요." })
   @IsString()
   @IsStrongPassword(
-    { minLength: 8, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
+    { minLength: 6, minNumbers: 1, minSymbols: 1, minUppercase: 0 },
     { message: "특수문자를 포함해야합니다." }
   )
   newPasswordCheck: string;
