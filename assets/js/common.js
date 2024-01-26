@@ -59,7 +59,7 @@ $(document).ready(async function () {
       <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호" />
       `;
     inputBox.innerHTML = temp_html;
-  }, 50);
+  }, 1000);
 });
 
 function setCookie(name, value, days) {
@@ -170,13 +170,15 @@ async function registerNotificationService() {
 
 // 구독 정보를 user 테이블에 저장하는 함수
 async function postSubscription(pushSubscription) {
-  console.log('pushSubscription: ', pushSubscription);
+
+  const subscription = pushSubscription.toJSON();
+  console.log('subscription: ', subscription);
   const apiUrl = baseUrl + "user/subscription"
   const token = getToken()
 
   try {
     await axios.patch(apiUrl, {
-      subscription: pushSubscription
+      subscription
     }, {
       headers: {
         'Authorization': token,

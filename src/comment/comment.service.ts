@@ -8,6 +8,8 @@ import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { Post } from "src/post/entities/post.entity";
 import { PostService } from "src/post/post.service";
 import { MessageType, Push, ServiceType } from "src/push/entities/push.entity";
+import { ConfigService } from "@nestjs/config";
+import { sendNotification } from "web-push";
 
 @Injectable()
 export class CommentService {
@@ -18,6 +20,7 @@ export class CommentService {
     private postRepository: Repository<Post>,
 
     private readonly postService: PostService,
+    private readonly configService: ConfigService,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager
@@ -33,19 +36,30 @@ export class CommentService {
     }
     const postUserId: number = post.userId;
     const postTitle: string = post.title;
+    const value = Object(post.user.subscription);
+    console.log("value: ", value);
 
-    if (postUserId !== userId) {
-      /* 푸시-알림 테이블에 데이터 추가 트랜잭션 */
-      await this.entityManager.transaction(async (em) => {
-        /* 댓글 생성 */
-        const comment = em.create(Comment, {
-          content: createCommentDto.content,
-          commentUser: { id: userId },
-          post: { id: postId }
-        });
+    const pushSubscription = {
+      endpoint: value.endpoint,
+      keys: {
+        p256dh: value.keys.p256dh,
+        auth: value.keys.auth
+      }
+    };
 
-        await em.save(Comment, comment);
+    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 */
+    await this.entityManager.transaction(async (em) => {
+      /* 댓글 생성 */
+      const comment = em.create(Comment, {
+        content: createCommentDto.content,
+        commentUser: { id: userId },
+        post: { id: postId }
+      });
 
+      await em.save(Comment, comment);
+
+      // 내가 쓴 게시글에 다른 사람이 댓글을 달 경우
+      if (postUserId !== userId) {
         /* 푸시-알림 데이터 생성 */
         const pushData: Push = em.create(Push, {
           userId: postUserId,
@@ -55,16 +69,31 @@ export class CommentService {
         });
 
         await em.save(Push, pushData);
-      });
-    } else {
-      const comment = this.commentRepository.create({
-        content: createCommentDto.content,
-        commentUser: { id: userId },
-        post: { id: postId }
-      });
 
-      await this.commentRepository.save(comment);
-    }
+        const options = {
+          TTL: 24 * 60 * 60,
+          vapidDetails: {
+            subject: "mailto:chzhgod@gmail.com",
+            publicKey: "BJoW2C5jQj4J7ijvAzoLhAccxODbLiiphl2PLWe_6cIcpsutw7ntsD33_oxmmK94l3Zg1dun0kIn5pNlku-URVc",
+            privateKey: "YGNiPvb3AScoKshKU6GuTd9Z0KT5WHn7M8ZLmAI652k"
+          }
+        };
+
+        const payload = {
+          title: "HAPPY MONEY",
+          body: "제발되기를 ㅎㅎㅎ",
+          tag: "댓글"
+        };
+
+        const jsonPayload = JSON.stringify(payload); // 수정해봐요 !!
+
+        try {
+          await sendNotification(pushSubscription, jsonPayload, options);
+        } catch (error) {
+          console.error("WebPushError:", error);
+        }
+      }
+    });
   }
 
   async findCommentsByPost(postId: number): Promise<any[]> {

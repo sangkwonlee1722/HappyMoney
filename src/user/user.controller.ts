@@ -258,10 +258,6 @@ export class UserController {
       throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
     }
 
-    if (existUser.subscription) {
-      return;
-    }
-
     await this.userService.saveSubscription(subscription, user.id);
     return {
       success: true,
