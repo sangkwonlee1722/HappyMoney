@@ -59,7 +59,7 @@ $(document).ready(async function () {
       <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호" />
       `;
     inputBox.innerHTML = temp_html;
-  }, 1000);
+  }, 50);
 });
 
 function setCookie(name, value, days) {
@@ -144,13 +144,12 @@ export function addComma(number) {
 
 // 알림 권한 확인 및 서비스 워크 등록
 async function registerNotificationService() {
-  console.log('실행이 안되나요?')
   try {
     const status = await Notification.requestPermission();
     console.log("Notification 상태", status);
 
     if (status === "denied") {
-      alert("Notification 거부됨");
+      alert("알림을 거부 설정이 완료되었습니다.");
     } else if (navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.register("sw.js");
       const subscribeOptions = {
@@ -175,7 +174,7 @@ async function postSubscription(pushSubscription) {
   const token = getToken()
 
   try {
-    await axios.patch(apiUrl, {
+    await axios.post(apiUrl, {
       subscription
     }, {
       headers: {

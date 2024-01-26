@@ -9,6 +9,8 @@ import { Post } from "src/post/entities/post.entity";
 import { PostService } from "src/post/post.service";
 import { MessageType, Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
+import { PushService } from "src/push/push.service";
+import { Payload } from "src/push/push-config";
 import { sendNotification } from "web-push";
 
 @Injectable()
@@ -21,6 +23,7 @@ export class CommentService {
 
     private readonly postService: PostService,
     private readonly configService: ConfigService,
+    private readonly pushService: PushService,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager
@@ -28,26 +31,12 @@ export class CommentService {
 
   async create(userId: number, postId: number, createCommentDto: CreateCommentDto) {
     // 게시글 존재 여부 확인
-    // const post = await this.postRepository.findOneBy({ id: postId });
-
     const post = await this.postService.findOne(postId);
     if (!post) {
       throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
     }
-    const postUserId: number = post.userId;
-    const postTitle: string = post.title;
-    const value = Object(post.user.subscription);
-    console.log("value: ", value);
 
-    const pushSubscription = {
-      endpoint: value.endpoint,
-      keys: {
-        p256dh: value.keys.p256dh,
-        auth: value.keys.auth
-      }
-    };
-
-    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 */
+    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       /* 댓글 생성 */
       const comment = em.create(Comment, {
@@ -59,13 +48,13 @@ export class CommentService {
       await em.save(Comment, comment);
 
       // 내가 쓴 게시글에 다른 사람이 댓글을 달 경우
-      if (postUserId !== userId) {
-        /* 푸시-알림 데이터 생성 */
+      if (post.userId !== userId) {
+        /* 푸시 테이블에 데이터 생성 */
         const pushData: Push = em.create(Push, {
-          userId: postUserId,
+          userId: post.userId,
           servcieType: ServiceType.Comment,
           message: MessageType.Comment,
-          contents: postTitle
+          contents: post.title
         });
 
         await em.save(Push, pushData);
@@ -88,12 +77,18 @@ export class CommentService {
         const jsonPayload = JSON.stringify(payload); // 수정해봐요 !!
 
         try {
-          await sendNotification(pushSubscription, jsonPayload, options);
+          // await sendNotification(pushSubscription, jsonPayload, options);
         } catch (error) {
           console.error("WebPushError:", error);
         }
       }
     });
+    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 e */
+
+    /* 푸시 알람 보내는 함수 */
+    if (post.userId !== userId) {
+      await this.sendCommentPush(post);
+    }
   }
 
   async findCommentsByPost(postId: number): Promise<any[]> {
@@ -142,5 +137,13 @@ export class CommentService {
       .getMany();
 
     return comments;
+  }
+
+  async sendCommentPush(post: Post) {
+    const userSubscription = Object(post.user.subscription);
+    const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
+    const jsonPayload = payload.getJsonPayload();
+
+    await this.pushService.sendPush(userSubscription, jsonPayload);
   }
 }

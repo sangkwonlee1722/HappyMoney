@@ -247,8 +247,9 @@ export class UserController {
    */
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
-  @Patch("subscription")
+  @Post("subscription")
   async saveSubscription(@Body() { subscription }: SubscriptionDto, @UserInfo() user: User) {
+    console.log("apfhdapfhd ", subscription);
     const existUser = await this.userService.findUserById(user.id);
     if (!existUser) {
       throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
