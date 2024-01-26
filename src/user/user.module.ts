@@ -14,6 +14,7 @@ import { AuthModule } from "src/auth/auth.module";
   imports: [
     AuthModule,
     PassportModule,
+    EmailModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       inject: [ConfigService],

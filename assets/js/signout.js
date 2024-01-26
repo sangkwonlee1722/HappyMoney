@@ -22,6 +22,7 @@ async function signout() {
         deleteCookie("accessToken");
       }
       alert("이메일 인증 후 회원탈퇴가 진행됩니다.");
+      deleteCookie("accessToken");
       window.location.reload();
     } else {
       alert(`${response.data.errorMessage}`);

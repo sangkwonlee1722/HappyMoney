@@ -13,10 +13,12 @@ import { AuthController } from "./auth.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/user/entities/user.entity";
 import { JwtStrategy } from "./jwt.strategy";
+import { EmailModule } from "src/email/email.module";
 
 @Module({
   imports: [
     PassportModule,
+    EmailModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       inject: [ConfigService],

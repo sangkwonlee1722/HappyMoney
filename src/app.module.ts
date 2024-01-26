@@ -19,6 +19,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TwitModule } from "./twit/twit.module";
 
 import { PushModule } from "./push/push.module";
+import { EmailModule } from "./email/email.module";
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { PushModule } from "./push/push.module";
     CommentModule,
     AuthModule,
     ScheduleModule.forRoot(),
-
+    EmailModule,
     TwitModule,
 
     PushModule

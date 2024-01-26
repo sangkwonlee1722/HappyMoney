@@ -167,7 +167,6 @@ signupBtn.addEventListener("click", async () => {
     emailCheckVerify.innerHTML = "이메일 중복체크를 해주세요.";
     emailCheckVerify.style.color = "red";
     return;
-    return;
   }
 
   if (!phone.includes("-") || phone.length !== 13) {
