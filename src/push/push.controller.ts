@@ -1,7 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Patch, Param, Delete, UseGuards } from "@nestjs/common";
 import { PushService } from "./push.service";
-import { CreatePushDto } from "./dto/create-push.dto";
-import { UpdatePushDto } from "./dto/update-push.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
@@ -18,11 +16,11 @@ export class PushController {
     private readonly configService: ConfigService
   ) {}
 
-  @Post()
-  create(@Body() createPushDto: CreatePushDto) {
-    return this.pushService.create(createPushDto);
-  }
-
+  /**
+   * 나의 모든 알림 조회
+   * @param user
+   * @returns
+   */
   @Get()
   async findAllMyPushNoti(@UserInfo() user: User) {
     const pushNotis = await this.pushService.findAllMyPushNoti(user.id);
@@ -33,6 +31,97 @@ export class PushController {
     };
   }
 
+  /**
+   * 안읽은 알림 개수 확인
+   * @param user
+   * @returns
+   */
+  @Get("unread-notis")
+  async countMyUnReadNotis(@UserInfo() user: User) {
+    const unReadNotisCounts = await this.pushService.countMyUnReadNotis(user.id);
+
+    return {
+      success: true,
+      message: "okay",
+      unReadNotisCounts
+    };
+  }
+
+  /**
+   * 나의 모든 푸시알림 다 지우기
+   * @param user
+   * @returns
+   */
+  @Delete()
+  async removeAllMyPushNotis(
+    @UserInfo()
+    user: User
+  ) {
+    await this.pushService.removeAllMyPushNotis(user.id);
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 나의 모든 메시지 읽음 처리
+   * @param user
+   * @returns
+   */
+  @Patch()
+  async updateAllPushNotisReadStatus(@UserInfo() user: User) {
+    await this.pushService.updateAllPushNotisReadStatus(user.id);
+
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 특정 메시지 읽음 처리
+   * @param user
+   * @param pushId
+   * @returns
+   */
+  @Patch(":pushId")
+  async updateOnePushNotiReadStatus(
+    @UserInfo() user: User,
+    @Param("pushId")
+    pushId: number
+  ) {
+    await this.pushService.updateOnePushNotiReadStatus(user.id, pushId);
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 특정 알림 삭제하기
+   * @param pushId
+   * @param user
+   * @returns
+   */
+  @Delete(":pushId")
+  async removeOnePushNoti(
+    @Param("pushId")
+    pushId: number,
+    @UserInfo()
+    user: User
+  ) {
+    await this.pushService.removeOnePushNoti(pushId, user.id);
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 푸시 발송 시 VAPID키 받아오기
+   * @returns
+   */
   @Get("VAPIDKeys")
   getVAPIDKeys() {
     const keys = {
@@ -40,15 +129,5 @@ export class PushController {
       privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
     };
     return keys;
-  }
-
-  @Patch(":id")
-  update(@Param("id") id: string, @Body() updatePushDto: UpdatePushDto) {
-    return this.pushService.update(+id, updatePushDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.pushService.remove(+id);
   }
 }

@@ -26,8 +26,8 @@ export class TwitService {
   async sendTwit({ id, nickName }: User, { contents, receiveNickname }: CreateTwitDto) {
     const receiver = await this.userService.findUserByNickname(receiveNickname);
 
-    if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
+    if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
 
     const sendTwit: Twit = this.twitRepository.create({
       senderId: id,
