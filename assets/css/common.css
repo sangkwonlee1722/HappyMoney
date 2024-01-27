@@ -468,9 +468,10 @@ input::placeholder {
 .hm-hd-log {
   display: flex;
 }
-.hm-hd-log li {
+/* 이거를 하면 알림 리스트에도 영향을 줘서 변경함! */
+/* .hm-hd-log li {
   margin-left: 25px;
-}
+} */
 .hm-hd-log li:first-child {
   margin-left: 0;
 }
@@ -550,16 +551,145 @@ input::placeholder {
 .hm-red-dot-right::after {
   content: "";
   position: absolute;
-  top: -4px;
-  right: -8px;
-  width: 8px;
-  height: 8px;
+  top: -18px;
+  left: 15px;
+  width: 10px;
+  height: 10px;
   background-color: #ea5555;
   border-radius: 50%;
 }
 .hm-hd-m-bottom .hm-red-dot-right::after {
   top: -6px;
 }
+.hm-user-on {
+  display: flex;
+  align-items: center;
+}
+.hm-user-on button {
+  margin-left: 1rem;
+}
+.push-noti {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.push-noti img:hover {
+  cursor: pointer;
+}
+.push-noti img {
+  height: 28px;
+}
+
+/* --알림창-- s*/
+.hm-popup-alram {
+  position: fixed;
+  width: 350px;
+  height: 700px;
+  background-color: #fdfdfd;
+  z-index: 115;
+  margin-top: 700px;
+  margin-left: 15px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px #777;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.hm-alram-wrap {
+  width: 85%;
+  height: 90%;
+}
+
+.hm-alram-header {
+  width: 100%;
+}
+
+.hm-alram-list {
+  overflow: scroll;
+  height: 83%;
+}
+
+.hm-alram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alram-list-contnents {
+  width: 95%;
+}
+
+.hm-alram-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hm-alram-top h5 {
+  font-weight: bold;
+}
+
+.hm-alram-top button {
+  border: none;
+  background-color: transparent;
+}
+
+.alram-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alram-top h6 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.alram-top button {
+  border: none;
+  background-color: transparent;
+}
+
+.alram-body {
+  font-size: 15px;
+  margin: 0.5rem 0 0.5rem 0;
+}
+
+.alram-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.hm-alram:hover {
+  background-color: #d9d9d9;
+}
+.hm-alram:hover hr {
+  margin-top: 0px;
+}
+
+.hm-alram-footer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.hm-alram-footer button {
+  margin-top: 1rem;
+}
+
+.hm-alram-dim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 110;
+  display: none;
+}
+
 /* ------header------ e */
 
 /* ------footer------ s */
