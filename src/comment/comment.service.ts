@@ -11,6 +11,7 @@ import { Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
+import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class CommentService {
@@ -25,7 +26,7 @@ export class CommentService {
     private readonly entityManager: EntityManager
   ) {}
 
-  async create(userId: number, postId: number, createCommentDto: CreateCommentDto) {
+  async create(user: User, postId: number, createCommentDto: CreateCommentDto) {
     // 게시글 존재 여부 확인
     const post = await this.postService.findOne(postId);
     if (!post) {
@@ -35,21 +36,25 @@ export class CommentService {
     /* 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       /* 댓글 생성 */
-      const comment = em.create(Comment, {
+      const comment: Comment = em.create(Comment, {
         content: createCommentDto.content,
-        commentUser: { id: userId },
+        commentUser: { id: user.id },
         post: { id: postId }
       });
+
+      console.log("코멘트에 유저가 나오나요?", comment);
 
       await em.save(Comment, comment);
 
       // 내가 쓴 게시글에 다른 사람이 댓글을 달 경우
-      if (post.userId !== userId) {
+      if (post.userId !== user.id) {
         /* 푸시 테이블에 데이터 생성 */
         const pushData: Push = em.create(Push, {
           userId: post.userId,
           serviceType: ServiceType.Comment,
-          contents1: post.title
+          contents1: post.title,
+          contents2: user.nickName,
+          contentId: post.id
         });
 
         await em.save(Push, pushData);
@@ -58,7 +63,7 @@ export class CommentService {
     /* 푸시-알림 테이블에 데이터 추가 트랜잭션 e */
 
     /* 푸시 알람 보내는 함수 */
-    if (post.userId !== userId) {
+    if (post.userId !== user.id) {
       await this.sendCommentPush(post);
     }
   }

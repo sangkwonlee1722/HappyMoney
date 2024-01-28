@@ -45,7 +45,8 @@ export class TwitService {
         userId: receiver.id,
         serviceType: ServiceType.Twit,
         contents1: sendTwit.contents,
-        contents2: sendTwit.senderName
+        contents2: sendTwit.senderName,
+        contentId: sendTwit.id
       });
 
       await em.save(Push, pushData);

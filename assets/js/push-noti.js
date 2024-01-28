@@ -29,7 +29,7 @@ export async function spreadMyAllPushNotis() {
   if (pushNotis.length !== 0) {
     mainDom.innerHTML =
       pushNotis.map(noti => {
-        const { id, createdAt, serviceType, isRead, contents1, contents2 } = noti
+        const { id, createdAt, serviceType, isRead, contents1, contents2, contentId } = noti
 
         const readStatus = isRead === false ? "안읽음" : "읽음";
         const readStatusClass = isRead === false ? "unread" : "read";
@@ -37,7 +37,8 @@ export async function spreadMyAllPushNotis() {
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
-        let message = ""
+        let message
+        let contentUrl
         switch (serviceType) {
           case "댓글":
             message = `[${contents2}]님이 게시글에 댓글을 남겼습니다.`
@@ -45,6 +46,7 @@ export async function spreadMyAllPushNotis() {
 
           case "쪽지":
             message = `[${contents2}]님이 쪽지를 보냈습니다.`
+            contentUrl = `http://localhost:3000/views/twit/twit-detail.html?send=false&id=${contentId}`
             break
 
           case "주식":
@@ -54,7 +56,7 @@ export async function spreadMyAllPushNotis() {
 
         return `
       <li class="hm-alram" data-id="${id}">
-        <a href="/#none" class="contents-url"></a>
+        <a href="${contentUrl}" class="contents-url"></a>
         <div class="alram-list-contnents">
           <div class="alram-top">
             <h6>${serviceType}</h6>
