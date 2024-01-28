@@ -1,9 +1,8 @@
-import { ConflictException, Injectable, Req } from "@nestjs/common";
+import { Injectable, Req } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
 import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
-import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async findByEmailOrSave(email: string, name: string) {
+  async findByEmailOrSave(email: string, name: string, signupType: string, nickName: string) {
     try {
       const user = await this.userRepository.findOne({ where: { email } });
       if (user) return user;
@@ -23,6 +22,8 @@ export class AuthService {
       const socialUser = this.userRepository.save({
         email,
         name: name,
+        signupType,
+        nickName,
         isEmailVerified: true
       });
       return socialUser;
@@ -31,58 +32,43 @@ export class AuthService {
     }
   }
 
-  async googleLogin(@Req() req: any) {
-    const { email, name } = req.user;
-    console.log(req.user.name);
-    const member = await this.findByEmailOrSave(email, name); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
+  async generateUniqueRandomNickname() {
+    let isUnique = false;
+    let nickname = "";
 
-    // JWT 토큰에 포함될 payload
-    const payload = {
-      id: member.id
-    };
-    const expiresIn = "1d"; // 하루 동안 유효한 토큰
+    while (!isUnique) {
+      const randomDigits = Math.floor(100000 + Math.random() * 900000);
 
-    const token = this.jwtService.sign(payload, {
-      expiresIn, // 정상적인 expiresIn 설정
-      secret: process.env.JWT_SECRET
-    });
+      nickname = `Guset${randomDigits}`;
 
-    return token;
-  }
+      const existingUser = await this.userService.findUserByNickName(nickname);
+      isUnique = !existingUser;
 
-  async kakaoLogin(@Req() req: any) {
-    const { email, nickname } = req.user;
-    console.log(req.user.nickname);
-    const member = await this.findByEmailOrSave(email, nickname); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
-
-    const payload = {
-      id: member.id
-    };
-    const expiresIn = "1d"; // 하루 동안 유효한 토큰
-
-    const token = this.jwtService.sign(payload, {
-      expiresIn, // 정상적인 expiresIn 설정
-      secret: process.env.JWT_SECRET
-    });
-
-    return token;
-  }
-
-  async naverLogin(@Req() req: any) {
-    let { email, name } = req.user;
-    if (name === undefined) {
-      name = "user";
+      console.log(nickname);
     }
-    const member = await this.findByEmailOrSave(email, name); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
 
-    // JWT 토큰에 포함될 payload
+    return nickname;
+  }
+
+  async socialLogin(@Req() req: any) {
+    let { email, name, signupType } = req.user;
+    const nickname = await this.generateUniqueRandomNickname();
+
+    if (!name && !req.user.nickname) {
+      name = "SocialUser";
+    } else if (!name) {
+      name = req.user.nickname;
+    }
+
+    const user = await this.findByEmailOrSave(email, name, signupType, nickname);
+
     const payload = {
-      id: member.id
+      id: user.id
     };
-    const expiresIn = "1d"; // 하루 동안 유효한 토큰
+    const expiresIn = "1d";
 
     const token = this.jwtService.sign(payload, {
-      expiresIn, // 정상적인 expiresIn 설정
+      expiresIn,
       secret: process.env.JWT_SECRET
     });
 

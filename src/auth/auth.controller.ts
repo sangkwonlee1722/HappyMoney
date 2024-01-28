@@ -28,9 +28,8 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
   async googleLoginCallback(@Req() req: any, @Res() res: any) {
-    const token = await this.authService.googleLogin(req);
+    const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
-    console.log(token);
     return res.redirect("http://localhost:3000/views/main.html");
   }
 
@@ -45,9 +44,8 @@ export class AuthController {
   @Get("kakao/callback")
   @UseGuards(AuthGuard("kakao"))
   async kakaoLoginCallback(@Req() req: any, @Res() res: any) {
-    const token = await this.authService.kakaoLogin(req);
+    const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
-    console.log(token);
     return res.redirect("http://localhost:3000/views/main.html");
   }
 
@@ -62,8 +60,7 @@ export class AuthController {
   @Get("naver/callback")
   @UseGuards(AuthGuard("naver"))
   async naverLoginCallback(@Req() req: any, @Res() res: any) {
-    const token = await this.authService.naverLogin(req);
-    console.log(token);
+    const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
 
     return res.redirect("http://localhost:3000/views/main.html");

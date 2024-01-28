@@ -44,7 +44,7 @@ $(document).ready(async function () {
       $("#logoutTab").show();
 
       setTimeout(() => {
-        registerNotificationService()
+        registerNotificationService();
       }, 100);
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
@@ -116,8 +116,6 @@ async function loginConfirm() {
       const accessToken = response.data.accessToken;
       setCookie("accessToken", accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
       window.location.href = "/views/main.html";
-
-
     }
   } catch (error) {
     alert("아이디 또는 비밀번호가 틀렸습니다.");
@@ -130,7 +128,7 @@ export function logout() {
   deleteCookie("accessToken");
   alert("로그아웃 되었습니다.");
 
-  window.location.href = '/views/main.html';
+  window.location.href = "/views/main.html";
 }
 export function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
@@ -141,74 +139,74 @@ export function addComma(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// // 알림 권한 확인 및 서비스 워크 등록
+// async function registerNotificationService() {
+//   try {
+//     const status = await Notification.requestPermission();
+//     console.log("Notification 상태", status);
 
-// 알림 권한 확인 및 서비스 워크 등록
-async function registerNotificationService() {
-  try {
-    const status = await Notification.requestPermission();
-    console.log("Notification 상태", status);
+//     const vapidPublicKey = await getVAPIDPublicKey();
+//     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
-    const vapidPublicKey = await getVAPIDPublicKey();
-    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
-
-    if (status === "denied") {
-      alert("알림을 거부 설정이 완료되었습니다.");
-    } else if (navigator.serviceWorker) {
-      const registration = await navigator.serviceWorker.register("sw.js");
-      const subscribeOptions = {
-        userVisibleOnly: true,
-        applicationServerKey: convertedVapidKey
-      };
-      const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-      postSubscription(pushSubscription);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
+//     if (status === "denied") {
+//       alert("알림을 거부 설정이 완료되었습니다.");
+//     } else if (navigator.serviceWorker) {
+//       const registration = await navigator.serviceWorker.register("sw.js");
+//       const subscribeOptions = {
+//         userVisibleOnly: true,
+//         applicationServerKey: convertedVapidKey
+//       };
+//       const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+//       postSubscription(pushSubscription);
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
 
 // 구독 정보를 user 테이블에 저장하는 함수
 async function postSubscription(pushSubscription) {
-
   const subscription = pushSubscription.toJSON();
 
-  const apiUrl = baseUrl + "user/subscription"
-  const token = getToken()
+  const apiUrl = baseUrl + "user/subscription";
+  const token = getToken();
 
   try {
-    await axios.patch(apiUrl, {
-      subscription
-    }, {
-      headers: {
-        'Authorization': token,
+    await axios.patch(
+      apiUrl,
+      {
+        subscription
       },
-    })
+      {
+        headers: {
+          Authorization: token
+        }
+      }
+    );
   } catch (error) {
-    console.error(error)
+    console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
 }
 
 async function getVAPIDPublicKey() {
-  const apiUrl = baseUrl + "push/VAPIDKeys"
+  const apiUrl = baseUrl + "push/VAPIDKeys";
 
-  const token = getToken()
+  const token = getToken();
   const result = await axios.get(apiUrl, {
     headers: {
-      'Authorization': token,
-    },
-  })
+      Authorization: token
+    }
+  });
 
-  const publicKey = result.data.publicKey
-  return publicKey
+  const publicKey = result.data.publicKey;
+  return publicKey;
 }
 
 function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
 
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);

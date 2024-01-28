@@ -14,11 +14,14 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, "naver") {
     // console.log(accessToken);
     // console.log(refreshToken);
     // console.log(profile);
+    const signupType = profile.provider;
 
     return {
       name: profile.displayName,
       email: profile._json.email,
-      password: profile.id
+      password: profile.id,
+      signupType,
+      profile
     };
   }
 }
