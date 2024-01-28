@@ -7,7 +7,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { Post } from "src/post/entities/post.entity";
 import { PostService } from "src/post/post.service";
-import { MessageType, Push, ServiceType } from "src/push/entities/push.entity";
+import { Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
@@ -17,11 +17,8 @@ export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
 
     private readonly postService: PostService,
-    private readonly configService: ConfigService,
     private readonly pushService: PushService,
 
     @InjectEntityManager()
@@ -52,7 +49,6 @@ export class CommentService {
         const pushData: Push = em.create(Push, {
           userId: post.userId,
           servcieType: ServiceType.Comment,
-          message: MessageType.Comment,
           contents: post.title
         });
 
@@ -118,8 +114,7 @@ export class CommentService {
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
     const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`);
-    const jsonPayload = payload.getJsonPayload();
 
-    await this.pushService.sendPush(userSubscription, jsonPayload);
+    await this.pushService.sendPush(userSubscription, payload);
   }
 }
