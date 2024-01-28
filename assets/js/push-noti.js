@@ -118,7 +118,7 @@ export async function spreadMyAllPushNotis() {
     const pushNoti = $(this).closest('li');
     const pushNotiId = pushNoti.attr('data-id');
 
-    await updateReadStatusPushNoti(pushNotiId);
+    updateReadStatusPushNoti(pushNotiId);
   });
 }
 
@@ -132,7 +132,7 @@ export async function deletePushNoti(pushNotiId, pushNoti) {
         'Authorization': token,
       }
     });
-    await spreadMyAllPushNotis()
+    spreadMyAllPushNotis()
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
@@ -150,7 +150,7 @@ export async function deleteAllPushNoti() {
         'Authorization': token,
       }
     });
-    await spreadMyAllPushNotis()
+    spreadMyAllPushNotis()
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
@@ -169,7 +169,7 @@ export async function updateReadStatusAllPushNoti() {
         'Authorization': token,
       }
     });
-    await spreadMyAllPushNotis()
+    spreadMyAllPushNotis()
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
@@ -187,7 +187,7 @@ export async function updateReadStatusPushNoti(pushNotiId) {
         'Authorization': token,
       }
     });
-    await spreadMyAllPushNotis()
+    spreadMyAllPushNotis()
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;

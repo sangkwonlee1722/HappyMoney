@@ -141,8 +141,6 @@ async function loginConfirm() {
       const accessToken = response.data.accessToken;
       setCookie("accessToken", accessToken, 1);
       window.location.href = "/views/main.html";
-
-
     }
   } catch (error) {
     alert("아이디 또는 비밀번호가 틀렸습니다.");
