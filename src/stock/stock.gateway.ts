@@ -22,21 +22,15 @@ export class StockGateway implements OnGatewayConnection {
 
   constructor(private readonly configService: ConfigService) {}
 
-  handleConnection(socket: WebSocket) {
-    console.log(`on connect called: ${socket}`);
-  }
+  handleConnection(socket: WebSocket) {}
 
   private async initializeWebSocketClient() {
     if (!this.wsClient) {
       try {
         const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
         this.wsClient = new WebSocket(url);
-        this.wsClient.on("open", () => {
-          console.log("WebSocket connected");
-        });
-      } catch (error) {
-        console.log(error);
-      }
+        this.wsClient.on("open", () => {});
+      } catch (error) {}
     }
   }
 
@@ -108,12 +102,9 @@ export class StockGateway implements OnGatewayConnection {
         try {
           // 클라이언트에게 JSON데이터를 전송
           this.server.emit("asking_price", jsonData);
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-        }
+        } catch (error) {}
       });
     } catch (error) {
-      console.log("Error in getAskingPrice:", error);
       throw new error(error);
     }
   }
@@ -122,35 +113,49 @@ export class StockGateway implements OnGatewayConnection {
     const recvvalue = data.split("^");
 
     const result = {
-      종목코드: recvvalue[0],
-      영업시간: recvvalue[1],
-      시간구분코드: recvvalue[2],
-      호가: {
-        매도: [
-          { 가격: recvvalue[12], 잔량: recvvalue[32] },
-          { 가격: recvvalue[11], 잔량: recvvalue[31] },
-          { 가격: recvvalue[10], 잔량: recvvalue[30] },
-          { 가격: recvvalue[9], 잔량: recvvalue[29] },
-          { 가격: recvvalue[8], 잔량: recvvalue[28] },
-          { 가격: recvvalue[7], 잔량: recvvalue[27] },
-          { 가격: recvvalue[6], 잔량: recvvalue[26] },
-          { 가격: recvvalue[5], 잔량: recvvalue[25] },
-          { 가격: recvvalue[4], 잔량: recvvalue[24] },
-          { 가격: recvvalue[3], 잔량: recvvalue[23] }
-        ],
-        매수: [
-          { 가격: recvvalue[13], 잔량: recvvalue[33] },
-          { 가격: recvvalue[14], 잔량: recvvalue[34] },
-          { 가격: recvvalue[15], 잔량: recvvalue[35] },
-          { 가격: recvvalue[16], 잔량: recvvalue[36] },
-          { 가격: recvvalue[17], 잔량: recvvalue[37] },
-          { 가격: recvvalue[18], 잔량: recvvalue[38] },
-          { 가격: recvvalue[19], 잔량: recvvalue[39] },
-          { 가격: recvvalue[20], 잔량: recvvalue[40] },
-          { 가격: recvvalue[21], 잔량: recvvalue[41] },
-          { 가격: recvvalue[22], 잔량: recvvalue[42] }
-        ]
-      },
+      mksc_shrn_iscd: recvvalue[0],
+      bsop_hour: recvvalue[1],
+      hour_cls_code: recvvalue[2],
+      askp10: recvvalue[12],
+      askp9: recvvalue[11],
+      askp8: recvvalue[10],
+      askp7: recvvalue[9],
+      askp6: recvvalue[8],
+      askp5: recvvalue[7],
+      askp4: recvvalue[6],
+      askp3: recvvalue[5],
+      askp2: recvvalue[4],
+      askp1: recvvalue[3],
+      ASKP_RSQN10: recvvalue[32],
+      ASKP_RSQN9: recvvalue[31],
+      ASKP_RSQN8: recvvalue[30],
+      ASKP_RSQN7: recvvalue[29],
+      ASKP_RSQN6: recvvalue[28],
+      ASKP_RSQN5: recvvalue[27],
+      ASKP_RSQN4: recvvalue[26],
+      ASKP_RSQN3: recvvalue[25],
+      ASKP_RSQN2: recvvalue[24],
+      ASKP_RSQN1: recvvalue[23],
+      BIDP1: recvvalue[13],
+      BIDP2: recvvalue[14],
+      BIDP3: recvvalue[15],
+      BIDP4: recvvalue[16],
+      BIDP5: recvvalue[17],
+      BIDP6: recvvalue[18],
+      BIDP7: recvvalue[19],
+      BIDP8: recvvalue[20],
+      BIDP9: recvvalue[21],
+      BIDP10: recvvalue[22],
+      BIDP_RSQN1: recvvalue[33],
+      BIDP_RSQN2: recvvalue[34],
+      BIDP_RSQN3: recvvalue[35],
+      BIDP_RSQN4: recvvalue[36],
+      BIDP_RSQN5: recvvalue[37],
+      BIDP_RSQN7: recvvalue[39],
+      BIDP_RSQN8: recvvalue[40],
+      BIDP_RSQN6: recvvalue[38],
+      BIDP_RSQN9: recvvalue[41],
+      BIDP_RSQN10: recvvalue[42],
       총매도호가: {
         잔량: recvvalue[43],
         잔량_증감: recvvalue[54]
@@ -175,8 +180,7 @@ export class StockGateway implements OnGatewayConnection {
         부호: recvvalue[51],
         체결_전일대비율: recvvalue[52]
       },
-      누적_거래량: recvvalue[53],
-      주식매매_구분코드: recvvalue[58]
+      누적_거래량: recvvalue[53]
     };
 
     return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환

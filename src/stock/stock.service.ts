@@ -12,6 +12,7 @@ export class StockService {
   private readonly tkPath: string = "/oauth2/tokenP";
   private readonly skPath: string = "/oauth2/Approval";
   private readonly rankPath: string = "/uapi/domestic-stock/v1/quotations/volume-rank";
+  private readonly pricePath: string = "/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn";
   private readonly publicBaseUrl: string = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService";
   private readonly publicGetStocksApi: string = "/getStockPriceInfo";
   private token: string;
@@ -121,6 +122,37 @@ export class StockService {
       console.log(stockList.data);
 
       return stockList.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  // 주식현재가 호가API
+  async getStockPrice(code: string) {
+    if (!this.token || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
+      await this.getTk();
+    }
+
+    const queryParams = {
+      FID_COND_MRKT_DIV_CODE: "J",
+      FID_INPUT_ISCD: code
+    };
+
+    try {
+      const stockPrice = await axios.get(`${this.domain}${this.pricePath}`, {
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${this.token}`,
+          appkey: this.configService.get<string>("PROD_APPKEY"),
+          appsecret: this.configService.get<string>("PROD_APPSECRET"),
+          tr_id: "FHKST01010200"
+        },
+        params: queryParams
+      });
+      console.log(stockPrice.data);
+
+      return stockPrice.data;
     } catch (error) {
       console.log(error);
       throw error;

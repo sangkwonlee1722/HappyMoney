@@ -1,5 +1,6 @@
-import token from '../js/common.js'
-import io from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+import { addComma } from "/js/common.js";
+
+rankListData();
 
 async function rankListData() {
   const stockUrl = "http://localhost:3000/api/stock/stockRank";
@@ -17,7 +18,7 @@ async function rankListData() {
         const priceClass = parseFloat(list.prdy_ctrt) < 0 ? percentClass : "";
         return `
             <li>
-              <a href='#none'></a>
+              <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}'></a>
               <div class="rank-name">
                 <p><span>${list.data_rank}</span> ${list.hts_kor_isnm}</p>
               </div>
@@ -33,28 +34,3 @@ async function rankListData() {
     console.error("Error:", error.message);
   }
 }
-
-function addComma(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-document.addEventListener("DOMContentLoaded", rankListData);
-
-const params = new URLSearchParams(window.location.search);
-const tr_key = params.get("code");
-
-const socket = io('ws://localhost:3000/ws/stock', {
-  transports: ['websocket'],
-});
-
-// 연결 성공 시 동작
-socket.on('connect', () => {
-  console.log('Connected to server');
-
-  // 메시지 전송
-  socket.emit('asking_price', tr_key);
-});
-
-socket.on('asking_price', (data) => {
-  // console.log('Received asking_price:', data);
-})
