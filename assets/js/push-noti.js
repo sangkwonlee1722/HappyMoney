@@ -39,7 +39,7 @@ export async function getMyAllPushNotis() {
 
 // 나의 알림 데이터 뿌려주기
 export async function spreadMyAllPushNotis() {
-  const mainDom = document.querySelector('.hm-alram-list')
+  const mainDom = document.querySelector('.hm-alarm-list')
   const pushNotis = await getMyAllPushNotis()
 
   if (pushNotis.length !== 0) {
@@ -71,20 +71,20 @@ export async function spreadMyAllPushNotis() {
         }
 
         return `
-      <li class="hm-alram" data-id="${id}">
+      <li class="hm-alarm" data-id="${id}">
         <a href="${contentUrl}" class="contents-url"></a>
-        <div class="alram-list-contnents">
-          <div class="alram-top">
+        <div class="alarm-list-contnents">
+          <div class="alarm-top">
             <h6>${serviceType}</h6>
-            <button class="alram-delete-btn">X</button>
+            <button class="alarm-delete-btn">X</button>
           </div>
-          <div class="alram-body">
-            <p class="alram-message">${message}</p>
-            <p class="alram-contents">${contents1}</p>
+          <div class="alarm-body">
+            <p class="alarm-message">${message}</p>
+            <p class="alarm-contents">${contents1}</p>
           </div>
-          <div class="alram-footer">
+          <div class="alarm-footer">
             <p class=${readStatusClass}>${readStatus}</p>
-            <p class="alram-date">${formattedDate}</p>
+            <p class="alarm-date">${formattedDate}</p>
           </div>
         </div>
       </li>
@@ -100,7 +100,7 @@ export async function spreadMyAllPushNotis() {
   }
 
   // X 버튼 클릭 시 해당 알림을 삭제하는 함수
-  $('.alram-delete-btn').on('click', async function () {
+  $('.alarm-delete-btn').on('click', async function () {
     const pushNoti = $(this).closest('li');
     const pushNotiId = pushNoti.attr('data-id');
 
@@ -108,7 +108,7 @@ export async function spreadMyAllPushNotis() {
   });
 
   // 전체 알림 삭제
-  $('.delete-all-alram').on('click', deleteAllPushNoti);
+  $('.delete-all-alarm').on('click', deleteAllPushNoti);
 
   // 전체 알림 읽음 처리
   $('.all-read-btn').on('click', updateReadStatusAllPushNoti)

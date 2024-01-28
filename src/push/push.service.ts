@@ -27,7 +27,7 @@ export class PushService {
     return pushNotis;
   }
 
-  async findOnePushAlram(pushId: number, userId: number): Promise<Push> {
+  async findOnePushalarm(pushId: number, userId: number): Promise<Push> {
     const push: Push = await this.pushRepository.findOne({ where: { id: pushId } });
 
     if (!push) {
@@ -46,13 +46,13 @@ export class PushService {
   }
 
   async updateOnePushNotiReadStatus(userId: number, pushId: number): Promise<void> {
-    await this.findOnePushAlram(pushId, userId);
+    await this.findOnePushalarm(pushId, userId);
 
     await this.pushRepository.update({ userId, id: pushId, isRead: false }, { isRead: true });
   }
 
   async removeOnePushNoti(pushId: number, userId: number): Promise<void> {
-    const pushNoti: Push = await this.findOnePushAlram(pushId, userId);
+    const pushNoti: Push = await this.findOnePushalarm(pushId, userId);
 
     await this.pushRepository.delete({ id: pushId });
   }

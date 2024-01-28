@@ -581,7 +581,7 @@ input::placeholder {
 }
 
 /* --알림창-- s*/
-.hm-popup-alram {
+.hm-popup-alarm {
   position: fixed;
   width: 350px;
   height: 700px;
@@ -597,28 +597,28 @@ input::placeholder {
   justify-content: center;
 }
 
-.hm-alram-wrap {
+.hm-alarm-wrap {
   width: 85%;
   height: 90%;
 }
 
-.hm-alram-header {
+.hm-alarm-header {
   width: 100%;
 }
 
-.hm-alram-list {
+.hm-alarm-list {
   overflow: auto;
   height: 83%;
 }
 
-.hm-alram {
+.hm-alarm {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
 
-.hm-alram a {
+.hm-alarm a {
   position: absolute;
   top: 0;
   right: 0;
@@ -626,52 +626,52 @@ input::placeholder {
   left: 0;
 }
 
-.alram-list-contnents {
+.alarm-list-contnents {
   width: 95%;
 }
 
-.hm-alram-top {
+.hm-alarm-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.hm-alram-top h5 {
+.hm-alarm-top h5 {
   font-weight: bold;
 }
 
-.hm-alram-top button {
+.hm-alarm-top button {
   border: none;
   background-color: transparent;
 }
 
-.alram-top {
+.alarm-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.alram-top h6 {
+.alarm-top h6 {
   font-size: 18px;
   font-weight: bold;
 }
 
-.alram-top button {
+.alarm-top button {
   border: none;
   background-color: transparent;
   z-index: 200;
 }
 
-.alram-body {
+.alarm-body {
   font-size: 14px;
   margin: 0.5rem 0 0.5rem 0;
 }
 
-.alram-body .alram-contents {
+.alarm-body .alarm-contents {
   font-weight: bold;
 }
 
-.alram-footer {
+.alarm-footer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -679,27 +679,27 @@ input::placeholder {
   color: #777;
 }
 
-.alram-footer .unread {
+.alarm-footer .unread {
   color: #ea5555;
 }
 
-.hm-alram:hover {
+.hm-alarm:hover {
   background-color: #d9d9d9;
 }
-.hm-alram:hover hr {
+.hm-alarm:hover hr {
   margin-top: 0px;
 }
 
-.hm-alram-footer {
+.hm-alarm-footer {
   display: flex;
   flex-direction: row-reverse;
 }
 
-.hm-alram-footer button {
+.hm-alarm-footer button {
   margin-top: 1rem;
 }
 
-.hm-alram-dim {
+.hm-alarm-dim {
   position: fixed;
   top: 0;
   left: 0;

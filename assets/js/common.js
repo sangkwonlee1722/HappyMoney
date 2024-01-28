@@ -5,8 +5,8 @@ export const baseUrl = "http://localhost:3000/api/";
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
 window.loginConfirm = loginConfirm;
-window.alramOpen = alramOpen;
-window.alramClose = alramClose;
+window.alarmOpen = alarmOpen;
+window.alarmClose = alarmClose;
 window.logout = logout;
 
 //팝업 열기
@@ -23,15 +23,15 @@ export function drPopupClose(im) {
 }
 
 // 알림 열기
-export function alramOpen() {
-  $(".hm-popup-alram").css("display", "flex");
-  $(".hm-alram-dim").css("display", "block");
+export function alarmOpen() {
+  $(".hm-popup-alarm").css("display", "flex");
+  $(".hm-alarm-dim").css("display", "block");
 }
 
 // 알림 닫기
-export function alramClose() {
-  $(".hm-popup-alram").css("display", "none");
-  $(".hm-alram-dim").css("display", "none");
+export function alarmClose() {
+  $(".hm-popup-alarm").css("display", "none");
+  $(".hm-alarm-dim").css("display", "none");
 }
 
 // 헤더, 푸터
