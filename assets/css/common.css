@@ -607,7 +607,7 @@ input::placeholder {
 }
 
 .hm-alram-list {
-  overflow: scroll;
+  overflow: auto;
   height: 83%;
 }
 
@@ -615,6 +615,15 @@ input::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.hm-alram a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .alram-list-contnents {
@@ -650,11 +659,16 @@ input::placeholder {
 .alram-top button {
   border: none;
   background-color: transparent;
+  z-index: 200;
 }
 
 .alram-body {
-  font-size: 15px;
+  font-size: 14px;
   margin: 0.5rem 0 0.5rem 0;
+}
+
+.alram-body .alram-contents {
+  font-weight: bold;
 }
 
 .alram-footer {
@@ -662,6 +676,11 @@ input::placeholder {
   flex-direction: row;
   justify-content: space-between;
   font-size: 13px;
+  color: #777;
+}
+
+.alram-footer .unread {
+  color: #ea5555;
 }
 
 .hm-alram:hover {

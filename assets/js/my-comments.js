@@ -67,9 +67,6 @@ const spreadCommentsList = async () => {
   }
 }
 
-await spreadCommentsList()
-
-
 $('.delete-comment-btn').on('click', function () {
   const comment = $(this).closest('li');
   const commentId = comment.attr('data-id');

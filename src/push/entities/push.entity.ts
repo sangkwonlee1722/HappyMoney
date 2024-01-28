@@ -17,7 +17,7 @@ export class Push extends BaseEntity {
   userId: number;
 
   @Column({ type: "enum", enum: ServiceType, nullable: false })
-  servcieType: ServiceType;
+  serviceType: ServiceType;
 
   @Column({ nullable: false, default: false })
   isRead: boolean;

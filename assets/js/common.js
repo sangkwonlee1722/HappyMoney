@@ -1,3 +1,5 @@
+import { spreadMyAllPushNotis } from './push-noti.js'
+
 export const baseUrl = "http://localhost:3000/api/";
 
 window.drPopupOpen = drPopupOpen;
@@ -22,14 +24,12 @@ export function drPopupClose(im) {
 
 // 알림 열기
 export function alramOpen() {
-  $("body").css("overflow", "hidden");
   $(".hm-popup-alram").css("display", "flex");
   $(".hm-alram-dim").css("display", "block");
 }
 
 // 알림 닫기
 export function alramClose() {
-  $("body").css("overflow", "hidden");
   $(".hm-popup-alram").css("display", "none");
   $(".hm-alram-dim").css("display", "none");
 }
@@ -50,9 +50,9 @@ export default function getToken() {
   return token;
 }
 
-$(document).ready(async function () {
+$(document).ready(function () {
   const token = getCookie("accessToken");
-  setTimeout(function () {
+  setTimeout(async function () {
     // 세션 ID가 있는지 여부에 따라 탭을 토글합니다.
     if (token) {
       // 세션 ID가 있으면 로그인 상태로 간주하고 로그인 탭을 표시합니다.
@@ -62,6 +62,8 @@ $(document).ready(async function () {
       setTimeout(() => {
         registerNotificationService()
       }, 100);
+
+      $('.push-noti-icon').on('click', spreadMyAllPushNotis)
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
@@ -76,6 +78,10 @@ $(document).ready(async function () {
       `;
     inputBox.innerHTML = temp_html;
   }, 50);
+
+
+
+  ;
 });
 
 function setCookie(name, value, days) {
@@ -235,3 +241,5 @@ function urlBase64ToUint8Array(base64String) {
 
   return outputArray;
 }
+
+

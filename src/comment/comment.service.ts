@@ -48,7 +48,7 @@ export class CommentService {
         /* 푸시 테이블에 데이터 생성 */
         const pushData: Push = em.create(Push, {
           userId: post.userId,
-          servcieType: ServiceType.Comment,
+          serviceType: ServiceType.Comment,
           contents1: post.title
         });
 

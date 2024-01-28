@@ -43,7 +43,7 @@ export class TwitService {
 
       const pushData: Push = em.create(Push, {
         userId: receiver.id,
-        servcieType: ServiceType.Twit,
+        serviceType: ServiceType.Twit,
         contents1: sendTwit.contents,
         contents2: sendTwit.senderName
       });
