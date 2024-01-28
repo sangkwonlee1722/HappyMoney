@@ -2,6 +2,22 @@ import { baseUrl } from "./common.js";
 import getToken from './common.js'
 
 // 내가 읽지 않은 알림이 있을 경우 빨간 점 표시
+export async function checkPushNotis() {
+  const apiUrl = baseUrl + 'push/unread-notis'
+  const token = getToken();
+
+  try {
+    const result = await axios.get(apiUrl, {
+      headers: {
+        'Authorization': token,
+      },
+    })
+
+    return result.data.unReadNotisCounts
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 // 나의 모든 알림 데이터 가져오기 
 export async function getMyAllPushNotis() {

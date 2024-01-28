@@ -1,4 +1,4 @@
-import { spreadMyAllPushNotis } from './push-noti.js'
+import { spreadMyAllPushNotis, checkPushNotis } from './push-noti.js'
 
 export const baseUrl = "http://localhost:3000/api/";
 
@@ -59,9 +59,16 @@ $(document).ready(function () {
       $("#loginTab").hide();
       $("#logoutTab").show();
 
+      // 로그인 시 푸시알림 구독 정보 및 서비스워커 등록 
       setTimeout(() => {
         registerNotificationService()
       }, 100);
+
+      const pushNoitsNumbers = await checkPushNotis()
+
+      if (pushNoitsNumbers === 0) {
+        $('.hm-red-dot-right').hide();
+      }
 
       $('.push-noti-icon').on('click', spreadMyAllPushNotis)
     } else {
@@ -78,10 +85,6 @@ $(document).ready(function () {
       `;
     inputBox.innerHTML = temp_html;
   }, 50);
-
-
-
-  ;
 });
 
 function setCookie(name, value, days) {
@@ -174,7 +177,8 @@ async function registerNotificationService() {
     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
     if (status === "denied") {
-      alert("알림을 거부 설정이 완료되었습니다.");
+      console.log("Notification 상태", status);
+      return
     } else if (navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.register("sw.js");
       const subscribeOptions = {
