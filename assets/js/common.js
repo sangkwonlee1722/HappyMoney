@@ -139,30 +139,30 @@ export function addComma(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// // 알림 권한 확인 및 서비스 워크 등록
-// async function registerNotificationService() {
-//   try {
-//     const status = await Notification.requestPermission();
-//     console.log("Notification 상태", status);
+// 알림 권한 확인 및 서비스 워크 등록
+async function registerNotificationService() {
+  try {
+    const status = await Notification.requestPermission();
+    console.log("Notification 상태", status);
 
-//     const vapidPublicKey = await getVAPIDPublicKey();
-//     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+    const vapidPublicKey = await getVAPIDPublicKey();
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
-//     if (status === "denied") {
-//       alert("알림을 거부 설정이 완료되었습니다.");
-//     } else if (navigator.serviceWorker) {
-//       const registration = await navigator.serviceWorker.register("sw.js");
-//       const subscribeOptions = {
-//         userVisibleOnly: true,
-//         applicationServerKey: convertedVapidKey
-//       };
-//       const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-//       postSubscription(pushSubscription);
-//     }
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-// }
+    if (status === "denied") {
+      alert("알림을 거부 설정이 완료되었습니다.");
+    } else if (navigator.serviceWorker) {
+      const registration = await navigator.serviceWorker.register("sw.js");
+      const subscribeOptions = {
+        userVisibleOnly: true,
+        applicationServerKey: convertedVapidKey
+      };
+      const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+      postSubscription(pushSubscription);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 // 구독 정보를 user 테이블에 저장하는 함수
 async function postSubscription(pushSubscription) {
