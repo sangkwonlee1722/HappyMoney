@@ -19,13 +19,22 @@
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
-        <button id="kakaoBtn" onclick="javascript: KakaoLogin()">
-          <img src="https://cdn.imweb.me/thumbnail/20220403/a8e484f2dfe39.png" style="height: 60px" />
+        <button id="kakaoBtn" class="socialBtn">
+          <img src="https://cdn.imweb.me/thumbnail/20220403/a8e484f2dfe39.png" style="height: 30px" width="30px" />
         </button>
-        <button id="googleBtn">
+        <button id="googleBtn" class="socialBtn">
           <img
-            src="https://images.velog.io/images/dudgjs13579/post/00f7f70e-b59d-4c3d-9e8a-02ad8b635589/Twitter%20post%20-%202.svg"
-            style="height: 60px"
+            src="https://cdn.icon-icons.com/icons2/836/PNG/512/Google_icon-icons.com_66793.png"
+            style="height: 30px"
+            width="30px"
+          />
+        </button>
+
+        <button id="naverBtn" class="socialBtn">
+          <img
+            src="https://mblogthumb-phinf.pstatic.net/20150312_17/value_cost_1426168478001L6AlW_JPEG/unnamed.png?type=w420"
+            style="height: 30px"
+            width="30px"
           />
         </button>
         <!-- 메인 배너 s -->
@@ -74,25 +83,5 @@
       </div>
       <footer id="footer_wrap"></footer>
     </div>
-
-    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-    <script>
-      window.Kakao.init("7e510a88b68e84e4377a5326486ba9be");
-      function KakaoLogin() {
-        window.Kakao.Auth.login({
-          scope: "	profile_nickname,account_email",
-          success: function (authObj) {
-            console.log(authObj);
-            window.Kakao.API.request({
-              url: "/v2/user/me",
-              success: (res) => {
-                const kakao_account = res.kakao_account;
-                console.log(kakao_account);
-              }
-            });
-          }
-        });
-      }
-    </script>
   </body>
 </html>

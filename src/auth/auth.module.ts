@@ -38,12 +38,11 @@ import { EmailModule } from "src/email/email.module";
     JwtStrategy,
     JwtGoogleStrategy, //google소셜로그인
 
-    // JwtNaverStrategy, //naver소셜로그인
+    JwtNaverStrategy, //naver소셜로그인
     JwtKakaoStrategy, //kakao소셜로그인
 
     JwtNaverStrategy, //naver소셜로그인
-    // JwtKakaoStrategy, //kakao소셜로그인
-    // AuthResolver, //resolver 주입
+    JwtKakaoStrategy, //kakao소셜로그인
     AuthService, //service 주입
     UserService //user폴더의 service 주입
   ]

@@ -949,3 +949,8 @@ footer.hm-container.hm-fixed {
   text-decoration: none;
   color: black;
 }
+
+.socialBtn {
+  border: none;
+  background: none;
+}

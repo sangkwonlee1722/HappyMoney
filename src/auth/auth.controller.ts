@@ -24,11 +24,14 @@ export class AuthController {
   //-----------------------구글 로그인-----------------------------//
   @Get("google/login")
   @UseGuards(AuthGuard("google"))
-  async loginGoogle(
-    @Req() req: Request & IOAuthUser, //
-    @Res() res: Response
-  ) {
-    this.authService.OAuthLogin({ req, res });
+  async loginGoogle(@Req() req: Request & IOAuthUser, @Res() res: Response) {}
+  @Get("google/callback")
+  @UseGuards(AuthGuard("google"))
+  async googleLoginCallback(@Req() req: any, @Res() res: any) {
+    const token = await this.authService.googleLogin(req);
+    res.cookie("accessToken", token);
+    console.log(token);
+    return res.redirect("http://localhost:3000/views/main.html");
   }
 
   //-----------------------카카오 로그인-----------------------------//
@@ -37,8 +40,15 @@ export class AuthController {
   async loginKakao(
     @Req() req: Request & IOAuthUser, //
     @Res() res: Response
-  ) {
-    this.authService.OAuthLogin({ req, res });
+  ) {}
+
+  @Get("kakao/callback")
+  @UseGuards(AuthGuard("kakao"))
+  async kakaoLoginCallback(@Req() req: any, @Res() res: any) {
+    const token = await this.authService.kakaoLogin(req);
+    res.cookie("accessToken", token);
+    console.log(token);
+    return res.redirect("http://localhost:3000/views/main.html");
   }
 
   //-----------------------네이버 로그인-----------------------------//
@@ -47,7 +57,15 @@ export class AuthController {
   async loginNaver(
     @Req() req: Request & IOAuthUser, //
     @Res() res: Response
-  ) {
-    this.authService.OAuthLogin({ req, res });
+  ) {}
+
+  @Get("naver/callback")
+  @UseGuards(AuthGuard("naver"))
+  async naverLoginCallback(@Req() req: any, @Res() res: any) {
+    const token = await this.authService.naverLogin(req);
+    console.log(token);
+    res.cookie("accessToken", token);
+
+    return res.redirect("http://localhost:3000/views/main.html");
   }
 }

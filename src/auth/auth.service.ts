@@ -1,72 +1,91 @@
 import { ConflictException, Injectable, Req } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
-import { socialLoginDto } from "./dto/social-dto";
 import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly userService: UserService,
-    private jwtService: JwtService,
-    private readonly configService: ConfigService
+    private jwtService: JwtService
   ) {}
 
-  async OAuthLogin({ req, res }) {
-    let user = await this.userService.findUserByEmail(req.email);
+  async findByEmailOrSave(email: string, name: string) {
+    try {
+      const user = await this.userRepository.findOne({ where: { email } });
+      if (user) return user;
 
-    if (!user) {
-      await this.userService.createUser(req.user);
+      const socialUser = this.userRepository.save({
+        email,
+        name: name,
+        isEmailVerified: true
+      });
+      return socialUser;
+    } catch (error) {
+      throw new Error("사용자를 찾거나 생성하는데 실패하였습니다");
     }
-
-    this.setRefreshToken({ user, res });
-    res.redirect("리다이렉트할 url주소");
-  }
-
-  setRefreshToken(arg0: { user: import("../user/entities/user.entity").User; res: any }) {
-    throw new Error("Method not implemented.");
   }
 
   async googleLogin(@Req() req: any) {
-    const { email } = req.user;
-    const name = req.user.firstName + req.user.lastName;
-    const user = await this.userService.findUserByEmail(email);
-    if (user) {
-      throw new ConflictException("이미 존재하는 회원입니다.");
-    }
+    const { email, name } = req.user;
+    console.log(req.user.name);
+    const member = await this.findByEmailOrSave(email, name); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
 
-    console.log(user);
-    console.log(req.user);
-    console.log(name);
-
+    // JWT 토큰에 포함될 payload
     const payload = {
-      name: name
+      id: member.id
     };
+    const expiresIn = "1d"; // 하루 동안 유효한 토큰
 
-    return {
-      accessToken: this.jwtService.sign(payload, {
-        expiresIn: "1d",
-        secret: process.env.JWT_SECRET
-      })
-    };
+    const token = this.jwtService.sign(payload, {
+      expiresIn, // 정상적인 expiresIn 설정
+      secret: process.env.JWT_SECRET
+    });
+
+    return token;
   }
 
-  async kakaoLogin(apikey: string, redirectUri: string, code: string) {
-    const config = {
-      grant_type: "authorization_code",
-      KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID,
-      redirect_uri: process.env.KAKAO_CODE_REDIRECT_URI,
-      code
-    };
-    const params = new URLSearchParams(config).toString();
-    const tokenHeaders = {
-      "Content-type": "application/x-www-form-urlencoded;charset=utf-8"
-    };
-    const tokenUrl = `https://kauth.kakao.com/oauth/token?${params}`;
+  async kakaoLogin(@Req() req: any) {
+    const { email, nickname } = req.user;
+    console.log(req.user.nickname);
+    const member = await this.findByEmailOrSave(email, nickname); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
 
-    // const res = await firstValueFrom(this.http.post(tokenUrl, "", { headers: tokenHeaders }));
-    // console.log(res);
+    const payload = {
+      id: member.id
+    };
+    const expiresIn = "1d"; // 하루 동안 유효한 토큰
+
+    const token = this.jwtService.sign(payload, {
+      expiresIn, // 정상적인 expiresIn 설정
+      secret: process.env.JWT_SECRET
+    });
+
+    return token;
+  }
+
+  async naverLogin(@Req() req: any) {
+    let { email, name } = req.user;
+    if (name === undefined) {
+      name = "user";
+    }
+    const member = await this.findByEmailOrSave(email, name); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
+
+    // JWT 토큰에 포함될 payload
+    const payload = {
+      id: member.id
+    };
+    const expiresIn = "1d"; // 하루 동안 유효한 토큰
+
+    const token = this.jwtService.sign(payload, {
+      expiresIn, // 정상적인 expiresIn 설정
+      secret: process.env.JWT_SECRET
+    });
+
+    return token;
   }
 }

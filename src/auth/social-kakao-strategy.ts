@@ -8,15 +8,15 @@ export class JwtKakaoStrategy extends PassportStrategy(Strategy, "kakao") {
     super({
       clientID: process.env.KAKAO_CLIENT_ID,
       clientSecret: process.env.KAKAO_CLIENT_SECRET,
-      callbackURL: process.env.KAKAO_CODE_REDIRECT_URI,
+      callbackURL: "http://localhost:3000/api/kakao/callback",
       scope: ["account_email", "profile_nickname"]
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    console.log("accessToken: ", accessToken);
-    console.log("refreshToken: ", refreshToken);
-    console.log(profile);
+    // console.log("accessToken: ", accessToken);
+    // console.log("refreshToken: ", refreshToken);
+    // console.log(profile);
 
     return {
       email: profile._json.kakao_account.email,
