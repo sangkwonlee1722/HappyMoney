@@ -41,6 +41,7 @@ export class UserService {
       const hashPassword = hashSync(password, hashRound);
 
       const mailOptions = {
+        from: this.configService.get("NODE_MAIL_ID"),
         to: email,
         subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
         html: `인증링크 : <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`

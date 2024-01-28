@@ -43,8 +43,6 @@ export class AuthService {
 
       const existingUser = await this.userService.findUserByNickName(nickname);
       isUnique = !existingUser;
-
-      console.log(nickname);
     }
 
     return nickname;
