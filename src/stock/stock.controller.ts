@@ -39,6 +39,17 @@ export class StockController {
   }
 
   /**
+   * 주식현재가 호가
+   * @param code
+   * @returns
+   */
+  @Get("stockPrice")
+  async getStockPrice(@Query("code") code: string) {
+    const item = await this.stockService.getStockPrice(code);
+    return { item };
+  }
+
+  /**
    * 주식 종목 키워드로 검색하기
    * @param keyword
    * @returns
