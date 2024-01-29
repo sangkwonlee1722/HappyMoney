@@ -61,8 +61,12 @@ export class AuthService {
     const user = await this.findByEmailOrSave(email, name, signupType, nickname);
 
     const payload = {
-      id: user.id
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+      signupType: user.signupType
     };
+
     const expiresIn = "1d";
 
     const token = this.jwtService.sign(payload, {
