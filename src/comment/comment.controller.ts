@@ -22,7 +22,7 @@ export class CommentController {
   @ApiBearerAuth()
   @Post(":postId")
   async create(@Param("postId") postId: number, @UserInfo() user: User, @Body() createCommentDto: CreateCommentDto) {
-    await this.commentService.create(user.id, postId, createCommentDto);
+    await this.commentService.create(user, postId, createCommentDto);
     return {
       success: true,
       message: "okay"
