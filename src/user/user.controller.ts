@@ -22,7 +22,7 @@ import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
-import { PasswordCheck, UpdateUserDto } from "./dto/update-user.dto";
+import { PasswordCheck, SubscriptionDto, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { foundPasswordDto } from "./dto/found-password.dto";
 import { AuthGuard } from "@nestjs/passport";
@@ -233,6 +233,32 @@ export class UserController {
     const users = await this.userService.find();
     return {
       data: { users },
+      success: true,
+      message: "okay"
+    };
+  }
+
+  /**
+   * 구독 정보 저장
+   * @param param0
+   * @param user
+   * @returns
+   */
+  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @Patch("subscription")
+  async saveSubscription(@Body() { subscription }: SubscriptionDto, @UserInfo() user: User) {
+    const existUser = await this.userService.findUserById(user.id);
+    if (!existUser) {
+      throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
+    }
+
+    if (JSON.stringify(existUser.subscription) === JSON.stringify(subscription)) {
+      return;
+    }
+
+    await this.userService.saveSubscription(subscription, user.id);
+    return {
       success: true,
       message: "okay"
     };

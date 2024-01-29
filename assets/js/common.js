@@ -1,8 +1,12 @@
+import { spreadMyAllPushNotis, checkPushNotis } from './push-noti.js'
+
 export const baseUrl = "http://localhost:3000/api/";
 
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
 window.loginConfirm = loginConfirm;
+window.alarmOpen = alarmOpen;
+window.alarmClose = alarmClose;
 window.logout = logout;
 
 //팝업 열기
@@ -16,6 +20,18 @@ export function drPopupClose(im) {
   $("body").css("overflow", "auto");
   $(".hm-popup-wrap").css("display", "none");
   $(".hm-dim").css("display", "none");
+}
+
+// 알림 열기
+export function alarmOpen() {
+  $(".hm-popup-alarm").css("display", "flex");
+  $(".hm-alarm-dim").css("display", "block");
+}
+
+// 알림 닫기
+export function alarmClose() {
+  $(".hm-popup-alarm").css("display", "none");
+  $(".hm-alarm-dim").css("display", "none");
 }
 
 // 헤더, 푸터
@@ -34,14 +50,27 @@ export default function getToken() {
   return token;
 }
 
-$(document).ready(async function () {
+$(document).ready(function () {
   const token = getCookie("accessToken");
-  setTimeout(function () {
+  setTimeout(async function () {
     // 세션 ID가 있는지 여부에 따라 탭을 토글합니다.
     if (token) {
       // 세션 ID가 있으면 로그인 상태로 간주하고 로그인 탭을 표시합니다.
       $("#loginTab").hide();
       $("#logoutTab").show();
+
+      // 로그인 시 푸시알림 구독 정보 및 서비스워커 등록 
+      setTimeout(() => {
+        registerNotificationService()
+      }, 100);
+
+      const pushNoitsNumbers = await checkPushNotis()
+
+      if (pushNoitsNumbers === 0) {
+        $('.hm-red-dot-right').hide();
+      }
+
+      $('.push-noti-icon').on('click', spreadMyAllPushNotis)
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
@@ -134,3 +163,85 @@ export function deleteCookie(name) {
 export function addComma(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+
+// 알림 권한 확인 및 서비스 워크 등록
+async function registerNotificationService() {
+  try {
+    const status = await Notification.requestPermission();
+    console.log("Notification 상태", status);
+
+    const vapidPublicKey = await getVAPIDPublicKey();
+    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+    if (status === "denied") {
+      console.log("Notification 상태", status);
+      return
+    } else if (navigator.serviceWorker) {
+      const registration = await navigator.serviceWorker.register("sw.js");
+      const subscribeOptions = {
+        userVisibleOnly: true,
+        applicationServerKey: convertedVapidKey
+      };
+      const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+      postSubscription(pushSubscription);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+// 구독 정보를 user 테이블에 저장하는 함수
+async function postSubscription(pushSubscription) {
+
+  const subscription = pushSubscription.toJSON();
+
+  const apiUrl = baseUrl + "user/subscription"
+  const token = getToken()
+
+  try {
+    await axios.patch(apiUrl, {
+      subscription
+    }, {
+      headers: {
+        'Authorization': token,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
+async function getVAPIDPublicKey() {
+  const apiUrl = baseUrl + "push/VAPIDKeys"
+
+  const token = getToken()
+  const result = await axios.get(apiUrl, {
+    headers: {
+      'Authorization': token,
+    },
+  })
+
+  const publicKey = result.data.publicKey
+  return publicKey
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+

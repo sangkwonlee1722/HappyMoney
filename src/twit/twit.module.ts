@@ -5,9 +5,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Twit } from "./entities/twit.entity";
 import { User } from "src/user/entities/user.entity";
 import { UserModule } from "src/user/user.module";
+import { PushModule } from "src/push/push.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Twit]), UserModule],
+  imports: [TypeOrmModule.forFeature([Twit]), UserModule, PushModule],
   controllers: [TwitController],
   providers: [TwitService]
 })

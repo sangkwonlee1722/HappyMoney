@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { User } from "src/user/entities/user.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { IsNotEmpty, IsString } from "class-validator";
 import { Post } from "src/post/entities/post.entity";
+import { Push } from "src/push/entities/push.entity";
 
 @Entity()
 export class Comment extends BaseEntity {

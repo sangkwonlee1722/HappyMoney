@@ -1,6 +1,7 @@
 .main-banner-wrap {
   height: 500px;
-  background-color: beige;
+  background-image: url("../images/banner_1.jpg");
+  background-size: cover;
   display: flex;
   border-radius: 15px;
 }

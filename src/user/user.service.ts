@@ -8,6 +8,7 @@ import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
 import { v4 as uuidv4 } from "uuid";
 import { createTransport } from "nodemailer";
+import { SubscriptionDto } from "./dto/update-user.dto";
 interface EmailOptions {
   to: string;
   subject: string;
@@ -172,6 +173,10 @@ export class UserService {
   // 닉네임으로 해당 아이디 받아오기
   async findUserByNickname(nickname: string): Promise<User | undefined> {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
+  }
+
+  async saveSubscription(subscription: JSON, id: number) {
+    await this.userRepository.update({ id }, { subscription });
   }
 
   async sendTemporaryPassword(email: string) {

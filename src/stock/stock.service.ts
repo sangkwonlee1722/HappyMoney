@@ -5,6 +5,7 @@ import axios from "axios";
 import { Stock } from "./entities/stock.entity";
 import { Repository, getConnection } from "typeorm";
 import { Cron } from "@nestjs/schedule";
+import webpush from "web-push";
 
 @Injectable()
 export class StockService {
@@ -228,5 +229,10 @@ export class StockService {
       .getMany();
 
     return stocks;
+  }
+
+  async generateKeys() {
+    const keys = webpush.generateVAPIDKeys();
+    console.log(keys);
   }
 }
