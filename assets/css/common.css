@@ -1084,8 +1084,6 @@ footer.hm-container.hm-fixed {
   z-index: 999;
 }
 
-/* 로그인 팝업 e */
-
 .foundPasswordAndUser {
   text-align: center;
 }
@@ -1103,3 +1101,39 @@ footer.hm-container.hm-fixed {
   border: none;
   background: none;
 }
+
+/* pagenation s */
+#hm-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+#hm-pagination li {
+  margin-right: 10px;
+}
+#hm-pagination li a {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  background: #ddd;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+#hm-pagination li a.active {
+  background-color: #000f5d;
+  color: #fff;
+  font-weight: bold;
+}
+#hm-pagination .arrow {
+  background-color: transparent;
+  font-weight: bold;
+  transition: ease-in-out 0.1s;
+  width: 12px;
+}
+#hm-pagination .arrow:hover {
+  font-size: 19px;
+}
+/* pagenation e */

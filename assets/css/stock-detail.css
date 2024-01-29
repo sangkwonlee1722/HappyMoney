@@ -1,0 +1,66 @@
+.stock-dt-tit h2 {
+  font-weight: bold;
+}
+.stock-dt-tit h2 span {
+  font-size: 18px;
+}
+.stock-dt-tit-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stock-dt-tit-box .price {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: -1px;
+}
+
+.stock-dt-live {
+  display: flex;
+  flex-direction: column;
+  width: 58%;
+  border: 1px solid #ccc;
+  font-weight: bold;
+  font-size: 14px;
+}
+.stock-dt-live li {
+  display: flex;
+}
+.stock-dt-live li > div {
+  width: 50%;
+  padding: 10px;
+  text-align: center;
+}
+.stock-dt-live li .price {
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+.stock-dt-live li:last-child .price {
+  border-bottom: 0;
+}
+.stock-dt-live li.title > div {
+  background-color: #999;
+}
+.stock-dt-live li.title .amount {
+  border-bottom: 1px solid #ddd;
+}
+.stock-dt-live .buy .price {
+  background-color: #f5abb2;
+  color: #ff2828;
+}
+.stock-dt-live .sell .price {
+  background-color: #aaa;
+  color: #5669c7;
+}
+.stock-dt-live .buy .amount {
+  color: #5669c7;
+}
+.stock-dt-live .sell .amount {
+  color: #ff2828;
+}
+.stock-dt-live .sell.num1 {
+  border: 2px solid #222;
+}
+.stock-dt-live .sell.num1 .amount {
+  color: #5669c7;
+}
