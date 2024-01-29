@@ -8,6 +8,8 @@ import { ConfigService } from "@nestjs/config";
 import { sendNotification } from "web-push";
 import { Payload } from "./push-config";
 import { Cron, CronExpression } from "@nestjs/schedule";
+import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
+import { SlackService } from "src/common/slack/slack.service";
 
 @Injectable()
 export class PushService {
@@ -15,7 +17,8 @@ export class PushService {
     @InjectRepository(Push)
     private readonly pushRepository: Repository<Push>,
 
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly slackService: SlackService
   ) {}
 
   async findAllMyPushNoti(userId: number): Promise<Push[]> {
@@ -95,12 +98,23 @@ export class PushService {
     time.setDate(time.getDate() - 1);
     console.log("time: ", time);
 
-    await this.pushRepository
+    const deleteResult = await this.pushRepository
       .createQueryBuilder()
       .delete()
       .from(Push)
       .where("isRead = true")
       .andWhere("createdAt <= :time", { time })
       .execute();
+
+    // 슬랙으로 알림 보내기
+    const deletedRowCount = deleteResult.affected;
+    const color: string = slackLineColor.info;
+    const text: string = "Push-Noti Delete Schedule";
+    const mrkTitle: string = "푸시 삭제 알림 성공";
+    const mrkValue: string = `기준 시간: ${time} / 삭제된 데이터 수: ${deletedRowCount}`;
+
+    const message = new SlackMessage(color, text, mrkTitle, mrkValue);
+
+    this.slackService.sendScheduleNoti(message);
   }
 }
