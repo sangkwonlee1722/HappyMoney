@@ -8,6 +8,9 @@ window.loginConfirm = loginConfirm;
 window.alarmOpen = alarmOpen;
 window.alarmClose = alarmClose;
 window.logout = logout;
+window.googleLogin = googleLogin;
+window.naverLogin = naverLogin;
+window.kakaoLogin = kakaoLogin;
 
 //팝업 열기
 export function drPopupOpen(popName) {
@@ -242,4 +245,16 @@ function urlBase64ToUint8Array(base64String) {
   }
 
   return outputArray;
+}
+
+function googleLogin() {
+  window.location.href = "http://localhost:3000/api/google/login";
+}
+
+function kakaoLogin() {
+  window.location.href = "http://localhost:3000/api/kakao/login";
+}
+
+function naverLogin() {
+  window.location.href = "http://localhost:3000/api/naver/login";
 }

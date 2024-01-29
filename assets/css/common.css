@@ -1009,6 +1009,7 @@ footer.hm-container.hm-fixed {
 
 .loginModal {
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: fixed;
   top: 50%;
@@ -1018,7 +1019,7 @@ footer.hm-container.hm-fixed {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  height: 400px;
+  height: 600px;
   z-index: 1000;
 }
 
@@ -1043,6 +1044,10 @@ footer.hm-container.hm-fixed {
 }
 
 .login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   color: black;
   padding: 10px;
   border: none;
@@ -1084,9 +1089,11 @@ footer.hm-container.hm-fixed {
   z-index: 999;
 }
 
+/* passwordFound */
 .foundPasswordAndUser {
   text-align: center;
 }
+/* passwordFound */
 
 .styled-link {
   display: inline-block;
@@ -1097,10 +1104,18 @@ footer.hm-container.hm-fixed {
   color: black;
 }
 
+/* social */
 .socialBtn {
   border: none;
   background: none;
 }
+
+.social {
+  display: flex;
+  flex-direction: column;
+}
+
+/* social */
 
 /* pagenation s */
 #hm-pagination {
