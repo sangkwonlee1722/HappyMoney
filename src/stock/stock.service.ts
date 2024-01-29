@@ -1,13 +1,11 @@
-import { Injectable, InternalServerErrorException, UseInterceptors } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import axios from "axios";
 import { Stock } from "./entities/stock.entity";
-import { Repository } from "typeorm";
+import { Repository, getConnection } from "typeorm";
 import { Cron } from "@nestjs/schedule";
 import webpush from "web-push";
-import { SlackService } from "src/common/slack/slack.service";
-import { SlackMessage, SlackMessageFormat, slackLineColor } from "src/common/slack/slack.config";
 
 @Injectable()
 export class StockService {
@@ -24,7 +22,7 @@ export class StockService {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly slackService: SlackService,
+
     @InjectRepository(Stock)
     private readonly stocksRepository: Repository<Stock>
   ) {}
@@ -198,7 +196,7 @@ export class StockService {
     }
   }
 
-  @Cron("20 41 21 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
@@ -218,29 +216,6 @@ export class StockService {
 
     let end = new Date();
     const time = end.getTime() - start.getTime();
-
-    // 슬랙으로 알림 보내기
-    const color: string = slackLineColor.info;
-    const text: string = "주식 정보 업데이트 스케쥴";
-    const mrkTitle: string = "주식 정보 업데이트 성공!!";
-    const mrkValue: string = `업데이트 걸린 시간: ${time}`;
-    const footer: string = "message From Stock";
-
-    // const message = new SlackMessage(color, text, footer, mrkTitle, mrkValue);
-
-    const message = {
-      color,
-      text,
-      fields: [
-        {
-          title: mrkTitle,
-          value: `\`\`\`${mrkValue}\`\`\``
-        }
-      ]
-    };
-
-    console.log("message: ", message);
-    this.slackService.sendScheduleNoti(message);
 
     console.log("걸린 시간 : ", time);
     console.log(stocksList[0]);

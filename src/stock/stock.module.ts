@@ -5,7 +5,6 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Stock } from "./entities/stock.entity";
 import { StockGateway } from "./stock.gateway";
-import { SlackService } from "src/common/slack/slack.service";
 
 @Module({
   imports: [
@@ -15,6 +14,6 @@ import { SlackService } from "src/common/slack/slack.service";
     TypeOrmModule.forFeature([Stock])
   ],
   controllers: [StockController],
-  providers: [StockService, StockGateway, SlackService]
+  providers: [StockService, StockGateway]
 })
 export class StockModule {}
