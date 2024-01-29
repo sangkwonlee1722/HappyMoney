@@ -1,10 +1,11 @@
+import { baseUrl } from "./common.js";
 /* 공지사항을 가져오는 함수 */
 const getNoticeData = async () => {
   try {
-    const apiUrl = `http://localhost:3000/api/notices`
+    const apiUrl = baseUrl + `notices?page=1`
 
     const result = await axios.get(apiUrl)
-    const latestNotices = result.data.data.slice(0, 3);
+    const latestNotices = result.data.list.slice(0, 3);
 
     const mainDom = document.querySelector(".notice-list")
 
@@ -41,10 +42,10 @@ await getNoticeData()
 /* 자유게시판 최신글 가져오는 함수 */
 const getBoardData = async () => {
   try {
-    const apiUrl = `http://localhost:3000/api/posts`
+    const apiUrl = baseUrl + `posts?page=1`
 
     const result = await axios.get(apiUrl)
-    const latestPosts = result.data.data.slice(0, 3);
+    const latestPosts = result.data.list.slice(0, 3);
 
     const mainDom = document.querySelector(".board-list")
 
