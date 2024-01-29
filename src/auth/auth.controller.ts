@@ -29,7 +29,7 @@ export class AuthController {
   @UseGuards(AuthGuard("google"))
   async googleLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
-    res.cookie("accessToken", token, { httpOnly: true });
+    res.cookie("accessToken", token);
     return res.redirect("http://localhost:3000/views/main.html");
   }
 
@@ -45,7 +45,7 @@ export class AuthController {
   @UseGuards(AuthGuard("kakao"))
   async kakaoLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
-    res.cookie("accessToken", token, { httpOnly: true });
+    res.cookie("accessToken", token);
     return res.redirect("http://localhost:3000/views/main.html");
   }
 
@@ -61,7 +61,7 @@ export class AuthController {
   @UseGuards(AuthGuard("naver"))
   async naverLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
-    res.cookie("accessToken", token, { httpOnly: true });
+    res.cookie("accessToken", token);
     return res.redirect("http://localhost:3000/views/main.html");
   }
 }

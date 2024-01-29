@@ -21,7 +21,7 @@ export class AuthService {
 
       const socialUser = this.userRepository.save({
         email,
-        name: name,
+        name,
         signupType,
         nickName,
         isEmailVerified: true

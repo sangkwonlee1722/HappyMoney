@@ -15,6 +15,7 @@ const getMyInfoByToken = async (token) => {
     });
 
     const { createdAt, email, name, nickName, phone } = result.data;
+
     const formattedDate = createdAt.split("T")[0];
 
     const mainDom = document.querySelector(".profile-wrap");
