@@ -44,9 +44,7 @@ const getBoardData = async () => {
     const apiUrl = `http://localhost:3000/api/posts?page=1`
 
     const result = await axios.get(apiUrl)
-    console.log(result);
     const latestPosts = result.data.list.slice(0, 3);
-    console.log(latestPosts);
     const mainDom = document.querySelector(".board-list")
 
     mainDom.innerHTML = latestPosts

@@ -49,6 +49,10 @@ export class PostController {
    */
   @Get()
   async findAll(@Query() query: PaginatePostDto) {
+    let { page } = query;
+    if (page === null) {
+      page = 1;
+    }
     const { posts, count } = await this.postService.findAll(query);
     return {
       success: true,
