@@ -74,8 +74,8 @@ export class CommentService {
           TTL: 24 * 60 * 60,
           vapidDetails: {
             subject: "mailto:chzhgod@gmail.com",
-            publicKey: "BJoW2C5jQj4J7ijvAzoLhAccxODbLiiphl2PLWe_6cIcpsutw7ntsD33_oxmmK94l3Zg1dun0kIn5pNlku-URVc",
-            privateKey: "YGNiPvb3AScoKshKU6GuTd9Z0KT5WHn7M8ZLmAI652k"
+            publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
+            privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
           }
         };
 
