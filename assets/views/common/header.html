@@ -49,6 +49,26 @@
             </button>
           </div>
           <div class="hm-user-on" id="logoutTab" style="display: none">
+            <div class="push-noti">
+              <div class="hm-red-dot-right"></div>
+              <img src="../../images/bell-icon.png" alt="bell" class="push-noti-icon" onclick="alarmOpen()" />
+              <div class="hm-alarm-dim" onclick="alarmClose()"></div>
+              <div class="hm-popup-alarm">
+                <div class="hm-alarm-wrap">
+                  <div class="hm-alarm-header">
+                    <div class="hm-alarm-top">
+                      <h5>알림</h5>
+                      <button class="all-read-btn">전체읽음</button>
+                    </div>
+                    <hr />
+                  </div>
+                  <ul class="hm-alarm-list"></ul>
+                  <div class="hm-alarm-footer">
+                    <button class="hm-button hm-gray-color delete-all-alarm">전체삭제</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button type="button" class="hm-button hm-sub-color" id="mypageBtn">
               <a href="/views/my-info.html">마이페이지</a>
             </button>

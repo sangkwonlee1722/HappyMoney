@@ -17,13 +17,19 @@ export class Push extends BaseEntity {
   userId: number;
 
   @Column({ type: "enum", enum: ServiceType, nullable: false })
-  servcieType: ServiceType;
+  serviceType: ServiceType;
 
   @Column({ nullable: false, default: false })
   isRead: boolean;
 
-  @Column({ nullable: false })
-  contents: string;
+  @Column({ nullable: false, comment: "쪽지 내용 등 사용자에게 보내줄 알림 내용 데이터" })
+  contents1: string;
+
+  @Column({ nullable: true, comment: "쪽지 발신자 등 사용자에게 보내줄 알림 내용 데이터2" })
+  contents2: string;
+
+  @Column({ nullable: false, comment: "클릭 시 넘어갈 주소에 사용될 Id값" })
+  contentId: number;
 
   @ManyToOne(() => User, (user) => user.pushNotis)
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
