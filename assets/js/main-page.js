@@ -41,23 +41,24 @@ await getNoticeData()
 /* 자유게시판 최신글 가져오는 함수 */
 const getBoardData = async () => {
   try {
-    const apiUrl = `http://localhost:3000/api/posts`
+    const apiUrl = `http://localhost:3000/api/posts?page=1`
 
     const result = await axios.get(apiUrl)
-    const latestPosts = result.data.data.slice(0, 3);
-
+    console.log(result);
+    const latestPosts = result.data.list.slice(0, 3);
+    console.log(latestPosts);
     const mainDom = document.querySelector(".board-list")
 
     mainDom.innerHTML = latestPosts
       .map(post => {
-        const { title, nickName, category, createdAt, commentNumbers } = post
+        const { id, title, nickName, category, createdAt, commentNumbers } = post
 
         const formattedDate = createdAt.split("T")[0];
         const commentClass = commentNumbers === 0 ? "comment hidden" : "comment";
 
         return `
         <li class="contents">
-           <a href="#none"></a>
+           <a href="post-read.html?id=${id}"></a>
            <div class="list-info">
              <div class="classification">${category}</div>
              <div class="title">${title}</div>

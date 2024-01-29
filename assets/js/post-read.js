@@ -1,35 +1,9 @@
 import getToken from "./common.js";
-// 댓글 생성
-document.querySelector(".submit-comment").addEventListener("click", async () => {
-  const token = getToken();
-  const urlSearchParams = new URL(location.href).searchParams;
-  const idValue = urlSearchParams.get("id");
-  const content = document.querySelector(".form-control").value;
-
-  if (!content) {
-    return alert("댓글을 입력하세요.");
-  }
-  await axios.post(
-    `/api/comments/${idValue}`,
-    {
-      content
-    },
-    {
-      headers: {
-        Authorization: token
-      }
-    }
-  );
-  alert("댓글이 작성되었습니다.");
-  window.location.reload();
-});
 
 // 본문, 댓글 조회
-document.addEventListener("DOMContentLoaded", function () {
-  const urlSearchParams = new URL(location.href).searchParams;
-  const postId = urlSearchParams.get("id");
-  fetchPostData(postId);
-});
+const urlSearchParams = new URL(location.href).searchParams;
+const postId = urlSearchParams.get("id");
+fetchPostData(postId);
 
 async function fetchPostData(postId) {
   try {
@@ -96,6 +70,31 @@ async function fetchPostData(postId) {
     alert(errorMessage);
   }
 }
+
+// 댓글 생성
+document.querySelector(".submit-comment").addEventListener("click", async () => {
+  const token = getToken();
+  const urlSearchParams = new URL(location.href).searchParams;
+  const idValue = urlSearchParams.get("id");
+  const content = document.querySelector(".form-control").value;
+
+  if (!content) {
+    return alert("댓글을 입력하세요.");
+  }
+  await axios.post(
+    `/api/comments/${idValue}`,
+    {
+      content
+    },
+    {
+      headers: {
+        Authorization: token
+      }
+    }
+  );
+  alert("댓글이 작성되었습니다.");
+  window.location.reload();
+});
 
 //댓글 삭제
 $(document).on("click", ".delete-comment-btn", async (event) => {
