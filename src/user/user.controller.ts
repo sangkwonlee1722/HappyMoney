@@ -253,12 +253,17 @@ export class UserController {
       throw new NotFoundException({ success: false, message: "해당하는 유저를 찾을 수 없습니다." });
     }
 
+    if (JSON.stringify(existUser.subscription) === JSON.stringify(subscription)) {
+      return;
+    }
+
     await this.userService.saveSubscription(subscription, user.id);
     return {
       success: true,
       message: "okay"
     };
   }
+
   /**
    * 비밀번호 찾기
    * @param createUserDto

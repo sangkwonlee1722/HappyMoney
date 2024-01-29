@@ -7,93 +7,65 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { Post } from "src/post/entities/post.entity";
 import { PostService } from "src/post/post.service";
-import { MessageType, Push, ServiceType } from "src/push/entities/push.entity";
+import { Push, ServiceType } from "src/push/entities/push.entity";
 import { ConfigService } from "@nestjs/config";
-import { sendNotification } from "web-push";
+import { PushService } from "src/push/push.service";
+import { Payload } from "src/push/push-config";
+import { User } from "src/user/entities/user.entity";
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private commentRepository: Repository<Comment>,
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
 
     private readonly postService: PostService,
-    private readonly configService: ConfigService,
+    private readonly pushService: PushService,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager
   ) {}
 
-  async create(userId: number, postId: number, createCommentDto: CreateCommentDto) {
+  async create(user: User, postId: number, createCommentDto: CreateCommentDto) {
     // 게시글 존재 여부 확인
-    // const post = await this.postRepository.findOneBy({ id: postId });
-
     const post = await this.postService.findOne(postId);
     if (!post) {
       throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
     }
-    const postUserId: number = post.userId;
-    const postTitle: string = post.title;
-    const value = Object(post.user.subscription);
-    console.log("value: ", value);
 
-    const pushSubscription = {
-      endpoint: value.endpoint,
-      keys: {
-        p256dh: value.keys.p256dh,
-        auth: value.keys.auth
-      }
-    };
-
-    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 */
+    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       /* 댓글 생성 */
-      const comment = em.create(Comment, {
+      const comment: Comment = em.create(Comment, {
         content: createCommentDto.content,
-        commentUser: { id: userId },
+        commentUser: { id: user.id },
         post: { id: postId }
       });
+
+      console.log("코멘트에 유저가 나오나요?", comment);
 
       await em.save(Comment, comment);
 
       // 내가 쓴 게시글에 다른 사람이 댓글을 달 경우
-      if (postUserId !== userId) {
-        /* 푸시-알림 데이터 생성 */
+      if (post.userId !== user.id) {
+        /* 푸시 테이블에 데이터 생성 */
         const pushData: Push = em.create(Push, {
-          userId: postUserId,
-          servcieType: ServiceType.Comment,
-          message: MessageType.Comment,
-          contents: postTitle
+          userId: post.userId,
+          serviceType: ServiceType.Comment,
+          contents1: post.title,
+          contents2: user.nickName,
+          contentId: post.id
         });
 
         await em.save(Push, pushData);
-
-        const options = {
-          TTL: 24 * 60 * 60,
-          vapidDetails: {
-            subject: "mailto:chzhgod@gmail.com",
-            publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
-            privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
-          }
-        };
-
-        const payload = {
-          title: "HAPPY MONEY",
-          body: "제발되기를 ㅎㅎㅎ",
-          tag: "댓글"
-        };
-
-        const jsonPayload = JSON.stringify(payload); // 수정해봐요 !!
-
-        try {
-          await sendNotification(pushSubscription, jsonPayload, options);
-        } catch (error) {
-          console.error("WebPushError:", error);
-        }
       }
     });
+    /* 푸시-알림 테이블에 데이터 추가 트랜잭션 e */
+
+    /* 푸시 알람 보내는 함수 */
+    if (post.userId !== user.id) {
+      await this.sendCommentPush(post);
+    }
   }
 
   async findCommentsByPost(postId: number): Promise<any[]> {
@@ -142,5 +114,15 @@ export class CommentService {
       .getMany();
 
     return comments;
+  }
+
+  async sendCommentPush(post: Post) {
+    const userSubscription = Object(post.user.subscription);
+
+    const url = `http://localhost:3000/views/twit/twit.html`;
+    const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`, url);
+    console.log("payload: ", payload);
+
+    await this.pushService.sendPush(userSubscription, payload);
   }
 }

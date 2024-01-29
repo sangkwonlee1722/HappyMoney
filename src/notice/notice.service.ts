@@ -26,16 +26,19 @@ export class NoticeService {
   }
 
   // 공지사항 전체 조회
-  async findAll(dto: PaginatePostDto): Promise<Notice[]> {
-    const notices = await this.noticeRepository.find({
-      order: {
-        createdAt: "DESC" // createdAt 필드를 기준으로 내림차순 정렬
-      },
+  async getNotice(dto: PaginatePostDto): Promise<{ notice: Notice[]; count: number }> {
+    const [notice, count] = await this.noticeRepository.findAndCount({
       skip: dto.take * (dto.page - 1),
-      take: dto.take
+      take: dto.take,
+      order: {
+        createdAt: dto.order__createdAt
+      }
     });
 
-    return notices;
+    return {
+      notice,
+      count
+    };
   }
 
   // 공지사항 특정 조회

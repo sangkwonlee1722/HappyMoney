@@ -34,12 +34,13 @@ export class NoticeController {
    * @returns
    */
   @Get()
-  async findAll(@Query() query: PaginatePostDto) {
-    const notices = await this.noticeService.findAll(query);
+  async getNotice(@Query() query: PaginatePostDto) {
+    const { notice, count } = await this.noticeService.getNotice(query);
     return {
       success: true,
       message: "okay",
-      data: notices
+      list: notice,
+      total: count
     };
   }
 

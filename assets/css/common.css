@@ -468,9 +468,10 @@ input::placeholder {
 .hm-hd-log {
   display: flex;
 }
-.hm-hd-log li {
+/* 이거를 하면 알림 리스트에도 영향을 줘서 변경함! */
+/* .hm-hd-log li {
   margin-left: 25px;
-}
+} */
 .hm-hd-log li:first-child {
   margin-left: 0;
 }
@@ -550,16 +551,164 @@ input::placeholder {
 .hm-red-dot-right::after {
   content: "";
   position: absolute;
-  top: -4px;
-  right: -8px;
-  width: 8px;
-  height: 8px;
+  top: -18px;
+  left: 15px;
+  width: 10px;
+  height: 10px;
   background-color: #ea5555;
   border-radius: 50%;
 }
 .hm-hd-m-bottom .hm-red-dot-right::after {
   top: -6px;
 }
+.hm-user-on {
+  display: flex;
+  align-items: center;
+}
+.hm-user-on button {
+  margin-left: 1rem;
+}
+.push-noti {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.push-noti img:hover {
+  cursor: pointer;
+}
+.push-noti img {
+  height: 28px;
+}
+
+/* --알림창-- s*/
+.hm-popup-alarm {
+  position: fixed;
+  width: 350px;
+  height: 700px;
+  background-color: #fdfdfd;
+  z-index: 115;
+  margin-top: 700px;
+  margin-left: 15px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px #777;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.hm-alarm-wrap {
+  width: 85%;
+  height: 90%;
+}
+
+.hm-alarm-header {
+  width: 100%;
+}
+
+.hm-alarm-list {
+  overflow: auto;
+  height: 83%;
+}
+
+.hm-alarm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hm-alarm a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.alarm-list-contnents {
+  width: 95%;
+}
+
+.hm-alarm-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hm-alarm-top h5 {
+  font-weight: bold;
+}
+
+.hm-alarm-top button {
+  border: none;
+  background-color: transparent;
+}
+
+.alarm-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alarm-top h6 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.alarm-top button {
+  border: none;
+  background-color: transparent;
+  z-index: 200;
+}
+
+.alarm-body {
+  font-size: 14px;
+  margin: 0.5rem 0 0.5rem 0;
+}
+
+.alarm-body .alarm-contents {
+  font-weight: bold;
+}
+
+.alarm-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #777;
+}
+
+.alarm-footer .unread {
+  color: #ea5555;
+}
+
+.hm-alarm:hover {
+  background-color: #d9d9d9;
+}
+.hm-alarm:hover hr {
+  margin-top: 0px;
+}
+
+.hm-alarm-footer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.hm-alarm-footer button {
+  margin-top: 1rem;
+}
+
+.hm-alarm-dim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 110;
+  display: none;
+}
+
 /* ------header------ e */
 
 /* ------footer------ s */
@@ -936,3 +1085,39 @@ footer.hm-container.hm-fixed {
 }
 
 /* 로그인 팝업 e */
+
+/* pagenation s */
+#hm-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+#hm-pagination li {
+  margin-right: 10px;
+}
+#hm-pagination li a {
+  display: flex;
+  width: 22px;
+  height: 22px;
+  background: #ddd;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+#hm-pagination li a.active {
+  background-color: #000f5d;
+  color: #fff;
+  font-weight: bold;
+}
+#hm-pagination .arrow {
+  background-color: transparent;
+  font-weight: bold;
+  transition: ease-in-out 0.1s;
+  width: 12px;
+}
+#hm-pagination .arrow:hover {
+  font-size: 19px;
+}
+/* pagenation e */

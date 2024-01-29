@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/js/jquery-3.7.1.min.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="https://cdn.socket.io/4.7.4/socket.io.esm.min.js"></script>
     <script type="module" src="/js/bootstrap.min.js"></script>
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/stock-common.js"></script>
@@ -15,34 +16,10 @@
     <title>HappyMoney</title>
   </head>
   <body>
-    <!-- 팝업 예시 s -->
-    <div class="hm-dim" onclick="drPopupClose(this)"></div>
-    <div class="hm-popup-wrap hm-popup-add-manager">
-      <div class="hm-popup-close" onclick="drPopupClose(this)"></div>
-      <header>
-        <h1>비밀번호 변경</h1>
-      </header>
-      <div class="hm-popup-content">
-        <div class="mb-5 hm-input-wrap">
-          <input type="password" class="hm-input" id="password" name="password" placeholder="비밀번호" />
-        </div>
-        <div class="hm-input-wrap">
-          <input type="password" class="hm-input" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" />
-        </div>
-      </div>
-      <footer>
-        <div class="d-flex justify-content-between hm-bg-white">
-          <a href="#none" class="hm-button me-2" onclick="drPopupClose(this)">취소</a>
-          <a href="#none" class="hm-button ms-2" onclick="drPopupClose(this)">저장</a>
-        </div>
-      </footer>
-    </div>
-    <!-- 팝업 예시 e -->
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
         <div id="stock-header"></div>
-        <button class="test" onclick="drPopupOpen('.hm-popup-add-manager')">팝업버튼</button>
         <div class="rank-wrap">
           <h2>거래량 순위</h2>
           <ul class="rank-list-wrap"></ul>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="https://cdn.socket.io/4.7.4/socket.io.esm.min.js"></script>
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/stock-common.js"></script>
+    <script type="module" src="/js/stock-detail.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/stock-detail.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <div id="stock-header"></div>
+        <div class="stock-dt-wrap mt-5">
+          <div class="stock-dt-tit mb-5">
+            <h2>삼성전자<span>(005930)</span></h2>
+            <div class="stock-dt-tit-box mt-3">
+              <div class="price">73100원</div>
+              <div class="tab-button-wrap">
+                <button class="hm-button fw-bold me-3">호가</button>
+                <button class="hm-button hm-gray-color fw-bold">내 주식</button>
+              </div>
+            </div>
+          </div>
+          <div class="stock-dt-cont-wrap">
+            <ul class="stock-dt-live">
+              <li class="title">
+                <div class="price">호가</div>
+                <div class="amount">
+                  <span style="color: #405fff">매도</span>/<span style="color: #ff2828">매수</span> 잔량
+                </div>
+              </li>
+              <li class="buy num10">
+                <div class="price">74000</div>
+                <div class="amount">123123</div>
+              </li>
+              <li class="buy num9">
+                <div class="price">73900</div>
+                <div class="amount">12312</div>
+              </li>
+              <li class="buy num8">
+                <div class="price">739800</div>
+                <div class="amount">2121</div>
+              </li>
+              <li class="buy num7">
+                <div class="price">739700</div>
+                <div class="amount">321</div>
+              </li>
+              <li class="buy num6">
+                <div class="price">739600</div>
+                <div class="amount">2121</div>
+              </li>
+              <li class="buy num5">
+                <div class="price">739500</div>
+                <div class="amount">121</div>
+              </li>
+              <li class="buy num4">
+                <div class="price">739400</div>
+                <div class="amount">32121</div>
+              </li>
+              <li class="buy num3">
+                <div class="price">739300</div>
+                <div class="amount">32121</div>
+              </li>
+              <li class="buy num2">
+                <div class="price">739200</div>
+                <div class="amount">3211</div>
+              </li>
+              <li class="buy num1">
+                <div class="price">739100</div>
+                <div class="amount">2121</div>
+              </li>
+              <li class="sell num1">
+                <div class="price">739000</div>
+                <div class="amount">32112</div>
+              </li>
+              <li class="sell num2">
+                <div class="price">738900</div>
+                <div class="amount">45454</div>
+              </li>
+              <li class="sell num3">
+                <div class="price">738800</div>
+                <div class="amount">1213241</div>
+              </li>
+              <li class="sell num4">
+                <div class="price">738700</div>
+                <div class="amount">45621</div>
+              </li>
+              <li class="sell num5">
+                <div class="price">738600</div>
+                <div class="amount">32154</div>
+              </li>
+              <li class="sell num6">
+                <div class="price">738500</div>
+                <div class="amount">121321</div>
+              </li>
+              <li class="sell num7">
+                <div class="price">738400</div>
+                <div class="amount">121232</div>
+              </li>
+              <li class="sell num8">
+                <div class="price">738300</div>
+                <div class="amount">121232</div>
+              </li>
+              <li class="sell num9">
+                <div class="price">738200</div>
+                <div class="amount">12132</div>
+              </li>
+              <li class="sell num10">
+                <div class="price">738100</div>
+                <div class="amount">12132</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+</html>

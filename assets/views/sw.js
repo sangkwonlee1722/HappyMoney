@@ -1,13 +1,13 @@
 self.addEventListener("push", (event) => {
-  let { title, body, tag } = JSON.parse(event.data && event.data.text());
+  const { title, body, tag, data } = JSON.parse(event.data && event.data.text());
   event.waitUntil(
-    self.registration.showNotification(title || "", { body, tag })
+    self.registration.showNotification(title || "", { body, tag, data })
   );
 });
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const urlToOpen = "https://naver.com";
+  const urlToOpen = event.notification.data.url || "http://localhost:3000/views/main.html";
   event.waitUntil(
     self.clients
       .matchAll({
@@ -24,3 +24,4 @@ self.addEventListener("notificationclick", function (event) {
       })
   );
 });
+

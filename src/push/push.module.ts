@@ -7,6 +7,7 @@ import { Push } from "./entities/push.entity";
 @Module({
   imports: [TypeOrmModule.forFeature([Push])],
   controllers: [PushController],
-  providers: [PushService]
+  providers: [PushService],
+  exports: [PushService]
 })
 export class PushModule {}
