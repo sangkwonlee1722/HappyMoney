@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, UseGuards, Request } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Patch, Delete, UseGuards, Request, Query } from "@nestjs/common";
 import { NoticeService } from "./notice.service";
 import { CreateNoticeDto } from "./dto/create-notice.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UpdateNoticeDto } from "./dto/update-notice.dto";
 import { Roles } from "src/common/decorator/roles.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiTags("notices")
 @Controller("notices")
@@ -33,12 +34,13 @@ export class NoticeController {
    * @returns
    */
   @Get()
-  async findAll() {
-    const notices = await this.noticeService.findAll();
+  async getNotice(@Query() query: PaginatePostDto) {
+    const { notice, count } = await this.noticeService.getNotice(query);
     return {
       success: true,
       message: "okay",
-      data: notices
+      list: notice,
+      total: count
     };
   }
 

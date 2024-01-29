@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { Notice } from "./entities/notice.entity";
 import { CreateNoticeDto } from "./dto/create-notice.dto";
 import { UpdateNoticeDto } from "./dto/update-notice.dto";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class NoticeService {
@@ -25,12 +26,19 @@ export class NoticeService {
   }
 
   // 공지사항 전체 조회
-  async findAll(): Promise<Notice[]> {
-    return this.noticeRepository.find({
+  async getNotice(dto: PaginatePostDto): Promise<{ notice: Notice[]; count: number }> {
+    const [notice, count] = await this.noticeRepository.findAndCount({
+      skip: dto.take * (dto.page - 1),
+      take: dto.take,
       order: {
-        createdAt: "DESC" // createdAt 필드를 기준으로 내림차순 정렬
+        createdAt: dto.order__createdAt
       }
     });
+
+    return {
+      notice,
+      count
+    };
   }
 
   // 공지사항 특정 조회
