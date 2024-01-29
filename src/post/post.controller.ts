@@ -10,7 +10,8 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
-  Query
+  Query,
+  InternalServerErrorException
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";

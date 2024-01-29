@@ -221,6 +221,7 @@ export class StockService {
     const time = end.getTime() - start.getTime();
 
     // 슬랙으로 알림 보내기
+    const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_SCHEDULE");
     const color: string = slackLineColor.info;
     const text: string = "Stock Update Schedule";
     const mrkTitle: string = "주식 정보 업데이트 성공";
@@ -228,7 +229,7 @@ export class StockService {
 
     const message = new SlackMessage(color, text, mrkTitle, mrkValue);
 
-    this.slackService.sendScheduleNoti(message);
+    this.slackService.sendScheduleNoti(message, slackHookUrl);
 
     console.log("걸린 시간 : ", time);
   }

@@ -107,7 +107,9 @@ export class PushService {
       .execute();
 
     // 슬랙으로 알림 보내기
-    const deletedRowCount = deleteResult.affected;
+
+    const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_SCHEDULE");
+    const deletedRowCount: number = deleteResult.affected;
     const color: string = slackLineColor.info;
     const text: string = "Push-Noti Delete Schedule";
     const mrkTitle: string = "푸시 삭제 알림 성공";
@@ -115,6 +117,6 @@ export class PushService {
 
     const message = new SlackMessage(color, text, mrkTitle, mrkValue);
 
-    this.slackService.sendScheduleNoti(message);
+    this.slackService.sendScheduleNoti(message, slackHookUrl);
   }
 }
