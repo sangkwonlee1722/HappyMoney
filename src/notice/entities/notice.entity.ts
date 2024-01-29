@@ -24,7 +24,7 @@ export class Notice extends BaseEntity {
    */
   @IsNotEmpty({ message: "내용을 입력해 주세요." })
   @IsString()
-  @Column()
+  @Column({ type: "text", nullable: false })
   contents: string;
 
   @Column({ nullable: true })

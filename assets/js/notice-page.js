@@ -8,15 +8,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const titleElement = document.querySelector(".board-title");
       const contentsElement = document.querySelector(".notice-container");
+      const dateElement = document.querySelector(".notice_container");
 
       if (titleElement && contentsElement) {
-        titleElement.textContent = data.title;
-        contentsElement.textContent = data.contents;
-      } else {
-        console.error("요소를 찾을 수 없습니다.");
+        titleElement.innerHTML = data.title;
+        contentsElement.innerHTML = data.contents;
+        dateElement.innerHTML = data.created_at;
       }
-    } else {
-      console.error("유효한 ID가 없습니다.");
     }
   } catch (error) {
     console.error(error);
