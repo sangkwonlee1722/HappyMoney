@@ -6,6 +6,8 @@ import { Stock } from "./entities/stock.entity";
 import { Repository, getConnection } from "typeorm";
 import { Cron } from "@nestjs/schedule";
 import webpush from "web-push";
+import { SlackService } from "src/common/slack/slack.service";
+import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
 
 @Injectable()
 export class StockService {
@@ -22,6 +24,7 @@ export class StockService {
 
   constructor(
     private readonly configService: ConfigService,
+    private readonly slackService: SlackService,
 
     @InjectRepository(Stock)
     private readonly stocksRepository: Repository<Stock>
@@ -196,7 +199,7 @@ export class StockService {
     }
   }
 
-  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("30 27 23 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
@@ -217,8 +220,17 @@ export class StockService {
     let end = new Date();
     const time = end.getTime() - start.getTime();
 
+    // 슬랙으로 알림 보내기
+    const color: string = slackLineColor.info;
+    const text: string = "Stock Update Schedule";
+    const mrkTitle: string = "주식 정보 업데이트 성공";
+    const mrkValue: string = `업데이트 걸린 시간: ${time}`;
+
+    const message = new SlackMessage(color, text, mrkTitle, mrkValue);
+
+    this.slackService.sendScheduleNoti(message);
+
     console.log("걸린 시간 : ", time);
-    console.log(stocksList[0]);
   }
 
   async findStocksByKeyword(keyword: string): Promise<Stock[]> {
