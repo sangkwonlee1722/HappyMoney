@@ -15,8 +15,8 @@ import { CommentModule } from "./comment/comment.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { ScheduleModule } from "@nestjs/schedule";
-import { TwitModule } from './twit/twit.module';
-import { PushModule } from './push/push.module';
+import { TwitModule } from "./twit/twit.module";
+import { PushModule } from "./push/push.module";
 
 @Module({
   imports: [
