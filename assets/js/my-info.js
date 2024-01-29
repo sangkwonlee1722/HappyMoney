@@ -14,35 +14,57 @@ const getMyInfoByToken = async (token) => {
       }
     });
 
-    const { createdAt, email, name, nickName, phone } = result.data;
+    const { createdAt, email, name, nickName, phone, signupType } = result.data;
 
     const formattedDate = createdAt.split("T")[0];
 
     const mainDom = document.querySelector(".profile-wrap");
-
-    mainDom.innerHTML = `
-    <h2 class="profile-title">프로필</h2>
-    
-            <div class="profile-contents-wrap">
-              <div class="profile-left">
-                <div class="names">
-                  <span class="user-name">${name}</span>
-                  <span class="'user-nick-name">(${nickName})</span>
-                </div>
-                <span>${email}</span>
-                <span>${phone}</span>
+    if (signupType !== "local") {
+      mainDom.innerHTML = `
+  <h2 class="profile-title">프로필</h2>
+  
+          <div class="profile-contents-wrap">
+            <div class="profile-left">
+              <div class="names">
+                <span class="user-name">${name}</span>
+                <span class="'user-nick-name">(${nickName})</span>
               </div>
-              <div class="profile-right">
-                <span>가입일 : ${formattedDate}</span>
-                <button class="hm-button hm-gray-color">
-                  <a href="#none" onclick="drPopupOpen('.check-password')">수정하기</a>
-                </button>
-                 <button class="hm-button hm-gray-color">
-                 <a href="#none" onclick="drPopupOpen('.check-password-update')">비밀번호 변경</a>
-               </button>
-              </div>
+              <span>${email}</span>
+              <span>${phone}</span>
             </div>
-    `;
+            <div class="profile-right">
+              <span>가입일 : ${formattedDate}</span>
+              <button class="hm-button hm-gray-color">
+                <a href="#none" onclick="drPopupOpen('.hm-mypage-update')">수정하기</a>
+              </button>
+            </div>
+          </div>
+  `;
+    } else {
+      mainDom.innerHTML = `
+  <h2 class="profile-title">프로필</h2>
+  
+          <div class="profile-contents-wrap">
+            <div class="profile-left">
+              <div class="names">
+                <span class="user-name">${name}</span>
+                <span class="'user-nick-name">(${nickName})</span>
+              </div>
+              <span>${email}</span>
+              <span>${phone}</span>
+            </div>
+            <div class="profile-right">
+              <span>가입일 : ${formattedDate}</span>
+              <button class="hm-button hm-gray-color">
+                <a href="#none" onclick="drPopupOpen('.check-password')">수정하기</a>
+              </button>
+               <button class="hm-button hm-gray-color">
+               <a href="#none" onclick="drPopupOpen('.check-password-update')">비밀번호 변경</a>
+             </button>
+            </div>
+          </div>
+  `;
+    }
   } catch (error) {
     console.error("에러 발생:", error);
   }
