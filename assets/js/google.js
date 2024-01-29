@@ -18,9 +18,7 @@ async function kakaoLogin() {
 }
 
 const kakaoBtn = document.getElementById("kakaoBtn");
-kakaoBtn.addEventListener("click", () => {
-  kakaoLogin();
-});
+kakaoBtn.addEventListener("click", kakaoLogin);
 
 async function naverLogin() {
   try {
@@ -31,6 +29,4 @@ async function naverLogin() {
 }
 
 const naverBtn = document.getElementById("naverBtn");
-naverBtn.addEventListener("click", () => {
-  naverLogin();
-});
+naverBtn.addEventListener("click", naverLogin);
