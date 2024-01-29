@@ -9,7 +9,8 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
+  Query
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -19,6 +20,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiTags("Posts")
 @Controller("posts")
@@ -59,13 +61,14 @@ export class PostController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("my")
-  async findMyPosts(@UserInfo() user: User) {
-    const data = await this.postService.findMyPostsById(user.id);
+  async findMyPosts(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { posts, count } = await this.postService.findMyPostsById(user.id, query);
 
     return {
       success: true,
       message: "okay",
-      data
+      lists: posts,
+      total: count
     };
   }
 
