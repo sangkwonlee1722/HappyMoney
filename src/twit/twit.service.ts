@@ -26,8 +26,8 @@ export class TwitService {
   async sendTwit({ id, nickName }: User, { contents, receiveNickname }: CreateTwitDto) {
     const receiver = await this.userService.findUserByNickname(receiveNickname);
 
-    if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
+    if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
 
     const sendTwit: Twit = this.twitRepository.create({
       senderId: id,
@@ -43,8 +43,10 @@ export class TwitService {
 
       const pushData: Push = em.create(Push, {
         userId: receiver.id,
-        servcieType: ServiceType.Twit,
-        contents: sendTwit.contents
+        serviceType: ServiceType.Twit,
+        contents1: sendTwit.contents,
+        contents2: sendTwit.senderName,
+        contentId: sendTwit.id
       });
 
       await em.save(Push, pushData);
@@ -123,7 +125,9 @@ export class TwitService {
 
   async sendTwitPush(sendTwit: Twit, receiver: User) {
     const userSubscription = Object(receiver.subscription);
-    const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`);
+    const url = `http://localhost:3000/views/twit/twit-detail.html?send=false&id=${sendTwit.id}`;
+    const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`, url);
+    console.log("payload: ", payload);
 
     await this.pushService.sendPush(userSubscription, payload);
   }
