@@ -1,4 +1,5 @@
-import getToken from "./common.js";
+import getToken from "/js/common.js";
+import { getCookie } from "/js/common.js";
 
 // 본문, 댓글 조회
 const urlSearchParams = new URL(location.href).searchParams;
@@ -8,39 +9,48 @@ fetchPostData(postId);
 async function fetchPostData(postId) {
   try {
     const commentsBox = document.querySelector(".card-body");
-    const postBox = document.querySelector(".row");
+    const postBox = document.querySelector("#post-box");
     commentsBox.innerHTML = "";
     postBox.innerHTML = "";
     const postResponse = await axios.get(`/api/posts/${postId}`);
     const data = postResponse.data.data;
     const commentsResponse = await axios.get(`/api/comments/post/${postId}`);
     const comments = commentsResponse.data.data;
+    const createdAt = new Date(data.createdAt);
+    const formattedCreatedAt = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")} ${String(createdAt.getHours()).padStart(2, "0")}:${String(createdAt.getMinutes()).padStart(2, "0")}`;
+
     postBox.innerHTML = `
-    <div class="twit-dt-top pb-4">
+    <div class="post-dt-top pb-4">
       <div class="dt-top-l">
         <dl class="mb-2">
-          <dt>${data.title}</dt>
-          <dd>${data.nickName}</dd>
-        </dl>
-        <dl>
-          <dt>${data.createdAt}</dt>
-          <dd>${data.updatedAt}</dd>
+        <div style="display: flex;">
+          <h2>${data.title}</h2>
+          <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}" style="display: none;">
+            <button class="hm-button hm-gray-color update-post-btn">수정</button>
+            <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
+          </div>
+        </div>
+          <dd>작성자:${data.nickName}</dd>
+          <dl>
+            <dd>${formattedCreatedAt}</dd>
+            <button class="send-message-button">쪽지 보내기</button>
+          </dl>
         </dl>
       </div>
     </div>
-    <div class="twit-dt-bottom">
+    <div class="post-dt-bottom">
       ${data.contents}
     </div>
     `;
     commentsBox.innerHTML = comments
       .map((comment) => {
-        const { id, createdAt, content } = comment;
-        const { nickName } = comment.commentUser;
+        const { id: dataId, createdAt, content } = comment;
+        const { nickName, id: userId } = comment.commentUser;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
         return `
-      <div class="comment" data-id="${id}">
+      <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
           <div class="comment-nickName">${nickName}<button class="send-message-button">
@@ -50,7 +60,7 @@ async function fetchPostData(postId) {
           <div class="my-comments">${content}</div>
           <div class="comment-date">${formattedDate}</div>
         </div>
-        <div class="mc-btn-wrap text-end" data-id="${id}">
+        <div class="mc-btn-wrap text-end" data-id="${dataId}" user-id="${userId}" style="display: none;">
         <button class="hm-button hm-gray-color update-comment-btn">
           수정
         </button>
@@ -64,6 +74,41 @@ async function fetchPostData(postId) {
     `;
       })
       .join("");
+      showUserBtn();
+  } catch (error) {
+    console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
+// 게시글 수정
+$(document).on("click", ".update-post-btn", async (event) => {
+  const post = $(event.target).closest(".mc-btn-wrap");
+  const postId = post.attr("data-id");
+  window.location.href = `/views/notice-update.html?id=${postId}`;
+});
+
+// 게시글 삭제
+$(document).on("click", ".delete-post-btn", async (event) => {
+  const post = $(event.target).closest(".mc-btn-wrap");
+  const postId = post.attr("data-id");
+  $("#delete-posts").off("click");
+  $("#delete-posts").on("click", function () {
+    deletePost(postId);
+  });
+});
+
+async function deletePost(postId) {
+  const token = getToken();
+  try {
+    await axios.delete(`/api/posts/${postId}`, {
+      headers: {
+        Authorization: token
+      }
+    });
+    alert("게시글이 삭제되었습니다.");
+    window.location.href = "/views/post.html?page=1";
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
@@ -96,11 +141,11 @@ document.querySelector(".submit-comment").addEventListener("click", async () => 
   window.location.reload();
 });
 
-//댓글 삭제
+// 댓글 삭제
 $(document).on("click", ".delete-comment-btn", async (event) => {
   const comment = $(event.target).closest(".mc-btn-wrap");
   const commentId = comment.attr("data-id");
-
+  $("#delete-contents").off("click");
   $("#delete-contents").on("click", function () {
     deleteComment(commentId);
   });
@@ -123,7 +168,7 @@ async function deleteComment(commentId) {
   }
 }
 
-//댓글 수정
+// 댓글 수정
 $(document).on("click", ".update-comment-btn", async (event) => {
   const comment = $(event.target).closest(".mc-btn-wrap");
   const commentId = comment.attr("data-id");
@@ -138,7 +183,7 @@ $(document).on("click", ".update-comment-btn", async (event) => {
     <button class="hm-button hm-blue-color update-cancel">취소</button>
   </div>`);
   $(event.target).hide();
-
+  $("#update-contents").off("click");
   $("#update-contents").on("click", function () {
     const content = document.querySelector(".update-comment-form").value;
     updateComment(commentId, content);
@@ -176,3 +221,24 @@ $(document).on("click", ".update-cancel", (event) => {
   contentDiv.html(previousContent);
   parentDiv.find(".update-comment-btn").show();
 });
+
+async function showUserBtn() {
+  try {
+    const token = `Bearer ${getCookie("accessToken")}`;
+    const userInfo = await axios.get("/api/user/mypage", {
+      headers: {
+        Authorization: token
+      }
+    });
+    const userId = Number(userInfo.data.id);
+    const btnForUser = document.querySelectorAll(".mc-btn-wrap");
+    for (const btn of btnForUser) {
+      const btnId = Number(btn.getAttribute("user-id"));
+      if (userId === btnId) {
+        btn.style.display = "block";
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}

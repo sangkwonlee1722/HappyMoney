@@ -1,7 +1,24 @@
 import renderPagination from "/js/pagenation.js";
+import { getCookie } from "/js/common.js";
 
 const searchParams = new URLSearchParams(window.location.search);
 const postPage = searchParams.get("page");
+
+//글쓰기 버튼 숨기기
+showWriteBtn();
+
+async function showWriteBtn() {
+  const token = `Bearer ${getCookie("accessToken")}`;
+
+  const writeButton = document.querySelector("#write-btn");
+
+  if (token !== "Bearer null") {
+    writeButton.style.display = "block";
+    writeButton.addEventListener("click", () => {
+      window.location.href = "/views/post-posting.html";
+    });
+  }
+}
 
 // Initial data fetch
 fetchPostData(`/api/posts/?page=${postPage}`);

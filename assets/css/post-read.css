@@ -73,3 +73,10 @@
 .mc-btn-wrap {
   z-index: 3;
 }
+
+.post-dt-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4px;
+}
