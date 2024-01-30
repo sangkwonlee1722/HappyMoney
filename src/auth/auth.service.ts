@@ -61,7 +61,7 @@ export class AuthService {
     const user = await this.findByEmailOrSave(email, name, signupType, nickname);
 
     const payload = {
-      sub: user.id,
+      id: user.id,
       email: user.email,
       name: user.name,
       signupType: user.signupType
