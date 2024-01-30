@@ -97,7 +97,7 @@ function setCookie(name, value, days) {
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 }
 
-function getCookie(name) {
+export function getCookie(name) {
   // 쿠키 문자열을 가져옵니다.
   const cookieString = document.cookie;
 
