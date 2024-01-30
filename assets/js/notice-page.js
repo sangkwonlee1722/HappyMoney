@@ -1,7 +1,6 @@
-import getToken from "./common.js";
-import { baseUrl } from "./common.js";
+import { baseUrl, getCookie } from "/js/common.js";
 
-const token = getToken();
+const token = `Bearer ${getCookie("accessToken")}`;
 
 document.addEventListener("DOMContentLoaded", async () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
@@ -46,12 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const role = userInfo.data.role;
 
   // 공지사항 수정
-  const updateNoticeBtn = document.querySelector(".update-notice-btn");
+  const updateNoticeBtn = document.querySelector("#update-btn");
   if (updateNoticeBtn) {
-    if (role !== "admin") {
+    if (role === "admin") {
       // admin만 버튼 보이게
-      updateNoticeBtn.style.display = "none";
-    } else {
       updateNoticeBtn.style.display = "block";
     }
 
@@ -62,14 +59,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // 공지사항 삭제
-  const deleteNoticeBtn = document.querySelector(".delete-notice-btn");
+  const deleteNoticeBtn = document.querySelector("#delete-btn");
   if (deleteNoticeBtn) {
     const noticeIdToDelete = noticeId;
 
     // admin만 버튼 보이게
-    if (role !== "admin") {
-      deleteNoticeBtn.style.display = "none";
-    } else {
+    if (role === "admin") {
       deleteNoticeBtn.style.display = "block";
     }
 

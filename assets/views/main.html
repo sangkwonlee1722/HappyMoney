@@ -1,88 +1,89 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/js/bootstrap.min.js"></script>
-    <script type="module" src="/js/common.js"></script>
-    <script type="module" src="/js/main-page.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/common.css" />
-    <link rel="stylesheet" href="/css/main-page.css" />
-    <link rel="stylesheet" href="../css/login.css" />
-    <title>HappyMoney</title>
-  </head>
 
-  <body>
-    <div class="hm-container">
-      <header id="header_wrap"></header>
-      <div class="w-100">
-        <article class="hm-main">
-          <div class="hm-banner-width">
-            <div class="hm-main-txt">
-              <h2 class="fw-bold">주식은 결코 어렵지 않습니다.</h2>
-              <p class="mt-5 fs-6">해피머니와 함께 쉽게 주식을 체험하고</p>
-              <p class="fs-6">다양한 사람들과 의견을 교류해보세요 !</p>
-            </div>
-            <div class="img-wrap">
-              <img src="/images/banner/banner_1.jpg" class="w-100" alt="" />
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="/js/bootstrap.min.js"></script>
+  <script type="module" src="/js/common.js"></script>
+  <script type="module" src="/js/main-page.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/common.css" />
+  <link rel="stylesheet" href="/css/main-page.css" />
+  <link rel="stylesheet" href="../css/login.css" />
+  <title>HappyMoney</title>
+</head>
+
+<body>
+  <div class="hm-container">
+    <header id="header_wrap"></header>
+    <div class="w-100">
+      <article class="hm-main">
+        <div class="hm-banner-width">
+          <div class="hm-main-txt">
+            <h2 class="fw-bold">주식은 결코 어렵지 않습니다.</h2>
+            <p class="mt-5 fs-6">해피머니와 함께 쉽게 주식을 체험하고</p>
+            <p class="fs-6">다양한 사람들과 의견을 교류해보세요 !</p>
           </div>
-        </article>
-        <ul class="hm-main-btn-wrap">
-          <li>
-            <a href="/views/stock_main.html"></a>
-            <p class="fw-bold fs-6">모의 투자 시작하기</p>
-            <div class="img-wrap">
-              <img class="h-100" src="/images/banner/contents_1.png" alt="" />
-            </div>
-          </li>
-          <li>
-            <a href="/views/post.html?page=1"></a>
-            <p class="fw-bold fs-6">커뮤니티 바로가기</p>
-            <div class="img-wrap">
-              <img class="h-100" src="/images/banner/contents_2.png" alt="" />
-            </div>
-          </li>
-          <li>
-            <a href="#none"></a>
-            <p class="fw-bold fs-6">증권 소식 확인하기</p>
-            <div class="img-wrap">
-              <img class="h-100" src="/images/banner/contents_3.png" alt="" />
-            </div>
-          </li>
-        </ul>
-        <article class="hm-banner-one">
-          <div class="hm-banner-width">
-            <div class="hm-main-txt">
-              <h2 class="fw-bold">다른 사람들과 의견을 교류해요</h2>
-              <p class="mt-5 fs-6">평소에 궁금했던 종목이 있나요 !?</p>
-              <p class="fs-6">자유게시판을 통해 다른 사람들과 소통해봐요 !</p>
-              <p class="mt-5 fs-6">우리 모두 부자되길 기원합니다.</p>
-            </div>
-            <div class="img-wrap">
-              <img src="/images/banner/contents_4.png" alt="" />
-            </div>
+          <div class="img-wrap">
+            <img src="/images/banner/banner_1.jpg" class="w-100" alt="" />
           </div>
-        </article>
-        <article class="hm-banner-two py-5">
-          <div class="hm-banner-width">
-            <div class="img-wrap">
-              <img src="/images/banner/contents_5.png" alt="" />
-            </div>
-            <div class="hm-main-txt text-white text-end">
-              <h2 class="fw-bold">가상 포인트로 가볍게 체험하는 가상투자</h2>
-              <p class="mt-5 fs-6">Happy Money 가상 계좌를 만들어</p>
-              <p class="fs-6">내가 관심 갖던 회사에 투자해보세요!</p>
-              <p class="mt-5 fs-6">국내 약 2,800개 종목의 시세를 함께 확인할 수 있습니다.</p>
-            </div>
+        </div>
+      </article>
+      <ul class="hm-main-btn-wrap">
+        <li>
+          <a href="/views/stock_main.html"></a>
+          <p class="fw-bold fs-6">모의 투자 시작하기</p>
+          <div class="img-wrap">
+            <img class="h-100" src="/images/banner/contents_1.png" alt="" />
           </div>
-        </article>
-      </div>
-      <!-- 메인 배너 s -->
-      <!-- <div class="main-banner-wrap">
+        </li>
+        <li>
+          <a href="/views/post.html?page=1"></a>
+          <p class="fw-bold fs-6">커뮤니티 바로가기</p>
+          <div class="img-wrap">
+            <img class="h-100" src="/images/banner/contents_2.png" alt="" />
+          </div>
+        </li>
+        <li>
+          <a href="#none"></a>
+          <p class="fw-bold fs-6">증권 소식 확인하기</p>
+          <div class="img-wrap">
+            <img class="h-100" src="/images/banner/contents_3.png" alt="" />
+          </div>
+        </li>
+      </ul>
+      <article class="hm-banner-one">
+        <div class="hm-banner-width">
+          <div class="hm-main-txt">
+            <h2 class="fw-bold">다른 사람들과 의견을 교류해요</h2>
+            <p class="mt-5 fs-6">평소에 궁금했던 종목이 있나요 !?</p>
+            <p class="fs-6">자유게시판을 통해 다른 사람들과 소통해봐요 !</p>
+            <p class="mt-5 fs-6">우리 모두 부자되길 기원합니다.</p>
+          </div>
+          <div class="img-wrap">
+            <img src="/images/banner/contents_4.png" alt="" />
+          </div>
+        </div>
+      </article>
+      <article class="hm-banner-two py-5">
+        <div class="hm-banner-width">
+          <div class="img-wrap">
+            <img src="/images/banner/contents_5.png" alt="" />
+          </div>
+          <div class="hm-main-txt text-white text-end">
+            <h2 class="fw-bold">가상 포인트로 가볍게 체험하는 가상투자</h2>
+            <p class="mt-5 fs-6">Happy Money 가상 계좌를 만들어</p>
+            <p class="fs-6">내가 관심 갖던 회사에 투자해보세요!</p>
+            <p class="mt-5 fs-6">국내 약 2,800개 종목의 시세를 함께 확인할 수 있습니다.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+    <!-- 메인 배너 s -->
+    <!-- <div class="main-banner-wrap">
         <div class="main-banner-contents-wrap">
           <h2>주식은 결코 어렵지 않습니다.</h2>
           <p>
@@ -100,32 +101,33 @@
           </div>
         </div>
       </div> -->
-      <!-- 메인 배너 e -->
-      <div id="main-content">
-        <!-- 공지사항, 게시판, 뉴스 s -->
-        <div class="community-services-wrap">
-          <!-- 공지사항 -->
-          <div class="contents-wrap nt-wrap">
-            <h2 class="board-title">
-              <a href="/views/notice-main.html?page=1"></a>
-              공지사항
-              <img src="../images/go-icon.png" style="height: 30px" />
-            </h2>
-            <ul class="notice-list"></ul>
-          </div>
-          <!-- 자유게시판 -->
-          <div class="contents-wrap">
-            <h2 class="board-title">
-              <a href="/views/post.html"></a>
-              자유 게시판
-              <img src="../images/go-icon.png" style="height: 30px" />
-            </h2>
-            <ul class="board-list"></ul>
-          </div>
+    <!-- 메인 배너 e -->
+    <div id="main-content">
+      <!-- 공지사항, 게시판, 뉴스 s -->
+      <div class="community-services-wrap">
+        <!-- 공지사항 -->
+        <div class="contents-wrap nt-wrap">
+          <h2 class="board-title">
+            <a href="/views/notice-main.html?page=1"></a>
+            공지사항
+            <img src="../images/go-icon.png" style="height: 30px" />
+          </h2>
+          <ul class="notice-list"></ul>
         </div>
-        <!-- 공지사항, 게시판, 뉴스 e -->
+        <!-- 자유게시판 -->
+        <div class="contents-wrap">
+          <h2 class="board-title">
+            <a href="/views/post.html?page=1"></a>
+            자유 게시판
+            <img src="../images/go-icon.png" style="height: 30px" />
+          </h2>
+          <ul class="board-list"></ul>
+        </div>
       </div>
-      <footer id="footer_wrap"></footer>
+      <!-- 공지사항, 게시판, 뉴스 e -->
     </div>
-  </body>
+    <footer id="footer_wrap"></footer>
+  </div>
+</body>
+
 </html>
