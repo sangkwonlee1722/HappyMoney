@@ -72,7 +72,7 @@ export class UserService {
 
     if (!compareSync(password, user?.password ?? "")) throw new UnauthorizedException("비밀번호를 확인해주세요.");
 
-    const payload = { sub: user.id, tokenType: "access" };
+    const payload = { id: user.id, tokenType: "access" };
 
     return {
       success: true,
