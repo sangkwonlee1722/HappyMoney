@@ -122,7 +122,7 @@ video {
 }
 #main-content {
   flex: 1;
-  width: 1000px;
+  width: 1200px;
   margin: 0 auto;
   margin-top: 60px;
 }
@@ -414,7 +414,7 @@ input::placeholder {
   z-index: 100;
 }
 .header .header-wrap {
-  max-width: 1000px;
+  max-width: 1200px;
   height: 90px;
   margin: 0 auto;
   display: flex;
@@ -435,7 +435,7 @@ input::placeholder {
   background-color: #d9d9d9;
 }
 .sub-header-box {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -717,7 +717,7 @@ input::placeholder {
   margin-top: 60px;
 }
 .hm-footer-wrap {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px 0;
   color: #fff;
@@ -1152,3 +1152,79 @@ footer.hm-container.hm-fixed {
   font-size: 19px;
 }
 /* pagenation e */
+
+/* main banner s */
+.hm-banner-wrap {
+  width: 100%;
+}
+.hm-banner-wrap > article {
+  width: 100%;
+}
+article.hm-main {
+  background-color: #cee3fe;
+  padding-bottom: 40px;
+}
+article.hm-banner-one {
+  background-color: #feefe8;
+}
+article.hm-banner-two {
+  background-color: #000f5d;
+}
+.hm-banner-width {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hm-main-txt {
+  display: inline;
+  white-space: nowrap;
+}
+
+.hm-main-btn-wrap {
+  display: flex;
+  width: 1000px;
+  margin: 0 auto;
+  transform: translateY(-60px);
+}
+.hm-main-btn-wrap li {
+  position: relative;
+  width: 30%;
+  margin-right: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 360px;
+  padding: 30px 0;
+  border-radius: 10px;
+  box-shadow: 2px 3px 6px 0 rgba(0, 0, 0, 0.25);
+  transition: ease-in-out 0.3s;
+}
+.hm-main-btn-wrap li:last-child {
+  margin-right: 0;
+}
+.hm-main-btn-wrap li:hover {
+  transform: translateY(-15px);
+}
+.hm-main-btn-wrap li:nth-child(1) {
+  background-color: #e8f1fe;
+}
+.hm-main-btn-wrap li:nth-child(2) {
+  background-color: #fee8e8;
+}
+.hm-main-btn-wrap li:nth-child(3) {
+  background-color: #fbfee8;
+}
+.hm-main-btn-wrap li a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.hm-main-btn-wrap li .img-wrap {
+  height: 150px;
+}
+/* main banner e */
