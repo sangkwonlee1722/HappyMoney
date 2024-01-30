@@ -1,4 +1,10 @@
 @charset "utf-8";
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+
+* {
+  font-family: "Spoqa Han Sans Neo", "sans-serif";
+}
+
 a {
   text-decoration: none;
   color: unset;
@@ -551,8 +557,8 @@ input::placeholder {
 .hm-red-dot-right::after {
   content: "";
   position: absolute;
-  top: -18px;
-  left: 15px;
+  top: -15px;
+  left: 16px;
   width: 10px;
   height: 10px;
   background-color: #ea5555;
@@ -565,7 +571,7 @@ input::placeholder {
   display: flex;
   align-items: center;
 }
-.hm-user-on button {
+.hm-user-on > button {
   margin-left: 1rem;
 }
 .push-noti {
@@ -577,18 +583,18 @@ input::placeholder {
   cursor: pointer;
 }
 .push-noti img {
-  height: 28px;
+  height: 22px;
 }
 
 /* --알림창-- s*/
 .hm-popup-alarm {
-  position: fixed;
+  position: absolute;
   width: 350px;
-  height: 700px;
+  height: 600px;
   background-color: #fdfdfd;
   z-index: 115;
-  margin-top: 700px;
-  margin-left: 15px;
+  top: 10px;
+  left: 20px;
   border-radius: 15px;
   box-shadow: 5px 5px 10px #777;
 
@@ -640,7 +646,7 @@ input::placeholder {
   font-weight: bold;
 }
 
-.hm-alarm-top button {
+.all-read-btn {
   border: none;
   background-color: transparent;
 }
@@ -692,7 +698,8 @@ input::placeholder {
 
 .hm-alarm-footer {
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .hm-alarm-footer button {
