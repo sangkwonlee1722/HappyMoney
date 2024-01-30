@@ -54,7 +54,7 @@ export class NoticeService {
   async remove(id: number): Promise<void> {
     const notice = await this.getNoticeById(id);
 
-    await this.noticeRepository.delete(id);
+    await this.noticeRepository.softRemove(notice);
   }
 
   private async getNoticeById(id: number): Promise<Notice> {
