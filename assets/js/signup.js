@@ -133,6 +133,8 @@ signupBtn.addEventListener("click", async () => {
     passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상만 가능합니다.";
     passwordCheckVerify.style.color = "red";
     return;
+  } else {
+    passwordCheckVerify.innerHTML = "";
   }
 
   if (!(nickName.length >= 2 && nickName.length <= 6)) {
@@ -147,6 +149,8 @@ signupBtn.addEventListener("click", async () => {
     nickNameCheckVerify.innerHTML = "닉네임에는 공백을 사용할 수 없습니다.";
     nickNameCheckVerify.style.color = "red";
     return;
+  } else {
+    nickNameCheckVerify.innerHTML = "";
   }
 
   if (!(name.length >= 2 && name.length <= 6)) {
@@ -161,6 +165,8 @@ signupBtn.addEventListener("click", async () => {
     nameCheckVerify.innerHTML = "이름에는 숫자를 포함할 수 없습니다.";
     nameCheckVerify.style.color = "red";
     return;
+  } else {
+    nameCheckVerify.innerHTML = "";
   }
 
   if (!emailCheck) {
@@ -172,6 +178,8 @@ signupBtn.addEventListener("click", async () => {
   if (!phone.includes("-") || phone.length !== 13) {
     phoneCheckVerify.innerHTML = "휴대폰 번호 양식에 맞게 작성해주세요.";
     return;
+  } else {
+    phoneCheckVerify.innerHTML = "";
   }
 
   try {
@@ -220,6 +228,7 @@ signupBtn.addEventListener("click", async () => {
       phoneCheckVerify.innerHTML = error.response.data.message[0];
       phoneCheckVerify.style.color = "red";
     } else {
+      passwordCheckVerify.innerHTML = "";
       console.error("Error:", error.response);
     }
   }
