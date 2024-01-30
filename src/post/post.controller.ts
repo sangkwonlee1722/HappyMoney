@@ -39,6 +39,12 @@ export class PostController {
   @Post()
   async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
     const { id: userId, nickName } = user;
+
+    // 카테고리 값이 유효한지 검사
+    if (!["잡담", "가입인사", "정보", "질문"].includes(createPostDto.category)) {
+      throw new BadRequestException();
+    }
+
     await this.postService.create(userId, nickName, createPostDto);
     return { success: true, message: "okay" };
   }
@@ -112,6 +118,12 @@ export class PostController {
     if (data.userId !== userId) {
       throw new UnauthorizedException({ success: false, message: "권한이 없습니다." });
     }
+
+    // 카테고리 값이 유효한지 검사
+    if (!["잡담", "가입인사", "정보", "질문"].includes(updatePostDto.category)) {
+      throw new BadRequestException("유효하지 않은 카테고리입니다.");
+    }
+
     const isUpdated = await this.postService.update(+id, updatePostDto);
     if (!isUpdated) {
       throw new BadRequestException({ success: false, message: "오류 발생." });

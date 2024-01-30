@@ -76,26 +76,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // 버튼 안보이게 하기 전 코드
-  // // 공지사항 수정 버튼 클릭 시
-  // $(document).on("click", ".update-notice-btn", (event) => {
-  //   const notice = $(event.target).closest(".mc-btn-wrap");
-
-  //   // 특정 ID를 가지고 수정 페이지로 이동
-  //   window.location.href = `http://localhost:3000/views/notice-update.html?id=${noticeId}`;
-  // });
-
-  // // 공지사항 삭제
-  // $(document).on("click", ".delete-notice-btn", async (event) => {
-  //   const notice = $(event.target).closest(".mc-btn-wrap");
-  //   const noticeIdToDelete = noticeId;
-
-  //   console.log("role:", role);
-  //   $("#delete-contents").on("click", function () {
-  //     deleteNotice(noticeIdToDelete);
-  //   });
-  // });
-
   async function deleteNotice(noticeId) {
     try {
       await axios.delete(`/api/notices/${noticeId}`, {
