@@ -1,11 +1,10 @@
 import axios from "axios";
 
-
 import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from "@nestjs/common";
 import { Observable, catchError, tap, throwError } from "rxjs";
 import { ConfigService } from "@nestjs/config";
-import { SlackMessage, slackLineColor } from "./slack/slack.config";
-import { SlackService } from "./slack/slack.service";
+import { SlackMessage, slackLineColor } from "./slack.config";
+import { SlackService } from "./slack.service";
 
 @Injectable()
 export class SlackAlarmInterceptor implements NestInterceptor {
@@ -31,6 +30,5 @@ export class SlackAlarmInterceptor implements NestInterceptor {
         return throwError(error);
       })
     );
-
   }
 }

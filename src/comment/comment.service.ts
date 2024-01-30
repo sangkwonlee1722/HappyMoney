@@ -30,9 +30,9 @@ export class CommentService {
   async create(user: User, postId: number, createCommentDto: CreateCommentDto) {
     // 게시글 존재 여부 확인
     const post = await this.postService.findOne(postId);
-    if (!post) {
-      throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
-    }
+    // if (!post) {
+    //   throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
+    // }
 
     /* 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
@@ -42,8 +42,6 @@ export class CommentService {
         commentUser: { id: user.id },
         post: { id: postId }
       });
-
-      console.log("코멘트에 유저가 나오나요?", comment);
 
       await em.save(Comment, comment);
 
@@ -123,7 +121,7 @@ export class CommentService {
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
 
-    const url = `http://localhost:3000/views/twit/twit.html`;
+    const url = `http://localhost:3000/views/post-read.html?id=${post.id}`;
     const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`, url);
     console.log("payload: ", payload);
 
