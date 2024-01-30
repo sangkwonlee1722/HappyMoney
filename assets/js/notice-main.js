@@ -2,6 +2,8 @@ import { baseUrl } from "./common.js";
 import renderPagination from "/js/pagenation.js";
 import getToken from "./common.js";
 
+const token = getToken();
+
 const params = new URLSearchParams(window.location.search);
 const noticePage = params.get("page");
 const getNoticeData = async () => {
@@ -49,8 +51,25 @@ const getNoticeData = async () => {
   }
 })();
 
-const writeButton = document.querySelector(".hm-button.hm-gray-color");
+// API로 사용자 정보 호출
+const userInfo = await axios.get(baseUrl + "user/mypage", {
+  headers: {
+    Authorization: token
+  }
+});
+
+const role = userInfo.data.role;
+
+const writeButton = document.querySelector(".hm-button.hm-gray-color a");
+
 if (writeButton) {
+  // admin만 버튼 보이게
+  if (role === "admin") {
+    writeButton.style.display = "block";
+  } else {
+    writeButton.style.display = "none";
+  }
+
   writeButton.addEventListener("click", () => {
     window.location.href = "http://localhost:3000/views/notice-posting.html";
   });
