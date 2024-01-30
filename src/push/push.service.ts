@@ -7,6 +7,7 @@ import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
 import { sendNotification } from "web-push";
 import { Payload } from "./push-config";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 @Injectable()
 export class PushService {
@@ -85,5 +86,21 @@ export class PushService {
     } catch (error) {
       console.error("WebPushError:", error);
     }
+  }
+
+  // 매일 자정 읽은 알림 중 24시간이 지난 알림은 삭제
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async deleteOldPushAlarm() {
+    const time = new Date();
+    time.setDate(time.getDate() - 1);
+    console.log("time: ", time);
+
+    await this.pushRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Push)
+      .where("isRead = true")
+      .andWhere("createdAt <= :time", { time })
+      .execute();
   }
 }

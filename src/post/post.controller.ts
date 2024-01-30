@@ -70,13 +70,14 @@ export class PostController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("my")
-  async findMyPosts(@UserInfo() user: User) {
-    const data = await this.postService.findMyPostsById(user.id);
+  async findMyPosts(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { posts, count } = await this.postService.findMyPostsById(user.id, query);
 
     return {
       success: true,
       message: "okay",
-      data
+      lists: posts,
+      total: count
     };
   }
 

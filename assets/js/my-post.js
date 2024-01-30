@@ -1,11 +1,14 @@
 import { baseUrl } from "./common.js";
 import getToken from './common.js'
+import renderPagination from '/js/pagenation.js'
 
 const token = getToken();
+const params = new URLSearchParams(window.location.search)
+const postsPage = params.get("page")
 
 /* 내가 작성한 게시글 목록 가져오기 */
 const getMyPosts = async () => {
-  const apiUrl = baseUrl + 'posts/my';
+  const apiUrl = baseUrl + `posts/my?page=${postsPage}`;
   try {
     const result = await axios.get(apiUrl, {
       headers: {
@@ -13,7 +16,10 @@ const getMyPosts = async () => {
       }
     })
 
-    return result.data.data;
+    const myPostsList = result.data.lists
+    const myPostsTotal = result.data.total
+    console.log('myPostsTotal: ', myPostsTotal);
+    return { myPostsList, myPostsTotal }
   } catch (error) {
     console.error(error)
   }
@@ -22,7 +28,8 @@ const getMyPosts = async () => {
 /* 목록을 뿌려주는 함수 */
 const spreadPostsList = async () => {
   const mainDom = document.querySelector('.board-list');
-  const posts = await getMyPosts();
+  const postsData = await getMyPosts();
+  const { myPostsList: posts, myPostsTotal: total } = postsData
 
   if (posts.length !== 0) {
     mainDom.innerHTML = posts
@@ -51,6 +58,8 @@ const spreadPostsList = async () => {
       <hr />
       `
       }).join("")
+
+    renderPagination(total, postsPage, '/views/my-posts.html');
   } else {
     mainDom.innerHTML = `
     <div class="none-contents">
