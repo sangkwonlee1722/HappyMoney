@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="../js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="../js/axios.min.js"></script>
+    <script type="module" src="../js/bootstrap.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <!-- <script src="https://unpkg.com/axios@0.26.1/dist/axios.min.js"></script> -->
+    <script type="module" src="../js/bootstrap.min.js"></script>
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/found-user.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/stock_main.css" />
+    <link rel="stylesheet" href="../css/found-user.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <div class="header-wrap" id="fountModal">
+      <h2>
+        <div class="title">
+          <a href="/views/main.html" class="img-wrap">HAPPYMONEY </a>
+        </div>
+      </h2>
+      <div class="explain">가입하신 휴대폰 번호를 입력하세요.</div>
+      <div class="hm-input-wrap">
+        <input
+          type="text"
+          class="hm-input"
+          id="foundPhoneInput"
+          name="foundPhoneInput"
+          placeholder="휴대폰 번호를 입력하세요."
+        />
+      </div>
+      <div class="ex">ex) 010-1111-1111</div>
+      <button class="hm-button" id="foundEmaildBtn">다음</button>
+      <div class="showEmailModal"></div>
+      <div class="foundEmail">
+        비밀번호가 기억나지 않는다면? <a href="/views/found-password.html" class="blue">비밀번호 찾기</a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -17,10 +17,12 @@ async function signout() {
     });
 
     const response = await axiosInstance.delete("/api/user/delete");
-
     if (response.data.success) {
-      deleteCookie("accessToken");
+      if (!response.data.user.isEmailVerified) {
+        deleteCookie("accessToken");
+      }
       alert("이메일 인증 후 회원탈퇴가 진행됩니다.");
+      deleteCookie("accessToken");
       window.location.reload();
     } else {
       alert(`${response.data.errorMessage}`);
@@ -33,5 +35,8 @@ async function signout() {
 
 const signoutBtn = document.getElementById("signoutBtn");
 signoutBtn.addEventListener("click", () => {
-  signout();
+  const userConfirmed = window.confirm("정말로 회원탈퇴 하시겠습니까?");
+  if (userConfirmed) {
+    signout();
+  }
 });

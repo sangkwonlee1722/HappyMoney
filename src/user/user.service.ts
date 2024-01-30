@@ -1,4 +1,11 @@
-import { ConflictException, Injectable, NotFoundException, Req, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  Req,
+  UnauthorizedException
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -6,9 +13,10 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
-import { v4 as uuidv4 } from "uuid";
 import { createTransport } from "nodemailer";
-import { SubscriptionDto } from "./dto/update-user.dto";
+import { google } from "googleapis";
+import { EmailService } from "../email/email.service";
+
 interface EmailOptions {
   to: string;
   subject: string;
@@ -20,6 +28,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly emailService: EmailService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService
   ) {}
@@ -27,30 +36,16 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
-    const existUser = await this.findUserByEmail(email);
-
-    if (existUser) throw new ConflictException("이미 존재하는 회원입니다.");
-
-    const existNickName = await this.findUserByNickName(nickName);
-    if (existNickName) throw new ConflictException("이미 존재하는 이름입니다.");
-
     try {
       const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
       const hashPassword = hashSync(password, hashRound);
 
-      const transporter = createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: true,
-        auth: {
-          type: "OAuth2",
-          user: this.configService.get<string>("GMAIL_OAUTH_USER"),
-          clientId: this.configService.get<string>("GMAIL_OAUTH_CLIENT_ID"),
-          clientSecret: this.configService.get<string>("GAMIL_OAUTH_CLIENT_SECRET"),
-          refreshToken: this.configService.get<string>("GAMIL_OAUTH_REFRESH_TOKEN")
-        }
-      });
+      const mailOptions = {
+        from: this.configService.get("NODE_MAIL_ID"),
+        to: email,
+        subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
+        html: `인증링크 : <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
+      };
 
       await this.userRepository.save({
         email,
@@ -61,13 +56,7 @@ export class UserService {
         isEmailVerified: false
       });
 
-      const mailOptions = {
-        to: email,
-        subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
-      };
-
-      transporter.sendMail(mailOptions);
+      this.emailService.verifyEmail(mailOptions);
     } catch (err: any) {
       console.error(err);
     }
@@ -110,27 +99,13 @@ export class UserService {
     });
 
     try {
-      const transporter = createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: true,
-        auth: {
-          type: "OAuth2",
-          user: this.configService.get<string>("GMAIL_OAUTH_USER"),
-          clientId: this.configService.get<string>("GMAIL_OAUTH_CLIENT_ID"),
-          clientSecret: this.configService.get<string>("GAMIL_OAUTH_CLIENT_SECRET"),
-          refreshToken: this.configService.get<string>("GAMIL_OAUTH_REFRESH_TOKEN")
-        }
-      });
-
       const mailOptions = {
         to: user.email,
         subject: "[happymoney] 회원탈퇴 이메일 인증 메일입니다.",
         html: `인증링크 : <a href="http://localhost:3000/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
       };
 
-      transporter.sendMail(mailOptions);
+      this.emailService.verifyEmail(mailOptions);
     } catch (err: any) {
       console.error(err);
     }
@@ -157,8 +132,15 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.userRepository.findOne({
-      select: ["id", "email", "password", "name", "role", "isEmailVerified"],
+      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
       where: [{ email }]
+    });
+  }
+
+  async findUserByPhone(phone: string) {
+    return await this.userRepository.find({
+      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
+      where: [{ phone }]
     });
   }
 
@@ -187,35 +169,21 @@ export class UserService {
     const hashPassword = hashSync(temporaryPassword, hashRound);
 
     if (!user) {
-      throw new NotFoundException("존재하지 않는 회원입니다.");
+      throw new NotFoundException("존재하지 않는 회원이거나 정보가 일치하지 않습니다.");
     }
 
     try {
-      const transporter = createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: true,
-        auth: {
-          type: "OAuth2",
-          user: this.configService.get<string>("GMAIL_OAUTH_USER"),
-          clientId: this.configService.get<string>("GMAIL_OAUTH_CLIENT_ID"),
-          clientSecret: this.configService.get<string>("GAMIL_OAUTH_CLIENT_SECRET"),
-          refreshToken: this.configService.get<string>("GAMIL_OAUTH_REFRESH_TOKEN")
-        }
-      });
-
       await this.userRepository.update(user.id, {
         password: hashPassword
       });
 
       const mailOptions = {
         to: user.email,
-        subject: "[happymoney] 임시 비밀번호 - ",
+        subject: "[happymoney] 임시 비밀번호 ",
         html: `임시 비밀번호: <strong>${temporaryPassword}</strong>`
       };
 
-      transporter.sendMail(mailOptions);
+      this.emailService.verifyEmail(mailOptions);
     } catch (err: any) {
       console.error(err);
     }
