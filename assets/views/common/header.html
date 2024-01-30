@@ -12,9 +12,33 @@
           아직 회원이 아니신가요? <a href="/views/signup.html"><span class="blue"> 회원가입</span></a>
         </div>
         <div class="foundPasswordAndUser">
-          <a href="/views/found-password.html">비밀번호 찾기</a>
-          <a href="/views/found-user.html">이메일 찾기</a>
+          <a href="/views/found-user.html" class="styled-link">이메일 찾기</a>
+          <a href="/views/found-password.html" class="styled-link">비밀번호 찾기</a>
         </div>
+      </div>
+      <div class="social">
+        <button id="kakaoBtn" class="socialBtn" onclick="kakaoLogin()">
+          <img
+            src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F99BEE8465C3D7D1214"
+            style="height: 50px"
+            width="250px"
+          />
+        </button>
+        <button id="googleBtn" class="socialBtn" onclick="googleLogin()">
+          <img
+            src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F998689465C3D7D1217"
+            style="height: 50px"
+            width="250px"
+          />
+        </button>
+
+        <button id="naverBtn" class="socialBtn" onclick="naverLogin()">
+          <img
+            src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F99580C465C3D7D130C"
+            style="height: 50px"
+            width="250px"
+          />
+        </button>
       </div>
     </div>
   </div>
@@ -37,7 +61,7 @@
       <ul class="hm-hd-gnb">
         <li class="hm_on"><a href="/views/stock_main.html">모의투자</a></li>
         <li><a href="/views/notice-main.html?page=1">공지사항</a></li>
-        <li><a href="/views/post.html">자유게시판</a></li>
+        <li><a href="/views/post.html?page=1">자유게시판</a></li>
         <li><a href="#none">뉴스</a></li>
       </ul>
       <ul class="hm-hd-log justify-content-end w-100">

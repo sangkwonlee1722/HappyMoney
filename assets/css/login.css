@@ -14,7 +14,7 @@
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  height: 400px;
+  height: 500px;
   z-index: 1000;
 }
 
@@ -26,7 +26,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 100%80%;
   padding: 5px;
   margin-top: 5px;
   margin-bottom: 10px;
@@ -53,7 +53,7 @@
   align-items: center;
   justify-content: center;
   margin: 15px auto;
-  width: 400px;
+  width: 300px;
   border-radius: 7px;
   border: none;
   font-size: 12px;
@@ -67,7 +67,7 @@
   align-items: center;
   justify-content: center;
   margin: 15px auto;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .overlay {
