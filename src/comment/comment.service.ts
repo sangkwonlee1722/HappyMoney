@@ -30,9 +30,9 @@ export class CommentService {
   async create(user: User, postId: number, createCommentDto: CreateCommentDto) {
     // 게시글 존재 여부 확인
     const post = await this.postService.findOne(postId);
-    // if (!post) {
-    //   throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
-    // }
+    if (!post) {
+      throw new NotFoundException({ success: false, message: "게시글을 찾을 수 없습니다." });
+    }
 
     /* 푸시-알림 테이블에 데이터 추가 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {

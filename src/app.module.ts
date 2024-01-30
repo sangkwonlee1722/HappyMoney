@@ -18,10 +18,11 @@ import { ScheduleModule } from "@nestjs/schedule";
 
 import { TwitModule } from "./twit/twit.module";
 import { PushModule } from "./push/push.module";
-import { APP_FILTER } from "@nestjs/core";
+import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { SlackService } from "./common/slack/slack.service";
 import { EmailModule } from "./email/email.module";
 import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
+import { SlackAlarmInterceptor } from "./common/slack/slack.alarm.interceptor";
 
 @Module({
   imports: [
