@@ -58,6 +58,7 @@ export async function spreadMyAllPushNotis() {
         switch (serviceType) {
           case "댓글":
             message = `[${contents2}]님이 게시글에 댓글을 남겼습니다.`
+            contentUrl = `http://localhost:3000/views/post-read.html?id=${contentId}`
             break
 
           case "쪽지":
