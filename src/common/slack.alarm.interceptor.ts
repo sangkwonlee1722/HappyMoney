@@ -1,13 +1,36 @@
 import axios from "axios";
 
-import { CallHandler, ExecutionContext, Injectable } from "@nestjs/common";
-import { Observable, tap } from "rxjs";
+
+import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from "@nestjs/common";
+import { Observable, catchError, tap, throwError } from "rxjs";
+import { ConfigService } from "@nestjs/config";
+import { SlackMessage, slackLineColor } from "./slack/slack.config";
+import { SlackService } from "./slack/slack.service";
 
 @Injectable()
-export class SlackAlarmInterceptor {
+export class SlackAlarmInterceptor implements NestInterceptor {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly slackService: SlackService
+  ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log("this is pre custom interceptor");
+    return next.handle().pipe(
+      catchError((error) => {
+        if (error instanceof HttpException && error.getStatus() >= 500) {
+          const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_ERROR");
+          const color: string = slackLineColor.error;
+          const text: string = "Internal Server Error";
+          const mrkTitle: string = "Error Stack";
+          const mrkValue: string = `${error.stack}`;
 
-    return next.handle().pipe(tap(() => console.log(`this is post custom route interceptor`)));
+          const message = new SlackMessage(color, text, mrkTitle, mrkValue);
+
+          this.slackService.sendScheduleNoti(message, slackHookUrl);
+        }
+
+        return throwError(error);
+      })
+    );
+
   }
 }
