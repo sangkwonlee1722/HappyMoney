@@ -138,9 +138,9 @@ video {
   background-color: #888 !important;
 }
 
-.hm-button:hover {
+/* .hm-button:hover {
   background-color: #000f5d;
-}
+} */
 
 .hm-button {
   position: relative;
@@ -206,6 +206,7 @@ input::placeholder {
 /* check */
 .hm-checkbox {
   position: relative;
+  display: flex;
 }
 .hm-checkbox input[type="checkbox"] {
   display: none;
@@ -214,6 +215,7 @@ input::placeholder {
   line-height: 18px;
   padding-left: 25px;
   font-size: 14px;
+  cursor: pointer;
 }
 .hm-checkbox input[type="checkbox"] + label::after {
   content: "";
@@ -223,12 +225,12 @@ input::placeholder {
   height: 18px;
   top: 0;
   left: 0;
-  background: url(../img/icon/toggle_off.png) no-repeat;
+  background: url(/images/toggle_off.png) no-repeat;
   background-size: cover;
 }
 .hm-checkbox input[type="checkbox"]:checked + label::after {
   content: "";
-  background: url(../img/icon/toggle_on.png) no-repeat;
+  background: url(/images/toggle_on.png) no-repeat;
   background-size: cover;
 }
 

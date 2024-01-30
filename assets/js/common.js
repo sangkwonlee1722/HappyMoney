@@ -161,7 +161,18 @@ export function deleteCookie(name) {
 
 // 숫자 함수
 export function addComma(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // 값이 정의되어 있지 않다면 빈 문자열 반환
+  if (number === undefined || number === null) {
+    return '';
+  }
+
+  // 값이 정의되어 있다면 toString 메서드 호출
+  const stringValue = number.toString();
+
+  // 나머지 addComma 함수 로직
+  const formattedValue = stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return formattedValue;
 }
 
 

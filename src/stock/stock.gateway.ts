@@ -20,17 +20,50 @@ export class StockGateway implements OnGatewayConnection {
   private wsClient: WebSocket | null = null;
   private trKey: string;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.initializeWebSocketClient(() => {});
+  }
 
   handleConnection(socket: WebSocket) {}
 
-  private async initializeWebSocketClient() {
-    if (!this.wsClient) {
+  private async initializeWebSocketClient(callback) {
+    // 기존 연결이 있으면 닫고 초기화
+    console.log("wsClient1", this.wsClient);
+    if (this.wsClient) {
+      this.wsClient.close();
+      // this.wsClient = null;
+      this.wsClient.onclose = () => {
+        console.log("연결이 끊겼습니다.");
+        try {
+          const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
+          this.wsClient = new WebSocket(url);
+          callback();
+          // this.wsClient.on("message", (data) => {
+          //    console.log("data", data);
+          // });
+          // this.wsClient.onmessage = function (evt) {
+          //   console.log("evt", evt);
+          //   console.log("testtest");
+          // };
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    } else {
       try {
         const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
         this.wsClient = new WebSocket(url);
-        this.wsClient.on("open", () => {});
-      } catch (error) {}
+        callback();
+        // this.wsClient.on("message", (data) => {
+        //    console.log("data", data);
+        // });
+        // this.wsClient.onmessage = function (evt) {
+        //   console.log("evt", evt);
+        //   console.log("testtest");
+        // };
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -69,15 +102,18 @@ export class StockGateway implements OnGatewayConnection {
 
   // 실시간 호가API
   @SubscribeMessage("asking_price")
-  async getAskingPrice(@MessageBody() trKey: string) {
-    await this.initializeWebSocketClient();
+  async getAskingPrice() {
+    this.initializeWebSocketClient(this.test);
+  }
 
+  test = async () => {
+    // console.log("wsClient3", this.wsClient);
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
         await this.getSk();
       }
 
-      this.trKey = trKey;
+      console.log(this.trKey);
       const jsonRequest = {
         header: {
           approval_key: `${this.skToken}`,
@@ -88,12 +124,11 @@ export class StockGateway implements OnGatewayConnection {
         body: {
           input: {
             tr_id: "H0STASP0",
-            tr_key: trKey
+            tr_key: this.trKey
           }
         }
       };
-
-      this.wsClient.send(JSON.stringify(jsonRequest));
+      await this.wsClient.send(JSON.stringify(jsonRequest));
 
       // 메시지 수신 이벤트 핸들러
       this.wsClient.on("message", (data) => {
@@ -101,13 +136,15 @@ export class StockGateway implements OnGatewayConnection {
         const jsonData = this.stockhoka(messageString);
         try {
           // 클라이언트에게 JSON데이터를 전송
+          // console.log(this.trKey);
           this.server.emit("asking_price", jsonData);
         } catch (error) {}
       });
     } catch (error) {
-      throw new error(error);
+      console.log(error);
+      throw error;
     }
-  }
+  };
 
   stockhoka(data: string): string {
     const recvvalue = data.split("^");
@@ -126,61 +163,61 @@ export class StockGateway implements OnGatewayConnection {
       askp3: recvvalue[5],
       askp2: recvvalue[4],
       askp1: recvvalue[3],
-      ASKP_RSQN10: recvvalue[32],
-      ASKP_RSQN9: recvvalue[31],
-      ASKP_RSQN8: recvvalue[30],
-      ASKP_RSQN7: recvvalue[29],
-      ASKP_RSQN6: recvvalue[28],
-      ASKP_RSQN5: recvvalue[27],
-      ASKP_RSQN4: recvvalue[26],
-      ASKP_RSQN3: recvvalue[25],
-      ASKP_RSQN2: recvvalue[24],
-      ASKP_RSQN1: recvvalue[23],
-      BIDP1: recvvalue[13],
-      BIDP2: recvvalue[14],
-      BIDP3: recvvalue[15],
-      BIDP4: recvvalue[16],
-      BIDP5: recvvalue[17],
-      BIDP6: recvvalue[18],
-      BIDP7: recvvalue[19],
-      BIDP8: recvvalue[20],
-      BIDP9: recvvalue[21],
-      BIDP10: recvvalue[22],
-      BIDP_RSQN1: recvvalue[33],
-      BIDP_RSQN2: recvvalue[34],
-      BIDP_RSQN3: recvvalue[35],
-      BIDP_RSQN4: recvvalue[36],
-      BIDP_RSQN5: recvvalue[37],
-      BIDP_RSQN7: recvvalue[39],
-      BIDP_RSQN8: recvvalue[40],
-      BIDP_RSQN6: recvvalue[38],
-      BIDP_RSQN9: recvvalue[41],
-      BIDP_RSQN10: recvvalue[42],
-      총매도호가: {
-        잔량: recvvalue[43],
-        잔량_증감: recvvalue[54]
-      },
-      총매수호가: {
-        잔량: recvvalue[44],
-        잔량_증감: recvvalue[55]
-      },
-      시간외_총매도호가: {
-        잔량: recvvalue[45],
-        증감: recvvalue[56]
-      },
-      시간외_총매수호가: {
-        잔량: recvvalue[46],
-        증감: recvvalue[57]
-      },
-      예상_체결: {
-        가격: recvvalue[47],
-        체결량: recvvalue[48],
-        거래량: recvvalue[49],
-        체결_대비: recvvalue[50],
-        부호: recvvalue[51],
-        체결_전일대비율: recvvalue[52]
-      },
-      누적_거래량: recvvalue[53]
+      askp_rsqn10: recvvalue[32],
+      askp_rsqn9: recvvalue[31],
+      askp_rsqn8: recvvalue[30],
+      askp_rsqn7: recvvalue[29],
+      askp_rsqn6: recvvalue[28],
+      askp_rsqn5: recvvalue[27],
+      askp_rsqn4: recvvalue[26],
+      askp_rsqn3: recvvalue[25],
+      askp_rsqn2: recvvalue[24],
+      askp_rsqn1: recvvalue[23],
+      bidp1: recvvalue[13],
+      bidp2: recvvalue[14],
+      bidp3: recvvalue[15],
+      bidp4: recvvalue[16],
+      bidp5: recvvalue[17],
+      bidp6: recvvalue[18],
+      bidp7: recvvalue[19],
+      bidp8: recvvalue[20],
+      bidp9: recvvalue[21],
+      bidp10: recvvalue[22],
+      bidp_rsqn1: recvvalue[33],
+      bidp_rsqn2: recvvalue[34],
+      bidp_rsqn3: recvvalue[35],
+      bidp_rsqn4: recvvalue[36],
+      bidp_rsqn5: recvvalue[37],
+      bidp_rsqn7: recvvalue[39],
+      bidp_rsqn8: recvvalue[40],
+      bidp_rsqn6: recvvalue[38],
+      bidp_rsqn9: recvvalue[41],
+      bidp_rsqn10: recvvalue[42]
+      // 총매도호가: {
+      //   잔량: recvvalue[43],
+      //   잔량_증감: recvvalue[54]
+      // },
+      // 총매수호가: {
+      //   잔량: recvvalue[44],
+      //   잔량_증감: recvvalue[55]
+      // },
+      // 시간외_총매도호가: {
+      //   잔량: recvvalue[45],
+      //   증감: recvvalue[56]
+      // },
+      // 시간외_총매수호가: {
+      //   잔량: recvvalue[46],
+      //   증감: recvvalue[57]
+      // },
+      // 예상_체결: {
+      //   가격: recvvalue[47],
+      //   체결량: recvvalue[48],
+      //   거래량: recvvalue[49],
+      //   체결_대비: recvvalue[50],
+      //   부호: recvvalue[51],
+      //   체결_전일대비율: recvvalue[52]
+      // },
+      // 누적_거래량: recvvalue[53]
     };
 
     return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환

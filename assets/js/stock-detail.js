@@ -2,21 +2,102 @@ import io from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 import { addComma } from "/js/common.js";
 
 const params = new URLSearchParams(window.location.search);
-const tr_key = params.get("code");
+const trKey = params.get("code");
+const trName = params.get("name");
 
+$('.stock-dt-tit h2').html(`${trName}<span>(${trKey})</span>`);
 
-const socket = io('ws://localhost:3000/ws/stock', {
-  transports: ['websocket'],
+$('.sell-buy-tab .buy-tab').on('click', function () {
+  $('.sell-buy-tab li').removeClass('on');
+  $(this).addClass('on');
+  $('.total-price').css('color', '#db1515');
+  $('.max-price span').css('color', '#db1515');
+  $('.buy-btn').css('display', 'block');
+  $('.sell-btn').css('display', 'none');
 });
-
-// 연결 성공 시 동작
-socket.on('connect', () => {
-  console.log('Connected to server');
-
-  // 메시지 전송
-  socket.emit('asking_price', tr_key);
+$('.sell-buy-tab .sell-tab').on('click', function () {
+  $('.sell-buy-tab li').removeClass('on');
+  $(this).addClass('on');
+  $('.total-price').css('color', '#405FFF');
+  $('.max-price span').css('color', '#405FFF');
+  $('.sell-btn').css('display', 'block');
+  $('.buy-btn').css('display', 'none');
 });
-
-socket.on('asking_price', (data) => {
-  console.log('Received asking_price:', data);
+$('.percent li').on('click', function () {
+  $('.percent li').removeClass('on');
+  $(this).toggleClass('on');
+});
+$('#stockAmount').focus(function () {
+  $('.percent li').removeClass('on');
 })
+
+
+
+// 현재 시간 확인 후 조건에 따라 로직 실행
+if (isKoreanWeekday() && isKoreanWorkingHour()) {
+  livePriceData();
+} else {
+  priceData();
+}
+console.log(isKoreanWorkingHour())
+
+function isKoreanWeekday() {
+  const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
+  const dayOfWeek = new Intl.DateTimeFormat('en-US', koreanOptions).formatToParts(new Date()).find(part => part.type === 'weekday').value;
+  // 여기서는 "Monday"부터 "Friday"까지를 평일로 간주합니다.
+  return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(dayOfWeek);
+}
+
+function isKoreanWorkingHour() {
+  const koreanOptions = { timeZone: 'Asia/Seoul' };
+  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: 'numeric' });
+  const time = Number(currentHour.split('')[0]);
+  return time >= 9 && time <= 16;
+}
+
+function livePriceData() {
+  console.log("평일 9시부터 16시까지 실행");
+  // 여기에서 새로운 WebSocket 연결을 생성하고 반환
+  const socket = io('ws://localhost:3000/ws/stock', {
+    transports: ['websocket'],
+  });
+
+  // 연결 성공 시 동작
+  socket.on('connect', () => {
+    console.log('Connected to server');
+
+    // 메시지 전송
+    socket.emit('asking_price', trKey);
+  });
+
+  socket.on('asking_price', (data) => {
+    const price = JSON.parse(data);
+    console.log(price);
+    $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
+    for (let i = 1; i < 11; i++) {
+      $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
+      $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
+      $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
+      $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
+    }
+  })
+}
+
+async function priceData() {
+  try {
+    console.log("평일 9시부터 16시 외에 실행");
+    const result = await axios.get(`http://localhost:3000/api/stock/stockPrice?code=${trKey}`);
+    const item = result.data.item.output1;
+
+    $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);
+    for (let i = 1; i < 11; i++) {
+      $(`.stock-dt-live .buy.num${i} .price`).text(addComma(item[`askp${i}`]));
+      $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(item[`askp_rsqn${i}`]));
+      $(`.stock-dt-live .sell.num${i} .price`).text(addComma(item[`bidp${i}`]));
+      $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(item[`bidp_rsqn${i}`]));
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
