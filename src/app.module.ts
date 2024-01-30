@@ -15,11 +15,13 @@ import { CommentModule } from "./comment/comment.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { ScheduleModule } from "@nestjs/schedule";
+
 import { TwitModule } from "./twit/twit.module";
 import { PushModule } from "./push/push.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { SlackAlarmInterceptor } from "./common/slack.alarm.interceptor";
 import { SlackService } from "./common/slack/slack.service";
+import { EmailModule } from "./email/email.module";
 
 @Module({
   imports: [
@@ -34,11 +36,9 @@ import { SlackService } from "./common/slack/slack.service";
     StockModule,
     NoticeModule,
     CommentModule,
-
     AuthModule,
-
     ScheduleModule.forRoot(),
-
+    EmailModule,
     TwitModule,
 
     PushModule
