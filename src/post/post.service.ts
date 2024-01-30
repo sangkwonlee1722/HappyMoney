@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Post } from "./entities/post.entity";
 import { Repository } from "typeorm";
@@ -23,15 +24,17 @@ export class PostService {
     });
   }
 
-  async findAll() {
-    const data = await this.postRepository
+  async findAll(query: PaginatePostDto) {
+    const [posts, count]: [Post[], number] = await this.postRepository
       .createQueryBuilder("p")
       .select(["p.id", "p.category", "p.nickName", "p.title", "p.createdAt"])
       .loadRelationCountAndMap("p.commentNumbers", "p.comments")
-      .orderBy("p.createdAt", "DESC")
-      .getMany();
+      .skip(query.take * (query.page - 1))
+      .take(query.take)
+      .orderBy("p.createdAt", query.order__createdAt)
+      .getManyAndCount();
 
-    return data;
+    return { posts, count };
   }
 
   async findOne(id: number) {

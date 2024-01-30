@@ -10,8 +10,7 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
-  Query,
-  InternalServerErrorException
+  Query
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -49,9 +48,18 @@ export class PostController {
    * @returns 전체 글
    */
   @Get()
-  async findAll() {
-    const data = await this.postService.findAll();
-    return { success: true, message: "okay", data: data };
+  async findAll(@Query() query: PaginatePostDto) {
+    let { page } = query;
+    if (page === null) {
+      page = 1;
+    }
+    const { posts, count } = await this.postService.findAll(query);
+    return {
+      success: true,
+      message: "okay",
+      list: posts,
+      total: count
+    };
   }
 
   /**
