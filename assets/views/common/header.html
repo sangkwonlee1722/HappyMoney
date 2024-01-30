@@ -60,9 +60,9 @@
     <div class="sub-header-box">
       <ul class="hm-hd-gnb">
         <li class="hm_on"><a href="/views/stock_main.html">모의투자</a></li>
-        <li><a href="/views/notice-main.html?page=1">공지사항</a></li>
-        <li><a href="/views/post.html?page=1">자유게시판</a></li>
-        <li><a href="#none">뉴스</a></li>
+        <li class="hm_on"><a href="/views/notice-main.html?page=1">공지사항</a></li>
+        <li class="hm_on"><a href="/views/post.html?page=1">자유게시판</a></li>
+        <li class="hm_on"><a href="#none">뉴스</a></li>
       </ul>
       <ul class="hm-hd-log justify-content-end w-100">
         <li>
@@ -82,12 +82,15 @@
                   <div class="hm-alarm-header">
                     <div class="hm-alarm-top">
                       <h5>알림</h5>
-                      <button class="all-read-btn">전체읽음</button>
+                      <a class="d-flex" href="/views/twit/twit.html?page=1"
+                        >쪽지<img class="ms-1" src="/images/twit-icon.png" alt=""
+                      /></a>
                     </div>
                     <hr />
                   </div>
                   <ul class="hm-alarm-list"></ul>
                   <div class="hm-alarm-footer">
+                    <button class="all-read-btn">전체읽음</button>
                     <button class="hm-button hm-gray-color delete-all-alarm">전체삭제</button>
                   </div>
                 </div>
