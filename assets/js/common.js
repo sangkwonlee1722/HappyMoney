@@ -11,6 +11,7 @@ window.logout = logout;
 window.googleLogin = googleLogin;
 window.naverLogin = naverLogin;
 window.kakaoLogin = kakaoLogin;
+window.handleKeyPress = handleKeyPress;
 
 //팝업 열기
 export function drPopupOpen(popName) {
@@ -83,8 +84,8 @@ $(document).ready(function () {
     const inputBox = document.querySelector("#login-input-box");
 
     const temp_html = `
-      <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소" />
-      <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호" />
+      <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소"  onkeypress="handleKeyPress(event)" />
+      <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호"  onkeypress="handleKeyPress(event)" />
       `;
     inputBox.innerHTML = temp_html;
   }, 50);
@@ -117,6 +118,12 @@ function getCookie(name) {
   }
   // 주어진 이름에 해당하는 쿠키를 찾지 못한 경우 null을 반환합니다.
   return null;
+}
+
+export function handleKeyPress(event) {
+  if (event.key === "Enter") {
+    loginConfirm();
+  }
 }
 
 // 로그인
