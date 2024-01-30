@@ -1,62 +1,47 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>HappyMoney</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="module" src="/js/bootstrap.min.js"></script>
-    <script type="module" src="/js/common.js"></script>
-    <script type="module" src="/smarteditor/js/HuskyEZCreator.js"></script>
-    <script type="module" src="/js/notice-posting.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/common.css" />
-    <link rel="stylesheet" href="/css/notice-posting.css" />
-  </head>
 
-  <body>
-    <div class="hm-container">
-      <header id="header_wrap"></header>
-      <div id="main-content">
-        <div class="contents-wrap">
-          <h2 class="board-title">
-            <a href="#none"></a>
-            공지사항 글쓰기
-          </h2>
-          <form action="" method="post">
-            <div class="form-group">
-              <label for="title"></label>
-              <input
-                type="text"
-                class="hm-input"
-                id="title"
-                placeholder="제목 입력(2-100)"
-                name="title"
-                maxlength="100"
-                required="required"
-                pattern=".{2,100}"
-              />
+<head>
+  <meta charset="UTF-8" />
+  <title>HappyMoney</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="/js/bootstrap.min.js"></script>
+  <script type="module" src="/js/common.js"></script>
+  <script type="module" src="/smarteditor/js/HuskyEZCreator.js"></script>
+  <script type="module" src="/js/notice-posting.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/common.css" />
+  <link rel="stylesheet" href="/css/notice-posting.css" />
+</head>
+
+<body>
+  <div class="hm-container">
+    <header id="header_wrap"></header>
+    <div id="main-content">
+      <div class="contents-wrap">
+        <h2 class="board-title">
+          공지사항 글쓰기
+        </h2>
+        <form action="" method="post">
+          <div class="form-group">
+            <label for="title"></label>
+            <input type="text" class="hm-input" id="title" placeholder="제목 입력(2-100)" name="title" maxlength="100"
+              required="required" pattern=".{2,100}" />
+          </div>
+          <div class="smarteditor-container">
+            <div class="smarteditor">
+              <textarea name="editorTxt" class="hm-textarea" cols="30" rows="10" id="editorTxt" placeholder="내용을 입력해주세요"
+                required="required" style="width: 100%"></textarea>
             </div>
-            <div class="smarteditor-container">
-              <div class="smarteditor">
-                <textarea
-                  name="editorTxt"
-                  class="hm-textarea"
-                  cols="30"
-                  rows="10"
-                  id="editorTxt"
-                  placeholder="내용을 입력해주세요"
-                  required="required"
-                  style="width: 100%"
-                ></textarea>
-              </div>
-            </div>
-            <input type="button" id="posting-button" class="hm-button hm-main-color" value="등록하기" />
-          </form>
-        </div>
+          </div>
+          <input type="button" id="posting-button" class="hm-button hm-main-color" value="등록하기" />
+        </form>
       </div>
-      <footer id="footer_wrap"></footer>
     </div>
-  </body>
+    <footer id="footer_wrap"></footer>
+  </div>
+</body>
+
 </html>

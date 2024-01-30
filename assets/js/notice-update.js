@@ -1,6 +1,5 @@
 import getToken from "/js/common.js";
 import { baseUrl } from "/js/common.js";
-console.log(baseUrl);
 
 const token = getToken();
 const smartEditors = [];

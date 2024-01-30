@@ -1,7 +1,5 @@
-// post-posting.js
-
-import getToken from "./common.js";
-import { baseUrl } from "./common.js";
+import getToken from "/js/common.js";
+import { baseUrl } from "/js/common.js";
 
 const token = getToken();
 const smartEditors = [];
@@ -28,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const submitPost = function () {
   smartEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
   let category = document.getElementById("category").value; // 말머리 추가
+  console.log(category);
   let title = document.getElementById("title").value;
   let content = document.getElementById("editorTxt").value;
 
