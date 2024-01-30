@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Notice } from "./entities/notice.entity";
@@ -15,11 +15,6 @@ export class NoticeService {
 
   // 공지사항 작성
   async create(createNoticeDto: CreateNoticeDto, userId: number): Promise<Notice> {
-    const existingNotice = await this.noticeRepository.findOne({ where: { title: createNoticeDto.title } });
-    if (existingNotice) {
-      throw new ConflictException({ success: false, message: "동일한 제목의 공지사항이 이미 존재합니다." });
-    }
-
     const notice = this.noticeRepository.create({ ...createNoticeDto, user: { id: userId } });
     await this.noticeRepository.save(notice);
     return notice;
@@ -43,19 +38,13 @@ export class NoticeService {
 
   // 공지사항 특정 조회
   async findOne(id: number): Promise<Notice> {
-    const notice = await this.noticeRepository.findOneBy({ id });
-    if (!notice) {
-      throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
-    }
+    const notice = await this.getNoticeById(id);
     return notice;
   }
 
   // 공지사항 수정
   async update(id: number, updateNoticeDto: UpdateNoticeDto): Promise<Notice> {
-    const notice = await this.noticeRepository.findOneBy({ id });
-    if (!notice) {
-      throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
-    }
+    const notice = await this.getNoticeById(id);
 
     await this.noticeRepository.update(id, updateNoticeDto);
     return this.noticeRepository.findOneBy({ id });
@@ -63,11 +52,16 @@ export class NoticeService {
 
   // 공지사항 삭제
   async remove(id: number): Promise<void> {
-    const notice = await this.noticeRepository.findOneBy({ id });
+    const notice = await this.getNoticeById(id);
+
+    await this.noticeRepository.delete(id);
+  }
+
+  private async getNoticeById(id: number): Promise<Notice> {
+    const notice = await this.noticeRepository.findOne({ where: { id } });
     if (!notice) {
       throw new NotFoundException({ success: false, message: "해당 공지사항을 찾을 수 없습니다." });
     }
-
-    await this.noticeRepository.delete(id);
+    return notice;
   }
 }

@@ -1,3 +1,5 @@
+// post-posting.js
+
 import getToken from "./common.js";
 import { baseUrl } from "./common.js";
 
@@ -22,9 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     submitButton.addEventListener("click", submitPost);
   }
 });
-console.log(token);
+
 const submitPost = function () {
   smartEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
+  let category = document.getElementById("category").value; // 말머리 추가
   let title = document.getElementById("title").value;
   let content = document.getElementById("editorTxt").value;
 
@@ -36,8 +39,9 @@ const submitPost = function () {
   } else {
     axios
       .post(
-        `${baseUrl}notices`,
+        `${baseUrl}posts`, // "notices"를 "posts"로 변경
         {
+          category: category, // 말머리 추가
           title: title,
           contents: content
         },
@@ -49,13 +53,11 @@ const submitPost = function () {
       )
       .then(function (response) {
         console.log(response);
-        alert("공지사항이 성공적으로 등록되었습니다.");
-
-        window.location.href = "/views/notice-main.html?page=1";
+        alert("게시물이 성공적으로 등록되었습니다.");
       })
       .catch(function (error) {
         console.error(error);
-        alert("공지사항 등록에 실패했습니다.");
+        alert("게시물 등록에 실패했습니다.");
       });
   }
 };
