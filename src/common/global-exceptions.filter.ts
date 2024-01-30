@@ -21,7 +21,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
       const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_ERROR");
       const color: string = slackLineColor.error;
       const text: string = "Internal Server Error";
-      const mrkTitle: string = "Error Message";
+      const mrkTitle: string = "Error Stack";
       const mrkValue: string = exception.stack || "No error message available";
 
       const slackMessage = new SlackMessage(color, text, mrkTitle, mrkValue);
