@@ -1,4 +1,5 @@
-import getToken from "./common.js";
+import getToken from "/js/common.js";
+import { getCookie } from "/js/common.js";
 
 // 본문, 댓글 조회
 const urlSearchParams = new URL(location.href).searchParams;
@@ -8,7 +9,7 @@ fetchPostData(postId);
 async function fetchPostData(postId) {
   try {
     const commentsBox = document.querySelector(".card-body");
-    const postBox = document.querySelector(".row");
+    const postBox = document.querySelector("#post-box");
     commentsBox.innerHTML = "";
     postBox.innerHTML = "";
     const postResponse = await axios.get(`/api/posts/${postId}`);
@@ -17,14 +18,14 @@ async function fetchPostData(postId) {
     const comments = commentsResponse.data.data;
     const createdAt = new Date(data.createdAt);
     const formattedCreatedAt = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")} ${String(createdAt.getHours()).padStart(2, "0")}:${String(createdAt.getMinutes()).padStart(2, "0")}`;
-    
+
     postBox.innerHTML = `
     <div class="post-dt-top pb-4">
       <div class="dt-top-l">
         <dl class="mb-2">
         <div style="display: flex;">
           <h2>${data.title}</h2>
-          <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}">
+          <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}" style="display: none;">
             <button class="hm-button hm-gray-color update-post-btn">수정</button>
             <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
           </div>
@@ -44,7 +45,7 @@ async function fetchPostData(postId) {
     commentsBox.innerHTML = comments
       .map((comment) => {
         const { id: dataId, createdAt, content } = comment;
-        const { nickName , id: userId } = comment.commentUser;
+        const { nickName, id: userId } = comment.commentUser;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
@@ -59,7 +60,7 @@ async function fetchPostData(postId) {
           <div class="my-comments">${content}</div>
           <div class="comment-date">${formattedDate}</div>
         </div>
-        <div class="mc-btn-wrap text-end" data-id="${dataId}" user-id="${userId}">
+        <div class="mc-btn-wrap text-end" data-id="${dataId}" user-id="${userId}" style="display: none;">
         <button class="hm-button hm-gray-color update-comment-btn">
           수정
         </button>
@@ -73,12 +74,20 @@ async function fetchPostData(postId) {
     `;
       })
       .join("");
+      showUserBtn();
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
 }
+
+// 게시글 수정
+$(document).on("click", ".update-post-btn", async (event) => {
+  const post = $(event.target).closest(".mc-btn-wrap");
+  const postId = post.attr("data-id");
+  window.location.href = `/views/notice-update.html?id=${postId}`;
+});
 
 // 게시글 삭제
 $(document).on("click", ".delete-post-btn", async (event) => {
@@ -132,7 +141,7 @@ document.querySelector(".submit-comment").addEventListener("click", async () => 
   window.location.reload();
 });
 
-//댓글 삭제
+// 댓글 삭제
 $(document).on("click", ".delete-comment-btn", async (event) => {
   const comment = $(event.target).closest(".mc-btn-wrap");
   const commentId = comment.attr("data-id");
@@ -159,7 +168,7 @@ async function deleteComment(commentId) {
   }
 }
 
-//댓글 수정
+// 댓글 수정
 $(document).on("click", ".update-comment-btn", async (event) => {
   const comment = $(event.target).closest(".mc-btn-wrap");
   const commentId = comment.attr("data-id");
@@ -212,3 +221,24 @@ $(document).on("click", ".update-cancel", (event) => {
   contentDiv.html(previousContent);
   parentDiv.find(".update-comment-btn").show();
 });
+
+async function showUserBtn() {
+  try {
+    const token = `Bearer ${getCookie("accessToken")}`;
+    const userInfo = await axios.get("/api/user/mypage", {
+      headers: {
+        Authorization: token
+      }
+    });
+    const userId = Number(userInfo.data.id);
+    const btnForUser = document.querySelectorAll(".mc-btn-wrap");
+    for (const btn of btnForUser) {
+      const btnId = Number(btn.getAttribute("user-id"));
+      if (userId === btnId) {
+        btn.style.display = "block";
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
