@@ -1,5 +1,6 @@
 import getToken from "./common.js";
 import { baseUrl } from "./common.js";
+console.log(baseUrl);
 
 const token = getToken();
 const smartEditors = [];
@@ -16,14 +17,39 @@ const setupSmartEditor = function () {
 };
 
 // 버튼에 기능 여기서 설정
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async () => {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const noticeId = urlSearchParams.get("id");
+
+  try {
+    if (noticeId) {
+      console.log(noticeId);
+      const response = await axios.get(`/api/notices/${noticeId}`);
+      const data = response.data.data;
+
+      // 기존 내용 입력된 상태로 넘어가게 하기
+      const titleElement = document.getElementById("title");
+      const contentsElement = document.getElementById("editorTxt");
+
+      if (titleElement && contentsElement) {
+        titleElement.value = data.title;
+        contentsElement.value = data.contents;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
   const submitButton = document.querySelector('input[type="button"]');
   if (submitButton) {
-    submitButton.addEventListener("click", submitPost);
+    submitButton.addEventListener("click", updatePost);
   }
 });
-console.log(token);
-const submitPost = function () {
+
+const updatePost = function () {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const noticeId = urlSearchParams.get("id");
+
   smartEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
   let title = document.getElementById("title").value;
   let content = document.getElementById("editorTxt").value;
@@ -35,8 +61,8 @@ const submitPost = function () {
     return;
   } else {
     axios
-      .post(
-        `${baseUrl}notices`,
+      .patch(
+        `${baseUrl}notices/${noticeId}`,
         {
           title: title,
           contents: content
@@ -49,17 +75,17 @@ const submitPost = function () {
       )
       .then(function (response) {
         console.log(response);
-        alert("공지사항이 성공적으로 등록되었습니다.");
+        alert("공지사항이 성공적으로 수정되었습니다.");
 
-        window.location.href = "/views/notice-main.html?page=1";
+        window.location.href = `/views/notice-page.html?id=${noticeId}`;
       })
       .catch(function (error) {
         console.error(error);
-        alert("공지사항 등록에 실패했습니다.");
+        alert("공지사항 수정에 실패했습니다.");
       });
   }
 };
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   setupSmartEditor();
 });

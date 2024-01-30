@@ -12,6 +12,7 @@ import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
 import { User } from "src/user/entities/user.entity";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class CommentService {
@@ -103,17 +104,20 @@ export class CommentService {
     await this.commentRepository.softRemove(comment);
   }
 
-  async getMyAllComments(userId: number): Promise<Comment[]> {
-    const comments = await this.commentRepository
+  async getMyAllComments(userId: number, query: PaginatePostDto) {
+    const [comments, count]: [Comment[], number] = await this.commentRepository
       .createQueryBuilder("c")
       .leftJoin("c.post", "cp")
       .loadRelationCountAndMap("cp.commentNumbers", "cp.comments")
       .leftJoin("c.commentUser", "cu")
       .where("cu.id=:userId", { userId })
       .select(["c.id", "c.createdAt", "c.updatedAt", "c.content", "cp.title", "cp.id"])
-      .getMany();
+      .skip(query.take * (query.page - 1))
+      .take(query.take)
+      .orderBy("c.createdAt", query.order__createdAt)
+      .getManyAndCount();
 
-    return comments;
+    return { comments, count };
   }
 
   async sendCommentPush(post: Post) {

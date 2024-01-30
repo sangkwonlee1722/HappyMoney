@@ -15,8 +15,13 @@ import { CommentModule } from "./comment/comment.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { ScheduleModule } from "@nestjs/schedule";
-import { TwitModule } from './twit/twit.module';
-import { PushModule } from './push/push.module';
+
+import { TwitModule } from "./twit/twit.module";
+import { PushModule } from "./push/push.module";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { SlackAlarmInterceptor } from "./common/slack.alarm.interceptor";
+import { SlackService } from "./common/slack/slack.service";
+import { EmailModule } from "./email/email.module";
 
 @Module({
   imports: [
@@ -31,16 +36,21 @@ import { PushModule } from './push/push.module';
     StockModule,
     NoticeModule,
     CommentModule,
-
     AuthModule,
-
     ScheduleModule.forRoot(),
-
+    EmailModule,
     TwitModule,
 
     PushModule
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService,
+    SlackService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SlackAlarmInterceptor
+    }
+  ]
 })
 export class AppModule {}

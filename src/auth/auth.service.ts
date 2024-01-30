@@ -1,54 +1,79 @@
 import { Injectable, Req } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
-// import {
-//   IAuthServiceGetAccessToken,
-//   IAuthServiceSetRefreshToken,
-// } from "./interfaces/auth-service.interface";
+import { User } from "src/user/entities/user.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly userService: UserService,
     private jwtService: JwtService
   ) {}
 
-  async OAuthLogin({ req, res }) {
-    console.log(req, res, "haha");
-    // 1. 회원조회
-    let user = await this.userService.findUserByEmail(req.email); //user를 찾아서
+  async findByEmailOrSave(email: string, name: string, signupType: string, nickName: string) {
+    try {
+      const user = await this.userRepository.findOne({ where: { email } });
+      if (user) return user;
 
-    // 2, 회원가입이 안되어있다면? 자동회원가입
-    if (!user) {
-      await this.userService.createUser(req.user);
-    } //user가 없으면 하나 만들고, 있으면 이 if문에 들어오지 않을거기때문에 이러나 저러나 user는 존재하는게 됨.
-
-    // 3. 회원가입이 되어있다면? 로그인(AT, RT를 생성해서 브라우저에 전송)한다
-    this.setRefreshToken({ user, res });
-    res.redirect("리다이렉트할 url주소");
+      const socialUser = this.userRepository.save({
+        email,
+        name,
+        signupType,
+        nickName,
+        isEmailVerified: true
+      });
+      return socialUser;
+    } catch (error) {
+      throw new Error("사용자를 찾거나 생성하는데 실패하였습니다");
+    }
   }
-  setRefreshToken(arg0: { user: import("../user/entities/user.entity").User; res: any }) {
-    throw new Error("Method not implemented.");
+
+  async generateUniqueRandomNickname() {
+    let isUnique = false;
+    let nickname = "";
+
+    while (!isUnique) {
+      const randomDigits = Math.floor(100000 + Math.random() * 900000);
+
+      nickname = `Guset${randomDigits}`;
+
+      const existingUser = await this.userService.findUserByNickName(nickname);
+      isUnique = !existingUser;
+    }
+
+    return nickname;
   }
 
-  async googleLogin(@Req() req: any) {
-    const { email } = req.user;
+  async socialLogin(@Req() req: any) {
+    let { email, name, signupType } = req.user;
+    const nickname = await this.generateUniqueRandomNickname();
 
-    const user = await this.userService.findUserByEmail(email); // 이메일로 가입된 회원을 찾고, 없다면 회원가입
+    if (!name && !req.user.nickname) {
+      name = "SocialUser";
+    } else if (!name) {
+      name = req.user.nickname;
+    }
 
-    // JWT 토큰에 포함될 payload
+    const user = await this.findByEmailOrSave(email, name, signupType, nickname);
+
     const payload = {
-      id: user.id,
+      sub: user.id,
       email: user.email,
-      nickName: user.nickName,
-      name: user.name
+      name: user.name,
+      signupType: user.signupType
     };
 
-    return {
-      accessToken: this.jwtService.sign(payload, {
-        expiresIn: "1d",
-        secret: process.env.JWT_SECRET
-      })
-    };
+    const expiresIn = "1d";
+
+    const token = this.jwtService.sign(payload, {
+      expiresIn,
+      secret: process.env.JWT_SECRET
+    });
+
+    return token;
   }
 }

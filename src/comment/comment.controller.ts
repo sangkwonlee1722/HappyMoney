@@ -1,5 +1,5 @@
 // comment.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from "@nestjs/common";
 import { CommentService } from "./comment.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
@@ -7,6 +7,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiTags("comments")
 @Controller("comments")
@@ -37,13 +38,14 @@ export class CommentController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("my")
-  async getMyAllComments(@UserInfo() user: User) {
-    const comments = await this.commentService.getMyAllComments(user.id);
+  async getMyAllComments(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { comments, count } = await this.commentService.getMyAllComments(user.id, query);
 
     return {
       success: true,
       message: "okay",
-      data: comments
+      lists: comments,
+      total: count
     };
   }
 

@@ -5,6 +5,7 @@ import { PaginatePostDto } from "src/common/dto/paginate.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Post } from "./entities/post.entity";
 import { Repository } from "typeorm";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class PostService {
@@ -44,16 +45,18 @@ export class PostService {
     return data;
   }
 
-  async findMyPostsById(userId: number) {
-    const posts: Post[] = await this.postRepository
+  async findMyPostsById(userId: number, query: PaginatePostDto) {
+    const [posts, count]: [Post[], number] = await this.postRepository
       .createQueryBuilder("p")
       .where("p.userId=:userId", { userId })
       .select(["p.id", "p.category", "p.nickName", "p.title", "p.createdAt"])
       .loadRelationCountAndMap("p.commentNumbers", "p.comments")
-      .orderBy("p.createdAt", "DESC")
-      .getMany();
+      .skip(query.take * (query.page - 1))
+      .take(query.take)
+      .orderBy("p.createdAt", query.order__createdAt)
+      .getManyAndCount();
 
-    return posts;
+    return { posts, count };
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {

@@ -6,3 +6,13 @@
 .notice-current-page {
   font-weight: bold;
 }
+
+.notice-main-header {
+  display: flex; /* Flexbox를 활성화 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.board-title {
+  flex: 1;
+  margin-right: 10px; /* 제목과 버튼 사이의 간격 조절 */
+}
