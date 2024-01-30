@@ -15,20 +15,29 @@ async function fetchPostData(postId) {
     const data = postResponse.data.data;
     const commentsResponse = await axios.get(`/api/comments/post/${postId}`);
     const comments = commentsResponse.data.data;
+    const createdAt = new Date(data.createdAt);
+    const formattedCreatedAt = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")} ${String(createdAt.getHours()).padStart(2, "0")}:${String(createdAt.getMinutes()).padStart(2, "0")}`;
+    
     postBox.innerHTML = `
-    <div class="twit-dt-top pb-4">
+    <div class="post-dt-top pb-4">
       <div class="dt-top-l">
         <dl class="mb-2">
-          <dt>${data.title}</dt>
-          <dd>${data.nickName}</dd>
-        </dl>
-        <dl>
-          <dt>${data.createdAt}</dt>
-          <dd>${data.updatedAt}</dd>
+        <div style="display: flex;">
+          <h2>${data.title}</h2>
+          <div class="mc-btn-wrap text-end" data-id="${data.id}">
+            <button class="hm-button hm-gray-color update-post-btn">수정</button>
+            <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
+          </div>
+        </div>
+          <dd>작성자:${data.nickName}</dd>
+          <dl>
+            <dd>${formattedCreatedAt}</dd>
+            <button class="send-message-button">쪽지 보내기</button>
+          </dl>
         </dl>
       </div>
     </div>
-    <div class="twit-dt-bottom">
+    <div class="post-dt-bottom">
       ${data.contents}
     </div>
     `;
@@ -71,6 +80,33 @@ async function fetchPostData(postId) {
   }
 }
 
+// 게시글 삭제
+$(document).on("click", ".delete-post-btn", async (event) => {
+  const post = $(event.target).closest(".mc-btn-wrap");
+  const postId = post.attr("data-id");
+  $("#delete-posts").off("click");
+  $("#delete-posts").on("click", function () {
+    deletePost(postId);
+  });
+});
+
+async function deletePost(postId) {
+  const token = getToken();
+  try {
+    await axios.delete(`/api/posts/${postId}`, {
+      headers: {
+        Authorization: token
+      }
+    });
+    alert("게시글이 삭제되었습니다.");
+    window.location.href = "/views/post.html?page=1";
+  } catch (error) {
+    console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
 // 댓글 생성
 document.querySelector(".submit-comment").addEventListener("click", async () => {
   const token = getToken();
@@ -100,7 +136,7 @@ document.querySelector(".submit-comment").addEventListener("click", async () => 
 $(document).on("click", ".delete-comment-btn", async (event) => {
   const comment = $(event.target).closest(".mc-btn-wrap");
   const commentId = comment.attr("data-id");
-
+  $("#delete-contents").off("click");
   $("#delete-contents").on("click", function () {
     deleteComment(commentId);
   });
@@ -138,7 +174,7 @@ $(document).on("click", ".update-comment-btn", async (event) => {
     <button class="hm-button hm-blue-color update-cancel">취소</button>
   </div>`);
   $(event.target).hide();
-
+  $("#update-contents").off("click");
   $("#update-contents").on("click", function () {
     const content = document.querySelector(".update-comment-form").value;
     updateComment(commentId, content);
