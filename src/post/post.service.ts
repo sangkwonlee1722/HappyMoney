@@ -5,7 +5,6 @@ import { PaginatePostDto } from "src/common/dto/paginate.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Post } from "./entities/post.entity";
 import { Repository } from "typeorm";
-import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class PostService {
