@@ -1,5 +1,5 @@
-import getToken from "./common.js";
-import { baseUrl } from "./common.js";
+import getToken from "/js/common.js";
+import { baseUrl } from "/js/common.js";
 console.log(baseUrl);
 
 const token = getToken();

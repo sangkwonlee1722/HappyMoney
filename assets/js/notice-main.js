@@ -1,8 +1,7 @@
-import { baseUrl } from "./common.js";
+import { baseUrl, getCookie } from "/js/common.js";
 import renderPagination from "/js/pagenation.js";
-import getToken from "./common.js";
 
-const token = getToken();
+const token = `Bearer ${getCookie("accessToken")}`;
 
 const params = new URLSearchParams(window.location.search);
 const noticePage = params.get("page");
@@ -60,14 +59,12 @@ const userInfo = await axios.get(baseUrl + "user/mypage", {
 
 const role = userInfo.data.role;
 
-const writeButton = document.querySelector(".hm-button.hm-gray-color a");
+const writeButton = document.querySelector("#write-btn");
 
 if (writeButton) {
   // admin만 버튼 보이게
   if (role === "admin") {
     writeButton.style.display = "block";
-  } else {
-    writeButton.style.display = "none";
   }
 
   writeButton.addEventListener("click", () => {
