@@ -1,6 +1,8 @@
 import getToken from "./common.js";
 import { baseUrl } from "./common.js";
 
+const token = getToken();
+
 document.addEventListener("DOMContentLoaded", async () => {
   const urlSearchParams = new URLSearchParams(window.location.search);
   const noticeId = urlSearchParams.get("id");
@@ -34,29 +36,72 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(error);
   }
 
-  // 공지사항 수정 버튼 클릭 시
-  $(document).on("click", ".update-notice-btn", (event) => {
-    const notice = $(event.target).closest(".mc-btn-wrap");
+  // API로 사용자 정보 호출
+  const userInfo = await axios.get(baseUrl + "user/mypage", {
+    headers: {
+      Authorization: token
+    }
+  });
+
+  const role = userInfo.data.role;
+
+  // 공지사항 수정
+  const updateNoticeBtn = document.querySelector(".update-notice-btn");
+  if (updateNoticeBtn) {
+    if (role !== "admin") {
+      // admin만 버튼 보이게
+      updateNoticeBtn.style.display = "none";
+    } else {
+      updateNoticeBtn.style.display = "block";
+    }
 
     // 특정 ID를 가지고 수정 페이지로 이동
-    window.location.href = `http://localhost:3000/views/notice-update.html?id=${noticeId}`;
-  });
+    updateNoticeBtn.addEventListener("click", () => {
+      window.location.href = `http://localhost:3000/views/notice-update.html?id=${noticeId}`;
+    });
+  }
 
   // 공지사항 삭제
-  $(document).on("click", ".delete-notice-btn", async (event) => {
-    const notice = $(event.target).closest(".mc-btn-wrap");
+  const deleteNoticeBtn = document.querySelector(".delete-notice-btn");
+  if (deleteNoticeBtn) {
     const noticeIdToDelete = noticeId;
-    console.log(notice);
-    console.log(noticeId);
-    console.log(noticeIdToDelete);
 
-    $("#delete-contents").on("click", function () {
-      deleteNotice(noticeIdToDelete);
-    });
-  });
+    // admin만 버튼 보이게
+    if (role !== "admin") {
+      deleteNoticeBtn.style.display = "none";
+    } else {
+      deleteNoticeBtn.style.display = "block";
+    }
+
+    const deleteContentsBtn = document.getElementById("delete-contents");
+    if (deleteContentsBtn) {
+      deleteContentsBtn.addEventListener("click", function () {
+        deleteNotice(noticeIdToDelete);
+      });
+    }
+  }
+
+  // 버튼 안보이게 하기 전 코드
+  // // 공지사항 수정 버튼 클릭 시
+  // $(document).on("click", ".update-notice-btn", (event) => {
+  //   const notice = $(event.target).closest(".mc-btn-wrap");
+
+  //   // 특정 ID를 가지고 수정 페이지로 이동
+  //   window.location.href = `http://localhost:3000/views/notice-update.html?id=${noticeId}`;
+  // });
+
+  // // 공지사항 삭제
+  // $(document).on("click", ".delete-notice-btn", async (event) => {
+  //   const notice = $(event.target).closest(".mc-btn-wrap");
+  //   const noticeIdToDelete = noticeId;
+
+  //   console.log("role:", role);
+  //   $("#delete-contents").on("click", function () {
+  //     deleteNotice(noticeIdToDelete);
+  //   });
+  // });
 
   async function deleteNotice(noticeId) {
-    const token = getToken();
     try {
       await axios.delete(`/api/notices/${noticeId}`, {
         headers: {
