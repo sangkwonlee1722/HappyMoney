@@ -74,7 +74,7 @@ export class CommentService {
       .createQueryBuilder("c")
       .leftJoinAndSelect("c.commentUser", "cu")
       .where("c.post = :postId", { postId })
-      .select(["c.id", "c.content", "c.createdAt", "c.updatedAt", "cu.nickName"])
+      .select(["c.id", "c.content", "c.createdAt", "c.updatedAt", "cu.nickName", "cu.id"])
       .orderBy("c.createdAt", "DESC")
       .getMany();
 

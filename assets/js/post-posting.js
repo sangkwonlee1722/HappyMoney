@@ -54,6 +54,7 @@ const submitPost = function () {
       .then(function (response) {
         console.log(response);
         alert("게시물이 성공적으로 등록되었습니다.");
+        window.location.href = "/views/post.html?page=1";
       })
       .catch(function (error) {
         console.error(error);

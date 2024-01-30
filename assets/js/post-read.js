@@ -24,7 +24,7 @@ async function fetchPostData(postId) {
         <dl class="mb-2">
         <div style="display: flex;">
           <h2>${data.title}</h2>
-          <div class="mc-btn-wrap text-end" data-id="${data.id}">
+          <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}">
             <button class="hm-button hm-gray-color update-post-btn">수정</button>
             <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
           </div>
@@ -43,13 +43,13 @@ async function fetchPostData(postId) {
     `;
     commentsBox.innerHTML = comments
       .map((comment) => {
-        const { id, createdAt, content } = comment;
-        const { nickName } = comment.commentUser;
+        const { id: dataId, createdAt, content } = comment;
+        const { nickName , id: userId } = comment.commentUser;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
         return `
-      <div class="comment" data-id="${id}">
+      <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
           <div class="comment-nickName">${nickName}<button class="send-message-button">
@@ -59,7 +59,7 @@ async function fetchPostData(postId) {
           <div class="my-comments">${content}</div>
           <div class="comment-date">${formattedDate}</div>
         </div>
-        <div class="mc-btn-wrap text-end" data-id="${id}">
+        <div class="mc-btn-wrap text-end" data-id="${dataId}" user-id="${userId}">
         <button class="hm-button hm-gray-color update-comment-btn">
           수정
         </button>
