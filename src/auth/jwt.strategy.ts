@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { UserService } from "src/user/user.service";
 
