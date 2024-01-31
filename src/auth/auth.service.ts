@@ -39,7 +39,7 @@ export class AuthService {
     while (!isUnique) {
       const randomDigits = Math.floor(100000 + Math.random() * 900000);
 
-      nickname = `Guset${randomDigits}`;
+      nickname = `Guest${randomDigits}`;
 
       const existingUser = await this.userService.findUserByNickName(nickname);
       isUnique = !existingUser;
