@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  Req,
-  UnauthorizedException
-} from "@nestjs/common";
+import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -13,8 +6,6 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
-import { createTransport } from "nodemailer";
-import { google } from "googleapis";
 import { EmailService } from "../email/email.service";
 
 interface EmailOptions {
