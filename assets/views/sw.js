@@ -7,7 +7,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  const urlToOpen = event.notification.data.url || "http://localhost:3000/views/main.html";
+  const urlToOpen = event.notification.data.url || "/views/main.html";
   event.waitUntil(
     self.clients
       .matchAll({

@@ -1,7 +1,7 @@
 import getToken from "./common.js";
 
 const token = getToken();
-const apiBaseUrl = `http://localhost:3000/api/`;
+const apiBaseUrl = `/api/`;
 
 /* 내 정보 가져오는 함수 */
 const getMyInfoByToken = async (token) => {

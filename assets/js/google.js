@@ -1,6 +1,6 @@
 // async function googleLogin() {
 //   try {
-//     window.location.href = "http://localhost:3000/api/google/login";
+//     window.location.href = "/api/google/login";
 //   } catch (error) {
 //     console.error("Error:", error);
 //   }
@@ -11,7 +11,7 @@
 
 // async function kakaoLogin() {
 //   try {
-//     window.location.href = "http://localhost:3000/api/kakao/login";
+//     window.location.href = "/api/kakao/login";
 //   } catch (error) {
 //     console.error("Error:", error);
 //   }
@@ -22,7 +22,7 @@
 
 // async function naverLogin() {
 //   try {
-//     window.location.href = "http://localhost:3000/api/naver/login";
+//     window.location.href = "/api/naver/login";
 //   } catch (error) {
 //     console.error("Error:", error);
 //   }

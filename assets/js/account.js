@@ -2,7 +2,7 @@ import { addComma } from "./common.js";
 import getToken from "./common.js";
 
 const token = getToken()
-const apiBaseUrl = `http://localhost:3000/api/`
+const apiBaseUrl = `/api/`
 
 /* 나의 계좌 가져오는 함수 */
 const getMyAccountsByToken = async (token) => {

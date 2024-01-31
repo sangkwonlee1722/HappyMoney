@@ -5,7 +5,7 @@ const receive_name = params.get("name");
 $('#receiverPersonName').text(receive_name);
 
 $('#sendTwit').on('click', function () {
-  getDetailTwitData(`http://localhost:3000/api/twits`);
+  getDetailTwitData(`/api/twits`);
 })
 
 // 쪽지 조회API 
