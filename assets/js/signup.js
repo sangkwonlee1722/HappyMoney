@@ -129,8 +129,8 @@ signupBtn.addEventListener("click", async () => {
     passwordCheckVerify.innerHTML = "비밀번호를 다시 입력하세요.";
     passwordCheckVerify.style.color = "red";
     return;
-  } else if (password.length < 6) {
-    passwordCheckVerify.innerHTML = "비밀번호는 6자리 이상만 가능합니다.";
+  } else if (password.length < 8) {
+    passwordCheckVerify.innerHTML = "비밀번호는 8자리 이상만 가능합니다.";
     passwordCheckVerify.style.color = "red";
     return;
   } else {
