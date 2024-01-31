@@ -144,7 +144,7 @@ async function loginConfirm() {
       }
     });
 
-    const response = await axiosInstance.post("/api/user/login", userInfo);
+    const response = await axiosInstance.post("/user/login", userInfo);
 
     if (response.data.success) {
       alert(`환영합니다.`);
