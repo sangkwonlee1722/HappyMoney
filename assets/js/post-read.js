@@ -86,7 +86,7 @@ async function fetchPostData(postId) {
 $(document).on("click", ".update-post-btn", async (event) => {
   const post = $(event.target).closest(".mc-btn-wrap");
   const postId = post.attr("data-id");
-  window.location.href = `/views/notice-update.html?id=${postId}`;
+  window.location.href = `/views/post-update.html?id=${postId}`;
 });
 
 // 게시글 삭제
