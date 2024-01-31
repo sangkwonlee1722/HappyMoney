@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   BadRequestException,
   UnauthorizedException,
@@ -20,7 +19,6 @@ import { CreateUserDto, loginDto } from "./dto/create-user.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "./entities/user.entity";
-// import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 import { compare, hash } from "bcrypt";
 import { PasswordCheck, SubscriptionDto, UpdateUserDto } from "./dto/update-user.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";

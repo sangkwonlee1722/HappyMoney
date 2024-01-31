@@ -1,5 +1,5 @@
 import { PickType } from "@nestjs/swagger";
-import { IsJSON, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 import { User } from "../entities/user.entity";
 
 export class UpdateUserDto {
