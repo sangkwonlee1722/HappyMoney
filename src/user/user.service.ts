@@ -35,7 +35,7 @@ export class UserService {
         from: this.configService.get("NODE_MAIL_ID"),
         to: email,
         subject: "[happymoney] 회원가입 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
+        html: `인증링크 : <a href="/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
       };
 
       await this.userRepository.save({
@@ -93,7 +93,7 @@ export class UserService {
       const mailOptions = {
         to: user.email,
         subject: "[happymoney] 회원탈퇴 이메일 인증 메일입니다.",
-        html: `인증링크 : <a href="http://localhost:3000/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
+        html: `인증링크 : <a href="/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
       };
 
       this.emailService.verifyEmail(mailOptions);

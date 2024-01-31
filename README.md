@@ -48,7 +48,7 @@ npm run start:dev
 
 ## Swagger 접속 주소
 
-http://localhost:3000/api-docs
+/api-docs
 
 ## 참고 자료
 

@@ -10,7 +10,7 @@ emailCheckBtn.addEventListener("click", async () => {
   const emailCheckVerify = document.getElementById("emailCheckVerify");
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }
@@ -56,7 +56,7 @@ nickNameCheckBtn.addEventListener("click", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }
@@ -176,7 +176,7 @@ signupBtn.addEventListener("click", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }

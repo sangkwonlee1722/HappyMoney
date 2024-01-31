@@ -3,7 +3,7 @@ import { addComma } from "/js/common.js";
 rankListData();
 
 async function rankListData() {
-  const stockUrl = "http://localhost:3000/api/stock/stockRank";
+  const stockUrl = "/api/stock/stockRank";
 
   try {
     const stockList = await axios.get(stockUrl);

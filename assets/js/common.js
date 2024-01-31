@@ -1,6 +1,6 @@
 import { spreadMyAllPushNotis, checkPushNotis } from "./push-noti.js";
 
-export const baseUrl = "http://localhost:3000/api/";
+export const baseUrl = "/api/";
 
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
@@ -141,7 +141,7 @@ async function loginConfirm() {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }
@@ -258,13 +258,13 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 function googleLogin() {
-  window.location.href = "http://localhost:3000/api/google/login";
+  window.location.href = "/api/google/login";
 }
 
 function kakaoLogin() {
-  window.location.href = "http://localhost:3000/api/kakao/login";
+  window.location.href = "/api/kakao/login";
 }
 
 function naverLogin() {
-  window.location.href = "http://localhost:3000/api/naver/login";
+  window.location.href = "/api/naver/login";
 }

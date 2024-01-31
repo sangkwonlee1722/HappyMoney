@@ -11,7 +11,7 @@ foundEmaildBtn.addEventListener("click", async () => {
       };
 
       const axiosInstance = axios.create({
-        baseURL: "http://localhost:3000",
+        baseURL: "",
         headers: {
           "Content-Type": "application/json"
         }

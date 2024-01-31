@@ -4,10 +4,10 @@ const params = new URLSearchParams(window.location.search);
 const twit_id = params.get("id");
 const twit_send = params.get("send");
 
-getDetailTwitData(`http://localhost:3000/api/twits/${twit_id}`);
+getDetailTwitData(`/api/twits/${twit_id}`);
 
 $('#twitDeleteBtn').on('click', function () {
-  twit_send === 'true' ? deletTwitData(`http://localhost:3000/api/twits/sendDelete/${twit_id}`) : deletTwitData(`http://localhost:3000/api/twits/receiveDelete/${twit_id}`);
+  twit_send === 'true' ? deletTwitData(`/api/twits/sendDelete/${twit_id}`) : deletTwitData(`/api/twits/receiveDelete/${twit_id}`);
   alert('쪽지가 삭제 되었습니다');
   window.location.href = '/views/twit/twit.html';
 })

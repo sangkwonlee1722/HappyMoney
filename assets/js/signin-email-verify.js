@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }

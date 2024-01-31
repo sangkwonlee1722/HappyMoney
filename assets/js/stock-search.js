@@ -8,7 +8,7 @@ const keyword = urlParams.get('keyword')
 /* 검색 결과를 서버에서 가져오는 함수 */
 export const getSearchData = async (keyword) => {
   try {
-    const apiUrl = `http://localhost:3000/api/stock/search?keyword=${keyword}`
+    const apiUrl = `/api/stock/search?keyword=${keyword}`
     const result = await axios.get(apiUrl);
 
     const stocks = result.data.data;

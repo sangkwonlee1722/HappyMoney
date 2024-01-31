@@ -30,7 +30,7 @@ const getNoticeData = async () => {
 
         return `
         <li class="contents">
-        <a href="http://localhost:3000/views/notice-page.html?id=${id}"></a>
+        <a href="/views/notice-page.html?id=${id}"></a>
           <div class="list-info">
             <div class="classification">NOTICE</div>
             <div class="title">${title}</div>
@@ -68,7 +68,7 @@ if (writeButton) {
   }
 
   writeButton.addEventListener("click", () => {
-    window.location.href = "http://localhost:3000/views/notice-posting.html";
+    window.location.href = "/views/notice-posting.html";
   });
 } else {
   console.error("Write button not found.");

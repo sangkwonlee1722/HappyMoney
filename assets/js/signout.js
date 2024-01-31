@@ -9,7 +9,7 @@ const token = getToken();
 async function signout() {
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json",
         Authorization: token
