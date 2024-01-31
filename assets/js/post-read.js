@@ -1,11 +1,15 @@
 import getToken from "/js/common.js";
 import { getCookie } from "/js/common.js";
 
+//댓글 버튼 숨기기
+showWriteBtn();
+
 // 본문, 댓글 조회
 const urlSearchParams = new URL(location.href).searchParams;
 const postId = urlSearchParams.get("id");
 fetchPostData(postId);
 
+// 본문, 댓글 가져오는 함수
 async function fetchPostData(postId) {
   try {
     const commentsBox = document.querySelector(".card-body");
@@ -33,7 +37,7 @@ async function fetchPostData(postId) {
           <dd>작성자:${data.nickName}</dd>
           <dl>
             <dd>${formattedCreatedAt}</dd>
-            <button class="send-message-button">쪽지 보내기</button>
+            <a id="twit" user-id="${data.userId}" style="display: none;">쪽지 보내기</a>
           </dl>
         </dl>
       </div>
@@ -53,9 +57,9 @@ async function fetchPostData(postId) {
       <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
-          <div class="comment-nickName">${nickName}<button class="send-message-button">
+          <div class="comment-nickName">${nickName}<a id="twit" user-id="${userId}" style="display: none;">
             쪽지 보내기
-            </button>
+            </a>
           </div>
           <div class="my-comments">${content}</div>
           <div class="comment-date">${formattedDate}</div>
@@ -222,6 +226,7 @@ $(document).on("click", ".update-cancel", (event) => {
   parentDiv.find(".update-comment-btn").show();
 });
 
+// 사용자에 따라 수정삭제, 쪽지버튼 보이는 함수
 async function showUserBtn() {
   try {
     const token = `Bearer ${getCookie("accessToken")}`;
@@ -238,7 +243,24 @@ async function showUserBtn() {
         btn.style.display = "block";
       }
     }
+    const btnForTwit = document.querySelectorAll("#twit");
+    for (const btn of btnForTwit) {
+      const btnId = Number(btn.getAttribute("user-id"));
+      if (userId !== btnId) {
+        btn.style.display = "block";
+      }
+    }
   } catch (error) {
     console.error(error);
+  }
+}
+
+// 댓글 폼 보이는 함수
+async function showWriteBtn() {
+  const token = `Bearer ${getCookie("accessToken")}`;
+
+  if (token !== "Bearer null") {
+    const writeButton = document.querySelector(".form-comment");
+    writeButton.style.display = "block";
   }
 }
