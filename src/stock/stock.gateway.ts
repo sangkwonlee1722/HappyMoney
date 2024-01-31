@@ -18,52 +18,31 @@ export class StockGateway implements OnGatewayConnection {
   private skToken: string;
   private tokenExpiresAt: Date;
   private wsClient: WebSocket | null = null;
-  private trKey: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.initializeWebSocketClient(() => {});
+    this.initializeWebSocketClient();
   }
 
-  handleConnection(socket: WebSocket) {}
+  handleConnection(socket: WebSocket) {
+    console.log(`on connect called: ${socket}`);
+  }
 
-  private async initializeWebSocketClient(callback) {
-    // 기존 연결이 있으면 닫고 초기화
-    console.log("wsClient1", this.wsClient);
-    if (this.wsClient) {
-      this.wsClient.close();
-      // this.wsClient = null;
-      this.wsClient.onclose = () => {
-        console.log("연결이 끊겼습니다.");
-        try {
-          const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
-          this.wsClient = new WebSocket(url);
-          callback();
-          // this.wsClient.on("message", (data) => {
-          //    console.log("data", data);
-          // });
-          // this.wsClient.onmessage = function (evt) {
-          //   console.log("evt", evt);
-          //   console.log("testtest");
-          // };
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    } else {
-      try {
-        const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
-        this.wsClient = new WebSocket(url);
-        callback();
-        // this.wsClient.on("message", (data) => {
-        //    console.log("data", data);
-        // });
-        // this.wsClient.onmessage = function (evt) {
-        //   console.log("evt", evt);
-        //   console.log("testtest");
-        // };
-      } catch (error) {
-        console.log(error);
-      }
+  private async initializeWebSocketClient() {
+    try {
+      const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
+      this.wsClient = new WebSocket(url);
+      await new Promise((resolve, reject) => {
+        this.wsClient.on("open", () => {
+          console.log("WebSocket connected");
+          resolve(true);
+        });
+        this.wsClient.on("error", (err) => {
+          console.error("WebSocket error:", err);
+          reject(err);
+        });
+      });
+    } catch (error) {
+      console.log("Failed to initialize WebSocket:", error);
     }
   }
 
@@ -81,6 +60,7 @@ export class StockGateway implements OnGatewayConnection {
     };
     try {
       const skUrl = "https://openapi.koreainvestment.com:9443/oauth2/Approval";
+      // const skUrl = "https://openapivts.koreainvestment.com:29443/oauth2/Approval";
       const response = await axios.post(`${skUrl}`, data, {
         headers: {
           "Content-Type": "application/json"
@@ -94,26 +74,32 @@ export class StockGateway implements OnGatewayConnection {
     }
   }
 
-  // 클라이언트에서 tr_key를 서버로 보낼 때 호출되는 메서드
-  @SubscribeMessage("asking_price")
-  handleTrKeyFromClient(@MessageBody() trKey: string) {
-    this.trKey = trKey;
-  }
-
   // 실시간 호가API
   @SubscribeMessage("asking_price")
-  async getAskingPrice() {
-    this.initializeWebSocketClient(this.test);
-  }
+  async getAskingPrice(@MessageBody() tr_key: string) {
+    if (
+      this.wsClient && //
+      (this.wsClient.readyState === WebSocket.OPEN || this.wsClient.readyState === WebSocket.CONNECTING)
+    ) {
+      await new Promise((resolve) => {
+        this.wsClient.on("close", () => {
+          console.log("WebSocket disconnected.");
+          resolve(true);
+        });
+        this.wsClient.terminate();
+      });
+      this.wsClient = null;
+    }
 
-  test = async () => {
-    // console.log("wsClient3", this.wsClient);
+    await this.initializeWebSocketClient();
+
+    console.log(tr_key);
+    // asking_price 이벤트 발생
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
         await this.getSk();
       }
 
-      console.log(this.trKey);
       const jsonRequest = {
         header: {
           approval_key: `${this.skToken}`,
@@ -124,27 +110,35 @@ export class StockGateway implements OnGatewayConnection {
         body: {
           input: {
             tr_id: "H0STASP0",
-            tr_key: this.trKey
+            tr_key: tr_key
+            // tr_key: "005930"
           }
         }
       };
-      await this.wsClient.send(JSON.stringify(jsonRequest));
+      console.log("jsonRequest", jsonRequest);
+      this.wsClient.send(JSON.stringify(jsonRequest));
 
       // 메시지 수신 이벤트 핸들러
       this.wsClient.on("message", (data) => {
         const messageString = data.toString(); // Buffer를 문자열로 변환
         const jsonData = this.stockhoka(messageString);
+        console.log("Received asking_price:", jsonData);
         try {
-          // 클라이언트에게 JSON데이터를 전송
-          // console.log(this.trKey);
           this.server.emit("asking_price", jsonData);
-        } catch (error) {}
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      });
+
+      // 클라이언트에서 서버로 메시지를 보내고, 서버에서 해당 메시지를 받아 로그로 찍는 부분 추가
+      this.wsClient.on("test_message", (message) => {
+        console.log("Received test_message from client:", message);
       });
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.log("Error in getAskingPrice:", error);
+      throw new error(error);
     }
-  };
+  }
 
   stockhoka(data: string): string {
     const recvvalue = data.split("^");
@@ -192,7 +186,8 @@ export class StockGateway implements OnGatewayConnection {
       bidp_rsqn8: recvvalue[40],
       bidp_rsqn6: recvvalue[38],
       bidp_rsqn9: recvvalue[41],
-      bidp_rsqn10: recvvalue[42]
+      bidp_rsqn10: recvvalue[42],
+      antc_cnpr: recvvalue[47]
       // 총매도호가: {
       //   잔량: recvvalue[43],
       //   잔량_증감: recvvalue[54]
