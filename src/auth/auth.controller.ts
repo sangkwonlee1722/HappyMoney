@@ -28,7 +28,7 @@ export class AuthController {
   async googleLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
-    return res.redirect("http://localhost:3000/views/main.html");
+    return res.redirect("http://happymoney.info/views/main.html");
   }
 
   //-----------------------카카오 로그인-----------------------------//
@@ -44,7 +44,7 @@ export class AuthController {
   async kakaoLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
-    return res.redirect("http://localhost:3000/views/main.html");
+    return res.redirect("http://happymoney.info/views/main.html");
   }
 
   //-----------------------네이버 로그인-----------------------------//
@@ -60,6 +60,6 @@ export class AuthController {
   async naverLoginCallback(@Req() req: any, @Res() res: any) {
     const token = await this.authService.socialLogin(req);
     res.cookie("accessToken", token);
-    return res.redirect("http://localhost:3000/views/main.html");
+    return res.redirect("http://happymoney.info/views/main.html");
   }
 }

@@ -121,7 +121,7 @@ export class CommentService {
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
 
-    const url = `http://localhost:3000/views/post-read.html?id=${post.id}`;
+    const url = `http://happymoney.info/views/post-read.html?id=${post.id}`;
     const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`, url);
     console.log("payload: ", payload);
 

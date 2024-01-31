@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 특정 ID를 가지고 수정 페이지로 이동
     updateNoticeBtn.addEventListener("click", () => {
-      window.location.href = `http://localhost:3000/views/notice-update.html?id=${noticeId}`;
+      window.location.href = `/views/notice-update.html?id=${noticeId}`;
     });
   }
 
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
       alert("공지사항이 삭제되었습니다.");
-      window.location.href = "http://localhost:3000/views/notice-main.html?page=1";
+      window.location.href = "/views/notice-main.html?page=1";
     } catch (error) {
       console.error(error);
       const errorMessage = error.response.data.message;

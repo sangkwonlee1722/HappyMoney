@@ -1,4 +1,5 @@
 import getToken from '/js/common.js'
+import { baseUrl } from '../common.js';
 import renderPagination from '/js/pagenation.js'
 
 const params = new URLSearchParams(window.location.search);
@@ -12,18 +13,18 @@ $('.twit-tab li').on('click', function () {
 })
 
 
-getTwitData(`http://localhost:3000/api/twits/getReceive?page=${twit_page}`, '보낸사람', '받은시간');
+getTwitData(`${baseUrl}twits/getReceive?page=${twit_page}`, '보낸사람', '받은시간');
 
 // 받은쪽지 탭 클릭
 $('#receive').click(function () {
   window.history.pushState({}, '', `/views/twit/twit.html?page=1`);
-  getTwitData(`http://localhost:3000/api/twits/getReceive?page=1`, '보낸사람', '받은시간');
+  getTwitData(`${baseUrl}twits/getReceive?page=1`, '보낸사람', '받은시간');
 })
 
 // 보낸 쪽지 탭 클릭
 $('#send').click(function () {
   window.history.pushState({}, '', `/views/twit/twit.html?page=1`);
-  getTwitData(`http://localhost:3000/api/twits/getSend?page=1`, '받은사람', '보낸시간');
+  getTwitData(`${baseUrl}twits/getSend?page=1`, '받은사람', '보낸시간');
 })
 
 // 쪽지 조회API 
@@ -52,8 +53,8 @@ async function getTwitData(url, name, time) {
     mainDom.innerHTML = list
       .map(twit => {
         const { senderName, receiverName, contents, createdAt, id } = twit;
-        const name = url === `http://localhost:3000/api/twits/getSend?page=${twit_page}` ? senderName : receiverName;
-        const send = url === `http://localhost:3000/api/twits/getReceive?page=${twit_page}` ? false : true;
+        const name = url === `${baseUrl}twits/getSend?page=${twit_page}` ? senderName : receiverName;
+        const send = url === `${baseUrl}twits/getReceive?page=${twit_page}` ? false : true;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
         return `
