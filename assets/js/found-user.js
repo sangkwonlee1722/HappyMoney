@@ -1,3 +1,5 @@
+import { baseUrl } from "./common.js";
+
 const foundEmaildBtn = document.getElementById("foundEmaildBtn");
 let btnCheck = true;
 foundEmaildBtn.addEventListener("click", async () => {
@@ -11,13 +13,13 @@ foundEmaildBtn.addEventListener("click", async () => {
       };
 
       const axiosInstance = axios.create({
-        baseURL: "http://localhost:3000",
+        baseURL: baseUrl,
         headers: {
           "Content-Type": "application/json"
         }
       });
 
-      const response = await axiosInstance.post("/api/user/found-email", user);
+      const response = await axiosInstance.post("/user/found-email", user);
 
       const notUser = response.data.user;
       if (!notUser.length) {

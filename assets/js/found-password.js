@@ -1,3 +1,5 @@
+import { baseUrl } from "./common.js";
+
 const foundPasswordBtn = document.getElementById("foundPasswordBtn");
 
 foundPasswordBtn.addEventListener("click", async () => {
@@ -9,13 +11,13 @@ foundPasswordBtn.addEventListener("click", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json"
       }
     });
 
-    const response = await axiosInstance.post("/api/user/found-password", user);
+    const response = await axiosInstance.post("/user/found-password", user);
 
     if (response.data.success) {
       alert("입력하신 이메일로 임시 비밀번호가 전송됐습니다.");

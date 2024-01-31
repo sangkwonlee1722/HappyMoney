@@ -1,3 +1,5 @@
+import { baseUrl } from './common.js'
+
 const signupBtn = document.querySelector(".signupBtn");
 const emailCheckBtn = document.getElementById("emailCheckBtn");
 const nickNameCheckBtn = document.getElementById("nickNameCheckBtn");
@@ -10,7 +12,7 @@ emailCheckBtn.addEventListener("click", async () => {
   const emailCheckVerify = document.getElementById("emailCheckVerify");
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json"
       }
@@ -56,7 +58,7 @@ nickNameCheckBtn.addEventListener("click", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json"
       }
@@ -176,7 +178,7 @@ signupBtn.addEventListener("click", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json"
       }

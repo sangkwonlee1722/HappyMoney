@@ -1,12 +1,11 @@
-import { addComma } from "./common.js";
+import { addComma, baseUrl } from "./common.js";
 import getToken from "./common.js";
 
 const token = getToken()
-const apiBaseUrl = `http://localhost:3000/api/`
 
 /* 나의 계좌 가져오는 함수 */
 const getMyAccountsByToken = async (token) => {
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = baseUrl + 'accounts'
 
   try {
     const result = await axios.get(apiUrl, {
@@ -111,7 +110,7 @@ async function modifyAccountName() {
 
 /* DB에 새로 입력된 계좌 이름 업데이트하는 함수 */
 async function updateAccountName(newName, token, accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = baseUrl + `accounts/${accountId}`;
 
   await axios.patch(apiUrl, { name: newName }, {
     headers: {
@@ -131,7 +130,7 @@ $('.delete-comment-btn').on('click', function () {
 });
 
 async function deleteAccount(accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = baseUrl + `accounts/${accountId}`;
 
   try {
     await axios.delete(apiUrl, {
@@ -156,7 +155,7 @@ const createAccountBtn = $('#accountCreate')
 createAccountBtn.on('click', async function () {
   const accountName = $('#accountName').val()
 
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = baseUrl + 'accounts'
 
   try {
     await axios.post(apiUrl, { name: accountName }, {

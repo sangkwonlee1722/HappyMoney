@@ -1,3 +1,5 @@
+import { baseUrl } from './common.js'
+
 document.addEventListener("DOMContentLoaded", async () => {
   const queryParams = new URLSearchParams(window.location.search);
   const email = queryParams.get("email");
@@ -6,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json"
       }

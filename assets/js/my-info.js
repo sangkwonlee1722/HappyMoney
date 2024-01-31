@@ -1,11 +1,11 @@
 import getToken from "./common.js";
+import { baseUrl } from './common.js'
 
 const token = getToken();
-const apiBaseUrl = `http://localhost:3000/api/`;
 
 /* 내 정보 가져오는 함수 */
 const getMyInfoByToken = async (token) => {
-  const apiUrl = apiBaseUrl + "user/mypage";
+  const apiUrl = baseUrl + "user/mypage";
 
   try {
     const result = await axios.get(apiUrl, {
@@ -76,7 +76,7 @@ await getMyInfoByToken(token);
 const passwordSubmitBtn = $("#submitPasswordBtn");
 
 passwordSubmitBtn.on("click", async function () {
-  const apiUrl = apiBaseUrl + "user/check-password";
+  const apiUrl = baseUrl + "user/check-password";
   const password = $("#passwordChk").val();
 
   try {
@@ -101,7 +101,7 @@ passwordSubmitBtn.on("click", async function () {
 
 /* 내 정보 가져오기 */
 async function getUserInfo() {
-  const apiUrl = apiBaseUrl + "user/mypage";
+  const apiUrl = baseUrl + "user/mypage";
   const user = await axios.get(apiUrl, {
     headers: {
       Authorization: token
@@ -118,7 +118,7 @@ getUserInfo();
 const updateMyInfo = $("#updateMyInfo");
 
 updateMyInfo.on("click", async function () {
-  const apiUrl = apiBaseUrl + "user/mypage";
+  const apiUrl = baseUrl + "user/mypage";
 
   const user = await axios.get(apiUrl, {
     headers: {
@@ -167,7 +167,7 @@ updateMyInfo.on("click", async function () {
 const submitUpdatePasswordBtn = $("#submitUpdatePasswordBtn");
 
 submitUpdatePasswordBtn.on("click", async function () {
-  const apiUrl = apiBaseUrl + "user/check-password";
+  const apiUrl = baseUrl + "user/check-password";
   const password = $("#updatePasswordChk").val();
 
   try {
@@ -194,7 +194,7 @@ submitUpdatePasswordBtn.on("click", async function () {
 const updatePassword = $("#updatePassword");
 
 updatePassword.on("click", async function () {
-  const apiUrl = apiBaseUrl + "user/update-password";
+  const apiUrl = baseUrl + "user/update-password";
   const newPassword = $("#newPassword").val();
   const newPasswordCheck = $("#newPasswordCheck").val();
 

@@ -1,5 +1,4 @@
 import io from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
-import { addComma } from "/js/common.js";
 
 const params = new URLSearchParams(window.location.search);
 const tr_key = params.get("code");

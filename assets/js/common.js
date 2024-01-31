@@ -1,6 +1,6 @@
 import { spreadMyAllPushNotis, checkPushNotis } from "./push-noti.js";
 
-export const baseUrl = "http://localhost:3000/api/";
+export const baseUrl = "http://happymoney.info/api/";
 
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;

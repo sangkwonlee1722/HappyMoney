@@ -1,4 +1,4 @@
-import { addComma } from "./common.js";
+import { addComma, baseUrl } from "./common.js";
 
 /* 현재 주소에서 Query Keyword 추출 */
 const urlParams = new URLSearchParams(window.location.search);
@@ -8,11 +8,10 @@ const keyword = urlParams.get('keyword')
 /* 검색 결과를 서버에서 가져오는 함수 */
 export const getSearchData = async (keyword) => {
   try {
-    const apiUrl = `http://localhost:3000/api/stock/search?keyword=${keyword}`
+    const apiUrl = `${baseUrl}stock/search?keyword=${keyword}`
     const result = await axios.get(apiUrl);
 
     const stocks = result.data.data;
-    console.log('stocks: ', stocks);
 
     const mainDom = document.querySelector(".search-list-wrap");
 

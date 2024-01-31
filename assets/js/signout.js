@@ -1,4 +1,5 @@
 import getToken from "./common.js";
+import { baseUrl } from "./common.js"
 
 function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
@@ -9,7 +10,7 @@ const token = getToken();
 async function signout() {
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: baseUrl,
       headers: {
         "Content-Type": "application/json",
         Authorization: token
