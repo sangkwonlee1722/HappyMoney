@@ -26,23 +26,25 @@ async function fetchPostData(postId) {
     postBox.innerHTML = `
     <div class="post-dt-top pb-4">
       <div class="dt-top-l">
-        <dl class="mb-2">
-        <div style="display: flex;">
+        <div class="mb-2">
+        <div class="d-flex justify-content-between">
           <h2>${data.title}</h2>
           <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}" style="display: none;">
             <button class="hm-button hm-gray-color update-post-btn">수정</button>
             <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
           </div>
         </div>
-          <dd>작성자:${data.nickName}</dd>
-          <dl>
-            <dd>${formattedCreatedAt}</dd>
-            <a id="twit" user-id="${data.userId}" style="display: none;">쪽지 보내기</a>
-          </dl>
+        <dl class="d-flex justify-content-end">
+          <dd class="ms-3">작성자:${data.nickName}</dd>
+          <dd class="ms-3">${formattedCreatedAt}</dd>
         </dl>
+        <div class="text-end mt-2">
+          <a href='/views/twit/twit-send.html?name=${data.nickName}' id="twit" user-id="${data.userId}" class="fw-bold" style="display: none; font-size:13px">쪽지 보내기</a>
+        </div>
+        </div>
       </div>
     </div>
-    <div class="post-dt-bottom">
+    <div class="post-dt-bottom my-5">
       ${data.contents}
     </div>
     `;
@@ -57,15 +59,15 @@ async function fetchPostData(postId) {
       <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
-          <div class="comment-nickName">${nickName}<a id="twit" user-id="${userId}" style="display: none;">
+          <div class="comment-nickName">${nickName}<a href='/views/twit/twit-send.html?name=${data.nickName}' class="ms-3 fw-normal" id="twit" user-id="${userId}" style="display: none; font-size:13px">
             쪽지 보내기
             </a>
           </div>
-          <div class="my-comments">${content}</div>
+          <div class="my-comments mt-2 mb-3">${content}</div>
           <div class="comment-date">${formattedDate}</div>
         </div>
         <div class="mc-btn-wrap text-end" data-id="${dataId}" user-id="${userId}" style="display: none;">
-        <button class="hm-button hm-gray-color update-comment-btn">
+        <button class="hm-button hm-sub-color update-comment-btn">
           수정
         </button>
         <button class="hm-button hm-gray-color delete-comment-btn" onclick="drPopupOpen('.delete-comment-chk')">
@@ -78,7 +80,7 @@ async function fetchPostData(postId) {
     `;
       })
       .join("");
-      showUserBtn();
+    showUserBtn();
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
@@ -181,12 +183,14 @@ $(document).on("click", ".update-comment-btn", async (event) => {
   const original = contentDiv.text();
   contentDiv.data("previous-content", original);
   contentDiv.html(`
-  <div class="form-comment">
-    <textarea class="form-control update-comment-form" rows="2" placeholder="댓글을 입력하세요.">${original}</textarea>
-    <button class="hm-button hm-blue-color update-submit" id="update-contents">수정</button>
-    <button class="hm-button hm-blue-color update-cancel">취소</button>
+  <div class="form-comment w-100">
+    <textarea class="form-control update-comment-form me-3" rows="1" placeholder="댓글을 입력하세요." style="width:975px">${original}</textarea>
+    <div class="d-flex">
+      <button class="hm-button hm-blue-color update-submit me-2 hm-sub-color" id="update-contents">수정</button>
+      <button class="hm-button hm-blue-color update-cancel hm-gray-color">취소</button>
+    </div>
   </div>`);
-  $(event.target).hide();
+  $('.mc-btn-wrap').hide();
   $("#update-contents").off("click");
   $("#update-contents").on("click", function () {
     const content = document.querySelector(".update-comment-form").value;
@@ -223,7 +227,7 @@ $(document).on("click", ".update-cancel", (event) => {
   const contentDiv = parentDiv.find(".my-comments");
   const previousContent = contentDiv.data("previous-content");
   contentDiv.html(previousContent);
-  parentDiv.find(".update-comment-btn").show();
+  parentDiv.find(".mc-btn-wrap").show();
 });
 
 // 사용자에 따라 수정삭제, 쪽지버튼 보이는 함수
@@ -247,7 +251,7 @@ async function showUserBtn() {
     for (const btn of btnForTwit) {
       const btnId = Number(btn.getAttribute("user-id"));
       if (userId !== btnId) {
-        btn.style.display = "block";
+        btn.style.display = "inline";
       }
     }
   } catch (error) {
@@ -261,6 +265,6 @@ async function showWriteBtn() {
 
   if (token !== "Bearer null") {
     const writeButton = document.querySelector(".form-comment");
-    writeButton.style.display = "block";
+    writeButton.style.display = "flex";
   }
 }

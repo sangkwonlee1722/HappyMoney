@@ -2,7 +2,6 @@
   margin: auto; /* 가운데 정렬을 위한 마진 설정 */
   display: flex; /* 내부 요소들을 수평으로 정렬하기 위한 Flexbox 사용 */
   flex-direction: row;
-  margin-top: 10px;
 }
 
 .submit-comment {
@@ -19,13 +18,13 @@
   position: relative;
 }
 
-.comment a {
+/* .comment a {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-}
+} */
 .mc-contents-wrap {
   display: flex;
   justify-content: space-between;
@@ -72,11 +71,4 @@
 
 .mc-btn-wrap {
   z-index: 3;
-}
-
-.post-dt-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 4px;
 }

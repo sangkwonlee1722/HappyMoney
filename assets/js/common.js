@@ -70,8 +70,8 @@ $(document).ready(function () {
 
       const pushNoitsNumbers = await checkPushNotis();
 
-      if (pushNoitsNumbers === 0) {
-        $(".hm-red-dot-right").hide();
+      if (pushNoitsNumbers !== 0) {
+        $(".hm-red-dot-right").show();
       }
 
       $(".push-noti-icon").on("click", spreadMyAllPushNotis);
