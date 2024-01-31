@@ -54,8 +54,11 @@ const getMyInfoByToken = async (token) => {
               <span>${phone}</span>
             </div>
             <div class="profile-right">
+                <a class="d-flex justify-content-end" href="/views/twit/receive-twit.html?page=1"
+                >쪽지<img class="ms-1" style="width:20px; height:20px;" src="/images/twit-icon.png" alt=""
+              /></a>
               <span>가입일 : ${formattedDate}</span>
-              <button class="hm-button hm-gray-color">
+              <button class="hm-button hm-gray-color mb-1">
                 <a href="#none" onclick="drPopupOpen('.check-password')">수정하기</a>
               </button>
                <button class="hm-button hm-gray-color">

@@ -35,6 +35,7 @@ async function getDetailTwitData(url) {
       window.location.href = '/views/twit/twit.html';
     }
   } catch (error) {
+    alert(error.response.data.message);
     console.error(error);
   }
 }
