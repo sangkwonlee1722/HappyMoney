@@ -6,9 +6,16 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { join } from "path";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
+import * as fs from "fs";
+import * as https from "https";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const httpsOptions = {
+    key: fs.readFileSync("assets/certificate/private.pem"),
+    cert: fs.readFileSync("assets/certificate/certificate.pem")
+  };
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { httpsOptions });
   const app2 = await NestFactory.create(AppModule, { cors: true });
 
   const corsOptions: CorsOptions = {
