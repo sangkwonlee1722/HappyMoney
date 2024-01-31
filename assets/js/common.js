@@ -39,6 +39,9 @@ export function alarmClose() {
 }
 
 // 헤더, 푸터
+$.get("/views/common/favicon.html", function (data) {
+  $("head").append(data);
+});
 $("#header_wrap").load("/views/common/header.html");
 $("#footer_wrap").load("/views/common/footer.html");
 
