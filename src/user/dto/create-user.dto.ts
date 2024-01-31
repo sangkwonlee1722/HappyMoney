@@ -1,6 +1,4 @@
-import { PickType } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, Matches } from "class-validator";
-import { isString } from "lodash";
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
 
 //엔티티에서 유효성처리
 // 회원가입

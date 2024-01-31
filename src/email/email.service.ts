@@ -1,7 +1,5 @@
-import { createTransport } from "nodemailer";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { google } from "googleapis";
 import * as nodemailer from "nodemailer";
 @Injectable()
 export class EmailService {
