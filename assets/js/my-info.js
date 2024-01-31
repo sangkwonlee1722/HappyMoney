@@ -139,6 +139,10 @@ updateMyInfo.on("click", async function () {
     alert("닉네임에는 공백을 사용할 수 없습니다.");
     drPopupOpen(".hm-mypage-update");
     return;
+  } else if (nickName.length > 6) {
+    alert("닉네임은 6자리 이하입니다.");
+    drPopupOpen(".hm-mypage-update");
+    return;
   }
 
   const updateInfo = {
