@@ -68,7 +68,7 @@ export class TwitService {
       }
     });
 
-    if (getTwits.length === 0) return { success: false, message: "보낸 쪽지가 없습니다." };
+    // if (getTwits.length === 0) return { success: false, message: "보낸 쪽지가 없습니다." };
 
     return {
       getTwits,
@@ -85,7 +85,8 @@ export class TwitService {
         createdAt: dto.order__createdAt
       }
     });
-    if (getTwits.length === 0) return { success: false, message: "받은 쪽지가 없습니다." };
+
+    // if (getTwits.length === 0) return { success: false, message: "받은 쪽지가 없습니다." };
 
     return {
       getTwits,

@@ -24,7 +24,7 @@ const getNoticeData = async () => {
     const mainDom = document.querySelector(".notice-list");
 
     if (noticeList.length === 0) {
-      mainDom.innerHTML = "<p>공지사항이 없습니다.</p>";
+      mainDom.innerHTML = "<li class='my-5 text-center'>공지사항이 없습니다.</li>";
     } else {
       mainDom.innerHTML = noticeList
         .map((notice) => {

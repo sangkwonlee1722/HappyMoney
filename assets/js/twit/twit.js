@@ -25,14 +25,15 @@ async function getTwitData(url) {
     };
     const result = await axios.get(url, config);
     const list = result.data.list;
-    const success = result.data.success;
     const total = result.data.total;
 
     const mainDom = document.querySelector("#twitList");
 
-    if (success === false) {
-      return mainDom.innerHTML = `<div class="text-center">${list.message}</div>`;
+    console.log('list', list.length);
+    if (list.length === 0) {
+      return mainDom.innerHTML = `<div class="text-center">메세지가 없습니다.</div>`;
     }
+
     mainDom.innerHTML = list
       .map(twit => {
         const { senderName, receiverName, contents, createdAt, id } = twit;

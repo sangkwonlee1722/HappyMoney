@@ -27,14 +27,15 @@ async function fetchPostData(url) {
   try {
     const response = await axios.get(url);
     const list = response.data.list;
-    const success = response.data.success;
     const total = response.data.total;
 
-    if (success === false) {
-      return (mainDom.innerHTML = `<div class="text-center">${list.message}</div>`);
-    }
     // Display data for the current page
     const dataContainer = document.querySelector(".board-list");
+
+    if (list.length === 0) {
+      return (dataContainer.innerHTML = `<div class="text-center my-5">자유게시판 글이 없습니다.</div>`);
+    }
+
     dataContainer.innerHTML = list
       .map((post) => {
         const { nickName, title, commentNumbers, category, createdAt, id } = post;
