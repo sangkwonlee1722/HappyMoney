@@ -41,7 +41,7 @@ const spreadPostsList = async () => {
 
         return `
       <li class="contents" data-id=${id}>
-         <a href="#none"></a>
+         <a href="/views/post-read.html?id=${id}"></a>
          <div class="list-info">
            <div class="classification">${category}</div>
            <div class="title">${title}</div>

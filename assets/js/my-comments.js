@@ -39,7 +39,7 @@ const spreadCommentsList = async () => {
 
         return `
         <li class="comment" data-id="${id}">
-        <a href="/views/posts/${titleId}"></a>
+        <a href="/views/post-read.html?id=${titleId}"></a>
         <div class="mc-contents-wrap">
           <div class="mc-info-wrap">
             <div class="my-comments">
