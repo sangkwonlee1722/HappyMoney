@@ -1,6 +1,4 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configModuleValidationSchema } from "./configs/env-validation.config";
@@ -18,11 +16,10 @@ import { ScheduleModule } from "@nestjs/schedule";
 
 import { TwitModule } from "./twit/twit.module";
 import { PushModule } from "./push/push.module";
-import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_FILTER } from "@nestjs/core";
 import { SlackService } from "./common/slack/slack.service";
 import { EmailModule } from "./email/email.module";
 import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
-import { SlackAlarmInterceptor } from "./common/slack/slack.alarm.interceptor";
 
 @Module({
   imports: [
@@ -44,9 +41,7 @@ import { SlackAlarmInterceptor } from "./common/slack/slack.alarm.interceptor";
 
     PushModule
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     SlackService,
     {
       provide: APP_FILTER,
