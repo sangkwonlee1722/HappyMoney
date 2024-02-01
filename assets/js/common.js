@@ -91,7 +91,7 @@ $(document).ready(function () {
       <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호"  onkeypress="handleKeyPress(event)" />
       `;
     inputBox.innerHTML = temp_html;
-  }, 50);
+  }, 100);
 });
 
 function setCookie(name, value, days) {
