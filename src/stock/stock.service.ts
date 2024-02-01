@@ -154,7 +154,7 @@ export class StockService {
         },
         params: queryParams
       });
-      console.log(stockPrice.data);
+      // console.log(stockPrice.data);
 
       return stockPrice.data;
     } catch (error) {
