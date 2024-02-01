@@ -124,6 +124,7 @@ async function deletePost(postId) {
 
 // 댓글 생성
 document.querySelector(".submit-comment").addEventListener("click", async () => {
+  try {
   const token = getToken();
   const urlSearchParams = new URL(location.href).searchParams;
   const idValue = urlSearchParams.get("id");
@@ -145,6 +146,11 @@ document.querySelector(".submit-comment").addEventListener("click", async () => 
   );
   alert("댓글이 작성되었습니다.");
   window.location.reload();
+  } catch (error) {
+    console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  };
 });
 
 // 댓글 삭제

@@ -29,7 +29,7 @@ const submitPost = function () {
   console.log(category);
   let title = document.getElementById("title").value;
   let content = document.getElementById("editorTxt").value;
-
+  console.log(content);
   if (content == "<p>&nbsp;</p>") {
     // 콘텐츠 빈거 확인
     alert("내용을 입력해주세요.");
@@ -57,7 +57,8 @@ const submitPost = function () {
       })
       .catch(function (error) {
         console.error(error);
-        alert("게시물 등록에 실패했습니다.");
+        const errorMessage = error.response.data.message;
+        alert(errorMessage);
       });
   }
 };
