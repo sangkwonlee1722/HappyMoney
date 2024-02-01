@@ -23,12 +23,15 @@ const getNoticeData = async () => {
     const { noticeList, noticeTotal } = await getNoticeData();
     const mainDom = document.querySelector(".notice-list");
 
-    mainDom.innerHTML = noticeList
-      .map((notice) => {
-        const { id, title, createdAt } = notice;
-        const formattedDate = createdAt.split("T")[0];
+    if (noticeList.length === 0) {
+      mainDom.innerHTML = "<p>공지사항이 없습니다.</p>";
+    } else {
+      mainDom.innerHTML = noticeList
+        .map((notice) => {
+          const { id, title, createdAt } = notice;
+          const formattedDate = createdAt.split("T")[0];
 
-        return `
+          return `
         <li class="contents">
         <a href="/views/notice-page.html?id=${id}"></a>
           <div class="list-info">
@@ -42,9 +45,10 @@ const getNoticeData = async () => {
         </li>
         <hr />
         `;
-      })
-      .join("");
-    renderPagination(noticeTotal, noticePage, "/views/notice-main.html");
+        })
+        .join("");
+      renderPagination(noticeTotal, noticePage, "/views/notice-main.html");
+    }
   } catch (error) {
     console.error(error);
   }
