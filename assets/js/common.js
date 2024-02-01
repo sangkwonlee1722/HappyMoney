@@ -85,7 +85,6 @@ $(document).ready(function () {
     }
 
     const inputBox = document.querySelector("#login-input-box");
-
     const temp_html = `
       <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소"  onkeypress="handleKeyPress(event)" />
       <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호"  onkeypress="handleKeyPress(event)" />
