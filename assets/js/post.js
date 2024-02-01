@@ -33,7 +33,7 @@ async function fetchPostData(url) {
     const dataContainer = document.querySelector(".board-list");
 
     if (list.length === 0) {
-      return (dataContainer.innerHTML = `<div class="text-center my-5">자유게시판 글이 없습니다.</div>`);
+      return (dataContainer.innerHTML = `<div class="text-center my-5">글이 없습니다.</div>`);
     }
 
     dataContainer.innerHTML = list

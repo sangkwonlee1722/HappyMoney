@@ -28,6 +28,7 @@ export class TwitService {
 
     if (!receiver) throw new NotFoundException({ success: false, message: "수신자를 찾을 수 없습니다." });
     if (receiver.id === id) throw new BadRequestException({ success: false, message: "나에게 보낼 수 없습니다." });
+    if (contents.trim() === "") throw new BadRequestException({ success: false, message: "공백만 쓸 수 없습니다" });
 
     const sendTwit: Twit = this.twitRepository.create({
       senderId: id,
