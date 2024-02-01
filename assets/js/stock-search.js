@@ -30,7 +30,7 @@ export const getSearchData = async (keyword) => {
 
         return `
       <li>
-        <a href="#none"></a>
+        <a href="/views/stock-detail.html?code=${stockCode}&name=${stockName}"></a>
         <div class="stock-name-box">
           <div class="market">${market}</div>
           <div class="name-code">
