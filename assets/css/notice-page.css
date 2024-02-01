@@ -1,18 +1,38 @@
-.notice-container {
-  padding: 30px 0;
-  margin-bottom: 40px;
-}
-
 .notice-title {
   font-size: 1.5em;
   margin: 0 0 30px;
 }
 
-.notice-contents {
-  line-height: 1.6;
-  margin-bottom: 40px;
+.notice-container {
+  padding-bottom: 20px; /* 버튼과의 간격 조절 */
 }
 
 .button-container {
-  margin-top: 20px;
+  margin-top: 100px; /* 더 큰 여백으로 버튼을 내립니다. */
+  text-align: center;
+}
+
+.notice-page-header {
+  display: flex; /* Flexbox를 활성화 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.notice-page-header2 {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 왼쪽 마진을 auto로 설정하여 오른쪽보내기 */
+.notice-createdate {
+  margin-left: auto;
+}
+
+.board-title {
+  flex: 1;
+  margin-right: 10px; /* 제목과 버튼 사이의 간격 조절 */
+}
+
+/* 버튼 사이의 간격 조절 */
+.notice-page-header .hm-button {
+  margin-left: 10px;
 }

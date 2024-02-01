@@ -1,20 +1,24 @@
-
 import { baseUrl } from "./common.js";
 import getToken from './common.js'
+import renderPagination from '/js/pagenation.js'
 
 const token = getToken();
+const params = new URLSearchParams(window.location.search)
+const commentsPage = params.get("page")
 
 /* 내가 작성한 게시글 목록 가져오기 */
 const getMyComments = async () => {
-  const apiUrl = baseUrl + 'comments/my';
+  const apiUrl = baseUrl + `comments/my?page=${commentsPage}`;
   try {
     const result = await axios.get(apiUrl, {
       headers: {
         'Authorization': token,
       }
     })
+    const myCommentsList = result.data.lists
+    const myCommentsTotal = result.data.total
 
-    return result.data.data;
+    return { myCommentsList, myCommentsTotal }
   } catch (error) {
     console.error(error)
   }
@@ -23,7 +27,7 @@ const getMyComments = async () => {
 /* 목록을 뿌려주는 함수 */
 const spreadCommentsList = async () => {
   const mainDom = document.querySelector('.board-list');
-  const comments = await getMyComments();
+  const { myCommentsList: comments, myCommentsTotal: total } = await getMyComments();
 
   if (comments.length !== 0) {
     mainDom.innerHTML = comments
@@ -58,6 +62,7 @@ const spreadCommentsList = async () => {
       </li>
       `
       }).join("")
+    renderPagination(total, commentsPage, '/views/my-comments.html');
   } else {
     mainDom.innerHTML = `
     <div class="none-contents">

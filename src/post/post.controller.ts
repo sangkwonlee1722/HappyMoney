@@ -9,7 +9,8 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
+  Query
 } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -19,6 +20,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiTags("Posts")
 @Controller("posts")
@@ -37,6 +39,12 @@ export class PostController {
   @Post()
   async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
     const { id: userId, nickName } = user;
+
+    // 카테고리 값이 유효한지 검사
+    if (!["잡담", "가입인사", "정보", "질문"].includes(createPostDto.category)) {
+      throw new BadRequestException();
+    }
+
     await this.postService.create(userId, nickName, createPostDto);
     return { success: true, message: "okay" };
   }
@@ -46,9 +54,18 @@ export class PostController {
    * @returns 전체 글
    */
   @Get()
-  async findAll() {
-    const data = await this.postService.findAll();
-    return { success: true, message: "okay", data: data };
+  async findAll(@Query() query: PaginatePostDto) {
+    let { page } = query;
+    if (page === null) {
+      page = 1;
+    }
+    const { posts, count } = await this.postService.findAll(query);
+    return {
+      success: true,
+      message: "okay",
+      list: posts,
+      total: count
+    };
   }
 
   /**
@@ -59,13 +76,14 @@ export class PostController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
   @Get("my")
-  async findMyPosts(@UserInfo() user: User) {
-    const data = await this.postService.findMyPostsById(user.id);
+  async findMyPosts(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { posts, count } = await this.postService.findMyPostsById(user.id, query);
 
     return {
       success: true,
       message: "okay",
-      data
+      lists: posts,
+      total: count
     };
   }
 
@@ -100,6 +118,12 @@ export class PostController {
     if (data.userId !== userId) {
       throw new UnauthorizedException({ success: false, message: "권한이 없습니다." });
     }
+
+    // 카테고리 값이 유효한지 검사
+    if (!["잡담", "가입인사", "정보", "질문"].includes(updatePostDto.category)) {
+      throw new BadRequestException("유효하지 않은 카테고리입니다.");
+    }
+
     const isUpdated = await this.postService.update(+id, updatePostDto);
     if (!isUpdated) {
       throw new BadRequestException({ success: false, message: "오류 발생." });

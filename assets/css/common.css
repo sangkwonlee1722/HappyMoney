@@ -1,4 +1,10 @@
 @charset "utf-8";
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+
+* {
+  font-family: "Spoqa Han Sans Neo", "sans-serif";
+}
+
 a {
   text-decoration: none;
   color: unset;
@@ -122,7 +128,7 @@ video {
 }
 #main-content {
   flex: 1;
-  width: 1000px;
+  width: 1200px;
   margin: 0 auto;
   margin-top: 60px;
 }
@@ -416,7 +422,7 @@ input::placeholder {
   z-index: 100;
 }
 .header .header-wrap {
-  max-width: 1000px;
+  max-width: 1200px;
   height: 90px;
   margin: 0 auto;
   display: flex;
@@ -437,7 +443,7 @@ input::placeholder {
   background-color: #d9d9d9;
 }
 .sub-header-box {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -553,8 +559,8 @@ input::placeholder {
 .hm-red-dot-right::after {
   content: "";
   position: absolute;
-  top: -18px;
-  left: 15px;
+  top: -15px;
+  left: 16px;
   width: 10px;
   height: 10px;
   background-color: #ea5555;
@@ -567,7 +573,7 @@ input::placeholder {
   display: flex;
   align-items: center;
 }
-.hm-user-on button {
+.hm-user-on > button {
   margin-left: 1rem;
 }
 .push-noti {
@@ -579,18 +585,18 @@ input::placeholder {
   cursor: pointer;
 }
 .push-noti img {
-  height: 28px;
+  height: 22px;
 }
 
 /* --알림창-- s*/
 .hm-popup-alarm {
-  position: fixed;
+  position: absolute;
   width: 350px;
-  height: 700px;
+  height: 600px;
   background-color: #fdfdfd;
   z-index: 115;
-  margin-top: 700px;
-  margin-left: 15px;
+  top: 10px;
+  left: 20px;
   border-radius: 15px;
   box-shadow: 5px 5px 10px #777;
 
@@ -642,7 +648,7 @@ input::placeholder {
   font-weight: bold;
 }
 
-.hm-alarm-top button {
+.all-read-btn {
   border: none;
   background-color: transparent;
 }
@@ -694,7 +700,8 @@ input::placeholder {
 
 .hm-alarm-footer {
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .hm-alarm-footer button {
@@ -719,7 +726,7 @@ input::placeholder {
   margin-top: 60px;
 }
 .hm-footer-wrap {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px 0;
   color: #fff;
@@ -1011,6 +1018,7 @@ footer.hm-container.hm-fixed {
 
 .loginModal {
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: fixed;
   top: 50%;
@@ -1020,7 +1028,7 @@ footer.hm-container.hm-fixed {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  height: 400px;
+  height: 600px;
   z-index: 1000;
 }
 
@@ -1045,6 +1053,10 @@ footer.hm-container.hm-fixed {
 }
 
 .login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   color: black;
   padding: 10px;
   border: none;
@@ -1086,7 +1098,33 @@ footer.hm-container.hm-fixed {
   z-index: 999;
 }
 
-/* 로그인 팝업 e */
+/* passwordFound */
+.foundPasswordAndUser {
+  text-align: center;
+}
+/* passwordFound */
+
+.styled-link {
+  display: inline-block;
+  margin: 10px;
+  padding: 5px 10px;
+  font-size: 13px;
+  text-decoration: none;
+  color: black;
+}
+
+/* social */
+.socialBtn {
+  border: none;
+  background: none;
+}
+
+.social {
+  display: flex;
+  flex-direction: column;
+}
+
+/* social */
 
 /* pagenation s */
 #hm-pagination {
@@ -1123,3 +1161,79 @@ footer.hm-container.hm-fixed {
   font-size: 19px;
 }
 /* pagenation e */
+
+/* main banner s */
+.hm-banner-wrap {
+  width: 100%;
+}
+.hm-banner-wrap > article {
+  width: 100%;
+}
+article.hm-main {
+  background-color: #cee3fe;
+  padding-bottom: 40px;
+}
+article.hm-banner-one {
+  background-color: #feefe8;
+}
+article.hm-banner-two {
+  background-color: #000f5d;
+}
+.hm-banner-width {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hm-main-txt {
+  display: inline;
+  white-space: nowrap;
+}
+
+.hm-main-btn-wrap {
+  display: flex;
+  width: 1000px;
+  margin: 0 auto;
+  transform: translateY(-60px);
+}
+.hm-main-btn-wrap li {
+  position: relative;
+  width: 30%;
+  margin-right: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 360px;
+  padding: 30px 0;
+  border-radius: 10px;
+  box-shadow: 2px 3px 6px 0 rgba(0, 0, 0, 0.25);
+  transition: ease-in-out 0.3s;
+}
+.hm-main-btn-wrap li:last-child {
+  margin-right: 0;
+}
+.hm-main-btn-wrap li:hover {
+  transform: translateY(-15px);
+}
+.hm-main-btn-wrap li:nth-child(1) {
+  background-color: #e8f1fe;
+}
+.hm-main-btn-wrap li:nth-child(2) {
+  background-color: #fee8e8;
+}
+.hm-main-btn-wrap li:nth-child(3) {
+  background-color: #fbfee8;
+}
+.hm-main-btn-wrap li a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.hm-main-btn-wrap li .img-wrap {
+  height: 150px;
+}
+/* main banner e */

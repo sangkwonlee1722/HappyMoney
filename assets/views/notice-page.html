@@ -17,30 +17,56 @@
 </head>
 
 <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap delete-notice-chk">
+        <header>
+            <h1>공지사항 삭제</h1>
+        </header>
+        <div class="hm-popup-content">
+            <p class="mt-2" style="color: #eb5665">삭제된 공지사항은 다시 복구할 수 없습니다.</p>
+            <p>그래도 삭제하시겠습니까?</p>
+        </div>
+        <footer>
+            <div class="d-flex justify-content-between hm-bg-white">
+                <a href="#none" class="hm-button me-2 hm-gray-color" onclick="drPopupClose(this)">취소</a>
+                <a href="#none" class="hm-button ms-2" id="delete-contents" onclick="drPopupClose(this)">삭제</a>
+            </div>
+        </footer>
+    </div>
+    <!-- 삭제 확인 팝업 e -->
     <div class="hm-container">
         <header id="header_wrap"></header>
         <div id="main-content">
-
-            <!-- 공지사항, 게시판, 뉴스 s -->
-            <div class="community-services-wrap">
-                <!-- 공지사항 -->
-                <div class="contents-wrap">
+            <!-- 공지사항 -->
+            <div class="contents-wrap">
+                <div class="notice-page-header">
                     <h2 class="board-title">
-                        <a href="#none"></a>
-                        공지사항
                     </h2>
-                    <div class="notice-container">
-                        <h3 class="notice-title"></h3>
-                        <p class="notice-contents"></p>
-                    </div>
+                    <button id="update-btn" class="hm-button hm-gray-color update-notice-btn" style="display:none">
+                        <a href="#none">수정</a>
+                    </button>
+                    <button id="delete-btn" class="hm-button hm-gray-color delete-notice-btn" style="display:none"
+                        onclick="drPopupOpen('.delete-notice-chk')">
+                        <a href="#none">삭제</a>
+                    </button>
                 </div>
-                <button class="hm-button hm-sub-color" id="backToList">
-                    <a href="/views/notice-main.html">목록으로</a>
-                </button>
+                <div class="notice-page-header2">
+                    <p class="notice-createdate"></p>
+                </div>
             </div>
-            <!-- 공지사항, 게시판, 뉴스 e -->
+            <div class="notice-container">
+                <p class="notice-contents my-5"></p>
+                <div class="button-container">
+                    <button class="hm-button hm-sub-color" id="backToList">
+                        <a href="/views/notice-main.html?page=1">목록으로</a>
+                    </button>
+                </div>
+            </div>
         </div>
-        <footer id="footer_wrap"></footer>
+
+    </div>
+    <footer id="footer_wrap"></footer>
     </div>
 </body>
 

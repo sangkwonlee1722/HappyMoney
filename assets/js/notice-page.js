@@ -1,24 +1,94 @@
+import { baseUrl, getCookie } from "/js/common.js";
+
+const token = `Bearer ${getCookie("accessToken")}`;
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const idValue = window.location.hash.substring(1); // 해시에서 '#' 문자를 제외한 값을 추출합니다.
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const noticeId = urlSearchParams.get("id");
 
   try {
-    if (idValue) {
-      const response = await axios.get(`/api/notices/${idValue}`);
+    if (noticeId) {
+      const response = await axios.get(`${baseUrl}notices/${noticeId}`);
       const data = response.data.data;
 
       const titleElement = document.querySelector(".board-title");
-      const contentsElement = document.querySelector(".notice-container");
+      const contentsElement = document.querySelector(".notice-contents");
+      const dateElement = document.querySelector(".notice-createdate");
 
       if (titleElement && contentsElement) {
-        titleElement.textContent = data.title;
-        contentsElement.textContent = data.contents;
-      } else {
-        console.error("요소를 찾을 수 없습니다.");
+        titleElement.innerHTML = data.title;
+        contentsElement.innerHTML = data.contents;
+        dateElement.innerHTML = data.createdAt;
+
+        // 날짜 포맷 변경
+        const dateObject = new Date(data.createdAt);
+        const formattedDate = `${dateObject.getFullYear()}
+        -${String(dateObject.getMonth() + 1).padStart(2, "0")}
+        -${String(dateObject.getDate()).padStart(2, "0")}
+         ${String(dateObject.getHours()).padStart(2, "0")}
+         :${String(dateObject.getMinutes()).padStart(2, "0")}`;
+
+        dateElement.innerHTML = formattedDate;
       }
-    } else {
-      console.error("유효한 ID가 없습니다.");
     }
   } catch (error) {
     console.error(error);
+  }
+
+  // API로 사용자 정보 호출
+  const userInfo = await axios.get(baseUrl + "user/mypage", {
+    headers: {
+      Authorization: token
+    }
+  });
+
+  const role = userInfo.data.role;
+
+  // 공지사항 수정
+  const updateNoticeBtn = document.querySelector("#update-btn");
+  if (updateNoticeBtn) {
+    if (role === "admin") {
+      // admin만 버튼 보이게
+      updateNoticeBtn.style.display = "block";
+    }
+
+    // 특정 ID를 가지고 수정 페이지로 이동
+    updateNoticeBtn.addEventListener("click", () => {
+      window.location.href = `/views/notice-update.html?id=${noticeId}`;
+    });
+  }
+
+  // 공지사항 삭제
+  const deleteNoticeBtn = document.querySelector("#delete-btn");
+  if (deleteNoticeBtn) {
+    const noticeIdToDelete = noticeId;
+
+    // admin만 버튼 보이게
+    if (role === "admin") {
+      deleteNoticeBtn.style.display = "block";
+    }
+
+    const deleteContentsBtn = document.getElementById("delete-contents");
+    if (deleteContentsBtn) {
+      deleteContentsBtn.addEventListener("click", function () {
+        deleteNotice(noticeIdToDelete);
+      });
+    }
+  }
+
+  async function deleteNotice(noticeId) {
+    try {
+      await axios.delete(`/api/notices/${noticeId}`, {
+        headers: {
+          Authorization: token
+        }
+      });
+      alert("공지사항이 삭제되었습니다.");
+      window.location.href = "/views/notice-main.html?page=1";
+    } catch (error) {
+      console.error(error);
+      const errorMessage = error.response.data.message;
+      alert(errorMessage);
+    }
   }
 });

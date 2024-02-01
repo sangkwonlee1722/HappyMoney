@@ -11,23 +11,11 @@ $('.twit-tab li').on('click', function () {
   $('#hm-pagination').html('');
 })
 
-
-getTwitData(`http://localhost:3000/api/twits/getReceive?page=${twit_page}`, '보낸사람', '받은시간');
-
-// 받은쪽지 탭 클릭
-$('#receive').click(function () {
-  window.history.pushState({}, '', `/views/twit/twit.html?page=1`);
-  getTwitData(`http://localhost:3000/api/twits/getReceive?page=1`, '보낸사람', '받은시간');
-})
-
-// 보낸 쪽지 탭 클릭
-$('#send').click(function () {
-  window.history.pushState({}, '', `/views/twit/twit.html?page=1`);
-  getTwitData(`http://localhost:3000/api/twits/getSend?page=1`, '받은사람', '보낸시간');
-})
+const pageUrl = window.location.href.includes("receive");
+pageUrl ? getTwitData(`/api/twits/getReceive?page=1`) : getTwitData(`/api/twits/getSend?page=1`);
 
 // 쪽지 조회API 
-async function getTwitData(url, name, time) {
+async function getTwitData(url) {
   try {
     const config = {
       headers: {
@@ -40,27 +28,23 @@ async function getTwitData(url, name, time) {
     const success = result.data.success;
     const total = result.data.total;
 
-    $('.contents.name .classification').text(name);
-    $('.contents.name .list-info-2').text(time);
-
     const mainDom = document.querySelector("#twitList");
 
     if (success === false) {
       return mainDom.innerHTML = `<div class="text-center">${list.message}</div>`;
     }
-
     mainDom.innerHTML = list
       .map(twit => {
         const { senderName, receiverName, contents, createdAt, id } = twit;
-        const name = url === `http://localhost:3000/api/twits/getSend?page=${twit_page}` ? senderName : receiverName;
-        const send = url === `http://localhost:3000/api/twits/getReceive?page=${twit_page}` ? false : true;
+        console.log('receive', receiverName, 'send', senderName)
+        const send = url === `/api/twits/getReceive?page=${twit_page}` ? false : true;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
         return `
         <li class="contents">
           <a href="/views/twit/twit-detail.html?send=${send}&id=${id}"></a>
           <div class="list-info">
-            <div class="classification">${name}</div>
+            <div class="classification">${pageUrl === true ? senderName : receiverName}</div>
             <div class="title">${contents}</div>
           </div>
           <div class="list-info-2">
@@ -71,8 +55,9 @@ async function getTwitData(url, name, time) {
         `
       }).join("");
 
-    renderPagination(total, twit_page, '/views/twit/twit.html');
+    pageUrl ? renderPagination(total, twit_page, '/views/twit/receive-twit.html') : renderPagination(total, twit_page, '/views/twit/twit.html');
   } catch (error) {
+    alert(error.response.data.message);
     console.error(error);
   }
 }

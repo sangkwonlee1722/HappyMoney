@@ -1,0 +1,74 @@
+.form-comment {
+  margin: auto; /* 가운데 정렬을 위한 마진 설정 */
+  display: flex; /* 내부 요소들을 수평으로 정렬하기 위한 Flexbox 사용 */
+  flex-direction: row;
+}
+
+.submit-comment {
+  flex: 0; /* 크기를 유지하도록 설정 */
+}
+
+.send-message-button {
+  margin-left: 10px; /* 원하는 간격으로 조절 가능 */
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* .comment a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+} */
+.mc-contents-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-nickName {
+  font-weight: bold;
+}
+
+.comment-date {
+  font-size: 12px;
+}
+
+.mc-posts {
+  display: flex;
+  flex-direction: row;
+  color: #777;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.mc-posts img {
+  width: 12px;
+  height: 12px;
+}
+
+.mc-posts span {
+  font-size: 11px;
+}
+
+.posts-title {
+  font-size: 12px;
+  margin-right: 11px;
+}
+
+.comment-icon {
+  margin-right: 5px;
+}
+
+.comment-number {
+  color: #eb5665;
+}
+
+.mc-btn-wrap {
+  z-index: 3;
+}

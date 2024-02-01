@@ -5,7 +5,7 @@ const receive_name = params.get("name");
 $('#receiverPersonName').text(receive_name);
 
 $('#sendTwit').on('click', function () {
-  getDetailTwitData(`http://localhost:3000/api/twits`);
+  getDetailTwitData(`/api/twits`);
 })
 
 // 쪽지 조회API 
@@ -35,6 +35,7 @@ async function getDetailTwitData(url) {
       window.location.href = '/views/twit/twit.html';
     }
   } catch (error) {
+    alert(error.response.data.message);
     console.error(error);
   }
 }

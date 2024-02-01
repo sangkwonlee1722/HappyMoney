@@ -12,6 +12,7 @@ import { ConfigService } from "@nestjs/config";
 import { PushService } from "src/push/push.service";
 import { Payload } from "src/push/push-config";
 import { User } from "src/user/entities/user.entity";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class CommentService {
@@ -42,8 +43,6 @@ export class CommentService {
         post: { id: postId }
       });
 
-      console.log("코멘트에 유저가 나오나요?", comment);
-
       await em.save(Comment, comment);
 
       // 내가 쓴 게시글에 다른 사람이 댓글을 달 경우
@@ -73,7 +72,7 @@ export class CommentService {
       .createQueryBuilder("c")
       .leftJoinAndSelect("c.commentUser", "cu")
       .where("c.post = :postId", { postId })
-      .select(["c.id", "c.content", "c.createdAt", "c.updatedAt", "cu.nickName"])
+      .select(["c.id", "c.content", "c.createdAt", "c.updatedAt", "cu.nickName", "cu.id"])
       .orderBy("c.createdAt", "DESC")
       .getMany();
 
@@ -103,23 +102,26 @@ export class CommentService {
     await this.commentRepository.softRemove(comment);
   }
 
-  async getMyAllComments(userId: number): Promise<Comment[]> {
-    const comments = await this.commentRepository
+  async getMyAllComments(userId: number, query: PaginatePostDto) {
+    const [comments, count]: [Comment[], number] = await this.commentRepository
       .createQueryBuilder("c")
       .leftJoin("c.post", "cp")
       .loadRelationCountAndMap("cp.commentNumbers", "cp.comments")
       .leftJoin("c.commentUser", "cu")
       .where("cu.id=:userId", { userId })
       .select(["c.id", "c.createdAt", "c.updatedAt", "c.content", "cp.title", "cp.id"])
-      .getMany();
+      .skip(query.take * (query.page - 1))
+      .take(query.take)
+      .orderBy("c.createdAt", query.order__createdAt)
+      .getManyAndCount();
 
-    return comments;
+    return { comments, count };
   }
 
   async sendCommentPush(post: Post) {
     const userSubscription = Object(post.user.subscription);
 
-    const url = `http://localhost:3000/views/twit/twit.html`;
+    const url = `/views/post-read.html?id=${post.id}`;
     const payload = new Payload(`[${post.title}]에 댓글이 달렸습니다.`, url);
     console.log("payload: ", payload);
 

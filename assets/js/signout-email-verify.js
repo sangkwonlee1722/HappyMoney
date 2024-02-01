@@ -5,16 +5,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const encodedEmail = encodeURIComponent(email);
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }
     });
     const response = await axiosInstance.get(`/api/user/email-verify-signout?email=${encodedEmail}`);
-    console.log(response);
+
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원탈퇴 되었습니다.");
-      // window.close();
+      window.close();
     } else {
       alert("이메일 인증이 실패했습니다.");
       return;

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/twit/twit.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/twit.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content" class="twit-content">
+        <div id="stock-header"></div>
+        <div class="twit-wrap">
+          <div class="twit-title-wrap">
+            <h2>나의 쪽지함</h2>
+            <ul class="twit-tab">
+              <li class="on" id="receive"><a href="/views/twit/receive-twit.html?page=1">받은 쪽지</a></li>
+              <li id="send"><a href="/views/twit/twit.html?page=1">보낸 쪽지</a></li>
+            </ul>
+          </div>
+          <div class="contents name mb-3">
+            <div class="list-info">
+              <div class="classification">보낸사람</div>
+              <div class="title text-center">쪽지 내용</div>
+            </div>
+            <div class="list-info-2 justify-content-center">받은시간</div>
+          </div>
+          <ul class="board-list" id="twitList"></ul>
+        </div>
+        <ul id="hm-pagination"></ul>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+</html>

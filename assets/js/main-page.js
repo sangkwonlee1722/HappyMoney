@@ -1,16 +1,17 @@
+import { baseUrl } from "./common.js";
 /* 공지사항을 가져오는 함수 */
 const getNoticeData = async () => {
   try {
-    const apiUrl = `http://localhost:3000/api/notices`
+    const apiUrl = baseUrl + `notices?page=1`;
 
-    const result = await axios.get(apiUrl)
-    const latestNotices = result.data.data.slice(0, 3);
+    const result = await axios.get(apiUrl);
+    const latestNotices = result.data.list.slice(0, 3);
 
-    const mainDom = document.querySelector(".notice-list")
+    const mainDom = document.querySelector(".notice-list");
 
     mainDom.innerHTML = latestNotices
-      .map(notice => {
-        const { title, createdAt } = notice
+      .map((notice) => {
+        const { title, createdAt } = notice;
 
         const formattedDate = createdAt.split("T")[0];
 
@@ -27,37 +28,36 @@ const getNoticeData = async () => {
           </div>
         </li>
         <hr />
-        `
-      }).join("")
-
-
+        `;
+      })
+      .join("");
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
-await getNoticeData()
+await getNoticeData();
 
 /* 자유게시판 최신글 가져오는 함수 */
 const getBoardData = async () => {
   try {
-    const apiUrl = `http://localhost:3000/api/posts`
+    const apiUrl = baseUrl + `posts?page=1`;
 
-    const result = await axios.get(apiUrl)
-    const latestPosts = result.data.data.slice(0, 3);
+    const result = await axios.get(apiUrl);
+    const latestPosts = result.data.list.slice(0, 3);
 
-    const mainDom = document.querySelector(".board-list")
+    const mainDom = document.querySelector(".board-list");
 
     mainDom.innerHTML = latestPosts
-      .map(post => {
-        const { title, nickName, category, createdAt, commentNumbers } = post
+      .map((post) => {
+        const { id, title, nickName, category, createdAt, commentNumbers } = post;
 
         const formattedDate = createdAt.split("T")[0];
         const commentClass = commentNumbers === 0 ? "comment hidden" : "comment";
 
         return `
         <li class="contents">
-           <a href="#none"></a>
+           <a href="post-read.html?id=${id}"></a>
            <div class="list-info">
              <div class="classification">${category}</div>
              <div class="title">${title}</div>
@@ -72,11 +72,12 @@ const getBoardData = async () => {
            </div>
         </li>
         <hr />
-        `
-      }).join("")
+        `;
+      })
+      .join("");
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
-await getBoardData()
+await getBoardData();

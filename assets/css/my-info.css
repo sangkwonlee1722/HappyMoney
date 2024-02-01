@@ -50,5 +50,8 @@
 }
 
 #signoutBtn {
-  width: 10px;
+  font-size: 12px;
+  color: #aaa;
+  cursor: pointer;
+  font-weight: 300;
 }

@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="ko">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/js/jquery-3.7.1.min.js"></script>
@@ -14,27 +13,30 @@
     <link rel="stylesheet" href="/css/main-page.css" />
     <link rel="stylesheet" href="/css/notice-main.css" />
     <title>HappyMoney</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="hm-container">
         <header id="header_wrap"></header>
         <div id="main-content">
-
-            <!-- 공지사항, 게시판, 뉴스 s -->
-            <div class="community-services-wrap">
-                <!-- 공지사항 -->
-                <div class="contents-wrap">
+            <!-- 공지사항 -->
+            <div class="contents-wrap">
+                <div class="notice-main-header">
                     <h2 class="board-title">
-                        <a href="#none"></a>
                         공지사항
                     </h2>
-                    <ul class="notice-list"></ul>
+                    <button id="write-btn" class="hm-button hm-gray-color" style="display:none">
+                        <a href="#none">글쓰기</a>
+                    </button>
                 </div>
+                <ul class="notice-list"></ul>
             </div>
-        </div>
-        <footer id="footer_wrap"></footer>
-    </div>
-</body>
+            <ul id="hm-pagination"></ul>
 
+        </div>
+        <ul id="hm-pagination"></ul>
+      </div>
+    </div>
+    <footer id="footer_wrap"></footer>
+  </body>
 </html>

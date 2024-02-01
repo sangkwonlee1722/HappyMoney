@@ -1,6 +1,6 @@
-import { spreadMyAllPushNotis, checkPushNotis } from './push-noti.js'
+import { spreadMyAllPushNotis, checkPushNotis } from "./push-noti.js";
 
-export const baseUrl = "http://localhost:3000/api/";
+export const baseUrl = "/api/";
 
 window.drPopupOpen = drPopupOpen;
 window.drPopupClose = drPopupClose;
@@ -8,6 +8,10 @@ window.loginConfirm = loginConfirm;
 window.alarmOpen = alarmOpen;
 window.alarmClose = alarmClose;
 window.logout = logout;
+window.googleLogin = googleLogin;
+window.naverLogin = naverLogin;
+window.kakaoLogin = kakaoLogin;
+window.handleKeyPress = handleKeyPress;
 
 //팝업 열기
 export function drPopupOpen(popName) {
@@ -35,6 +39,9 @@ export function alarmClose() {
 }
 
 // 헤더, 푸터
+$.get("/views/common/favicon.html", function (data) {
+  $("head").append(data);
+});
 $("#header_wrap").load("/views/common/header.html");
 $("#footer_wrap").load("/views/common/footer.html");
 
@@ -59,18 +66,18 @@ $(document).ready(function () {
       $("#loginTab").hide();
       $("#logoutTab").show();
 
-      // 로그인 시 푸시알림 구독 정보 및 서비스워커 등록 
+      // 로그인 시 푸시알림 구독 정보 및 서비스워커 등록
       setTimeout(() => {
-        registerNotificationService()
+        registerNotificationService();
       }, 100);
 
-      const pushNoitsNumbers = await checkPushNotis()
+      const pushNoitsNumbers = await checkPushNotis();
 
-      if (pushNoitsNumbers === 0) {
-        $('.hm-red-dot-right').hide();
+      if (pushNoitsNumbers !== 0) {
+        $(".hm-red-dot-right").show();
       }
 
-      $('.push-noti-icon').on('click', spreadMyAllPushNotis)
+      $(".push-noti-icon").on("click", spreadMyAllPushNotis);
     } else {
       // 세션 ID가 없으면 로그아웃 상태로 간주하고 로그아웃 탭을 표시합니다.
       $("#loginTab").show();
@@ -80,8 +87,8 @@ $(document).ready(function () {
     const inputBox = document.querySelector("#login-input-box");
 
     const temp_html = `
-      <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소" />
-      <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호" />
+      <input type="email" class="loginInputValue" id="loginEmail" placeholder="이메일 주소"  onkeypress="handleKeyPress(event)" />
+      <input type="password" class="loginInputValue" id="loginPassword" placeholder="비밀번호"  onkeypress="handleKeyPress(event)" />
       `;
     inputBox.innerHTML = temp_html;
   }, 50);
@@ -93,7 +100,7 @@ function setCookie(name, value, days) {
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 }
 
-function getCookie(name) {
+export function getCookie(name) {
   // 쿠키 문자열을 가져옵니다.
   const cookieString = document.cookie;
 
@@ -116,6 +123,12 @@ function getCookie(name) {
   return null;
 }
 
+export function handleKeyPress(event) {
+  if (event.key === "Enter") {
+    loginConfirm();
+  }
+}
+
 // 로그인
 async function loginConfirm() {
   const email = document.getElementById("loginEmail").value;
@@ -128,7 +141,7 @@ async function loginConfirm() {
 
   try {
     const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "",
       headers: {
         "Content-Type": "application/json"
       }
@@ -139,7 +152,7 @@ async function loginConfirm() {
     if (response.data.success) {
       alert(`환영합니다.`);
       const accessToken = response.data.accessToken;
-      setCookie("accessToken", accessToken, 1);
+      setCookie("accessToken", accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
       window.location.href = "/views/main.html";
     }
   } catch (error) {
@@ -153,7 +166,7 @@ export function logout() {
   deleteCookie("accessToken");
   alert("로그아웃 되었습니다.");
 
-  window.location.href = '/views/main.html';
+  window.location.href = "/views/main.html";
 }
 export function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
@@ -175,7 +188,6 @@ export function addComma(number) {
   return formattedValue;
 }
 
-
 // 알림 권한 확인 및 서비스 워크 등록
 async function registerNotificationService() {
   try {
@@ -187,7 +199,7 @@ async function registerNotificationService() {
 
     if (status === "denied") {
       console.log("Notification 상태", status);
-      return
+      return;
     } else if (navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.register("sw.js");
       const subscribeOptions = {
@@ -204,46 +216,47 @@ async function registerNotificationService() {
 
 // 구독 정보를 user 테이블에 저장하는 함수
 async function postSubscription(pushSubscription) {
-
   const subscription = pushSubscription.toJSON();
 
-  const apiUrl = baseUrl + "user/subscription"
-  const token = getToken()
+  const apiUrl = baseUrl + "user/subscription";
+  const token = getToken();
 
   try {
-    await axios.patch(apiUrl, {
-      subscription
-    }, {
-      headers: {
-        'Authorization': token,
+    await axios.patch(
+      apiUrl,
+      {
+        subscription
       },
-    })
+      {
+        headers: {
+          Authorization: token
+        }
+      }
+    );
   } catch (error) {
-    console.error(error)
+    console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
   }
 }
 
 async function getVAPIDPublicKey() {
-  const apiUrl = baseUrl + "push/VAPIDKeys"
+  const apiUrl = baseUrl + "push/VAPIDKeys";
 
-  const token = getToken()
+  const token = getToken();
   const result = await axios.get(apiUrl, {
     headers: {
-      'Authorization': token,
-    },
-  })
+      Authorization: token
+    }
+  });
 
-  const publicKey = result.data.publicKey
-  return publicKey
+  const publicKey = result.data.publicKey;
+  return publicKey;
 }
 
 function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
 
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);
@@ -255,4 +268,14 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
+function googleLogin() {
+  window.location.href = "/api/google/login";
+}
 
+function kakaoLogin() {
+  window.location.href = "/api/kakao/login";
+}
+
+function naverLogin() {
+  window.location.href = "/api/naver/login";
+}
