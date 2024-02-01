@@ -188,31 +188,6 @@ export class StockGateway implements OnGatewayConnection {
       bidp_rsqn9: recvvalue[41],
       bidp_rsqn10: recvvalue[42],
       antc_cnpr: recvvalue[47]
-      // 총매도호가: {
-      //   잔량: recvvalue[43],
-      //   잔량_증감: recvvalue[54]
-      // },
-      // 총매수호가: {
-      //   잔량: recvvalue[44],
-      //   잔량_증감: recvvalue[55]
-      // },
-      // 시간외_총매도호가: {
-      //   잔량: recvvalue[45],
-      //   증감: recvvalue[56]
-      // },
-      // 시간외_총매수호가: {
-      //   잔량: recvvalue[46],
-      //   증감: recvvalue[57]
-      // },
-      // 예상_체결: {
-      //   가격: recvvalue[47],
-      //   체결량: recvvalue[48],
-      //   거래량: recvvalue[49],
-      //   체결_대비: recvvalue[50],
-      //   부호: recvvalue[51],
-      //   체결_전일대비율: recvvalue[52]
-      // },
-      // 누적_거래량: recvvalue[53]
     };
 
     return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환
