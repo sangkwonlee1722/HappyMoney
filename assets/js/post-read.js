@@ -190,7 +190,7 @@ $(document).on("click", ".update-comment-btn", async (event) => {
       <button class="hm-button hm-blue-color update-cancel hm-gray-color">취소</button>
     </div>
   </div>`);
-  $('.mc-btn-wrap').hide();
+  comment.hide();
   $("#update-contents").off("click");
   $("#update-contents").on("click", function () {
     const content = document.querySelector(".update-comment-form").value;
