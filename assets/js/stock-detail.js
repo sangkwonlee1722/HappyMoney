@@ -39,6 +39,23 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 } else {
   priceData();
 }
+
+// 시장가 체크 유무
+$('#fixCheck').on('change', function () {
+  if (!$(this).is(':checked')) {
+    $('#fixPrice').prop('disabled', false);
+  } else {
+    $('#fixPrice').prop('disabled', true);
+  }
+});
+
+// 주문총액 계산
+$('#stockAmount').on('input', function () {
+  const fixPrice = parseInt($('#fixPrice').val(), 10);
+  const num = Number($(this).val());
+  $('.total-price').text(addComma(fixPrice * num));
+});
+
 console.log(isKoreanWorkingHour());
 function isKoreanWeekday() {
   const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
@@ -49,9 +66,9 @@ function isKoreanWeekday() {
 
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
-  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: 'numeric' });
+  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: '2-digit', hour12: false });
   const time = Number(currentHour.split(" ")[0]);
-  return time >= 9 && time <= 16;
+  return time >= 9 && time < 16;
 }
 
 function livePriceData() {
@@ -69,10 +86,17 @@ function livePriceData() {
     socket.emit('asking_price', trKey);
   });
 
-  socket.on('asking_price', (data) => {
+  socket.on('asking_price', async (data) => {
     const price = JSON.parse(data);
+    const tax = parseInt(price.bidp1, 10);
     console.log(price);
     $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
+    // console.log(price.bidp1);
+
+    if ($('#fixPrice').prop('disabled')) {
+      $('#fixPrice').val(`${tax}`);
+    }
+
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
       $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
@@ -80,6 +104,7 @@ function livePriceData() {
       $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
     }
   })
+
 }
 
 async function priceData() {
@@ -89,7 +114,7 @@ async function priceData() {
     const item = result.data.item.output1;
     const price = result.data.item.output2.stck_prpr;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);
-    $('#fixPrice').val(`${addComma(price)}`);
+    $('#fixPrice').val(`${price}`);
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(item[`askp${i}`]));
       $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(item[`askp_rsqn${i}`]));
