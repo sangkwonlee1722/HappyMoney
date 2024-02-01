@@ -78,7 +78,7 @@ export class StockGateway implements OnGatewayConnection {
   @SubscribeMessage("asking_price")
   async getAskingPrice(@MessageBody() tr_key: string) {
     if (
-      this.wsClient && //
+      this.wsClient &&
       (this.wsClient.readyState === WebSocket.OPEN || this.wsClient.readyState === WebSocket.CONNECTING)
     ) {
       await new Promise((resolve) => {
@@ -115,14 +115,14 @@ export class StockGateway implements OnGatewayConnection {
           }
         }
       };
-      console.log("jsonRequest", jsonRequest);
+      // console.log("jsonRequest", jsonRequest);
       this.wsClient.send(JSON.stringify(jsonRequest));
 
       // 메시지 수신 이벤트 핸들러
       this.wsClient.on("message", (data) => {
         const messageString = data.toString(); // Buffer를 문자열로 변환
         const jsonData = this.stockhoka(messageString);
-        console.log("Received asking_price:", jsonData);
+        // console.log("Received asking_price:", jsonData);
         try {
           this.server.emit("asking_price", jsonData);
         } catch (error) {

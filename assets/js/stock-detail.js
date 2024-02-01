@@ -39,7 +39,7 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 } else {
   priceData();
 }
-
+console.log(isKoreanWorkingHour());
 function isKoreanWeekday() {
   const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
   const dayOfWeek = new Intl.DateTimeFormat('en-US', koreanOptions).formatToParts(new Date()).find(part => part.type === 'weekday').value;
@@ -50,7 +50,7 @@ function isKoreanWeekday() {
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
   const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: 'numeric' });
-  const time = Number(currentHour.split('')[0]);
+  const time = Number(currentHour.split(" ")[0]);
   return time >= 9 && time <= 16;
 }
 
