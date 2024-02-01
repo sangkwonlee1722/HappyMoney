@@ -123,3 +123,6 @@
 .sell-btn {
   background-color: #405fff;
 }
+#fixPrice:disabled {
+  background-color: #ddd;
+}

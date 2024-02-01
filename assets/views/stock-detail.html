@@ -129,15 +129,15 @@
                 <div class="up">
                   <div class="hm-input-wrap fw-bold mb-4">
                     <label for="fixPrice">지정가</label>
-                    <input type="text" class="hm-input" id="fixPrice" value="74,300" />
+                    <input type="number" class="hm-input" id="fixPrice" value="" disabled />
                   </div>
                   <div class="hm-checkbox fw-bold mb-4">
-                    <input type="checkbox" id="fixCheck" />
+                    <input type="checkbox" id="fixCheck" checked />
                     <label for="fixCheck">시장가</label>
                   </div>
                   <div class="hm-input-wrap fw-bold">
                     <label for="stockAmount">수량</label>
-                    <input type="text" class="hm-input" id="stockAmount" value="1" />
+                    <input type="number" class="hm-input" id="stockAmount" value="" />
                   </div>
                   <ul class="percent mt-3">
                     <li>10%</li>
@@ -145,13 +145,14 @@
                     <li>50%</li>
                     <li>100%</li>
                   </ul>
-                  <p class="max-price mt-4 text-end">최대 <span style="color: #db1515">8,300,000</span>원</p>
+                  <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p>
                 </div>
                 <div class="down">
                   <p class="fw-bold fs-4 mb-2">주문 총액</p>
-                  <p class="total-price fw-bold fs-3 text-end mb-3" style="color: #db1515">
-                    73,400 <span style="color: #000">원</span>
-                  </p>
+                  <div class="text-end mb-3 fs-3 fw-bold">
+                    <p class="total-price d-inline-block" style="color: #db1515">0</p>
+                    <span>원</span>
+                  </div>
                   <div class="hm-button-wrap">
                     <button class="hm-button w-100 fw-bold buy-btn">구매</button>
                     <button class="hm-button w-100 fw-bold sell-btn" style="display: none">판매</button>

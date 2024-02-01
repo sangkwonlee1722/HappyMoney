@@ -39,6 +39,16 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 } else {
   priceData();
 }
+
+$('#fixCheck').on('change', function () {
+  if (!$(this).is(':checked')) {
+    $('#fixPrice').prop('disabled', false);
+  } else {
+    $('#fixPrice').prop('disabled', true);
+  }
+});
+
+
 console.log(isKoreanWorkingHour());
 function isKoreanWeekday() {
   const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
@@ -49,7 +59,7 @@ function isKoreanWeekday() {
 
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
-  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: 'numeric' });
+  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: '2-digit', hour12: false });
   const time = Number(currentHour.split(" ")[0]);
   return time >= 9 && time <= 16;
 }
@@ -69,17 +79,30 @@ function livePriceData() {
     socket.emit('asking_price', trKey);
   });
 
-  socket.on('asking_price', (data) => {
+  socket.on('asking_price', async (data) => {
     const price = JSON.parse(data);
-    console.log(price);
+    const tax = parseInt(price.bidp1, 10);
+    // console.log(price);
     $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
+    // console.log(price.bidp1);
+
+    if ($('#fixPrice').prop('disabled')) {
+      $('#fixPrice').val(`${tax}`);
+    }
+
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
       $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
       $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
       $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
     }
+    $('#stockAmount').on('input', function () {
+      const fixPrice = parseInt($('#fixPrice').val(), 10);
+      const num = Number($(this).val());
+      $('.total-price').text(addComma(fixPrice * num));
+    });
   })
+
 }
 
 async function priceData() {
