@@ -25,10 +25,12 @@
 }
 .stock-dt-live li {
   display: flex;
+  height: 36px;
+  box-sizing: border-box;
 }
 .stock-dt-live li > div {
   width: 50%;
-  padding: 10px;
+  line-height: 36px;
   text-align: center;
 }
 .stock-dt-live li .price {
@@ -63,4 +65,61 @@
 }
 .stock-dt-live .sell.num1 .amount {
   color: #5669c7;
+}
+.stock-dt-cont-wrap {
+  display: flex;
+}
+.stock-dt-right {
+  width: 38%;
+  margin-left: 4%;
+}
+
+.sell-buy-tab {
+  display: flex;
+}
+.sell-buy-tab li {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ddd;
+  cursor: pointer;
+}
+.sell-buy-tab li.buy-tab.on {
+  color: #db1515;
+}
+.sell-buy-tab li.sell-tab.on {
+  color: #405fff;
+}
+.sell-buy-tab li span {
+  font-size: 16px;
+}
+.sell-buy-cont {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 60px);
+}
+.percent {
+  display: flex;
+}
+.percent li {
+  background-color: #ccc;
+  font-weight: bold;
+  width: 23.5%;
+  text-align: center;
+  cursor: pointer;
+  margin-right: 2%;
+  border-radius: 100px;
+}
+.percent li:last-child {
+  margin-right: 0;
+}
+.percent li.on {
+  background-color: #222;
+  color: #fff;
+}
+.buy-btn {
+  background-color: #db1515;
+}
+.sell-btn {
+  background-color: #405fff;
 }
