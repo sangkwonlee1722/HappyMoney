@@ -74,7 +74,7 @@ function isKoreanWorkingHour() {
 function livePriceData() {
   console.log("평일 9시부터 16시까지 실행");
   // 여기에서 새로운 WebSocket 연결을 생성하고 반환
-  const socket = io('ws://localhost:3000/ws/stock', {
+  const socket = io('ws:/ws/stock', {
     transports: ['websocket'],
   });
 
