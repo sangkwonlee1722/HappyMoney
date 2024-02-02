@@ -39,7 +39,7 @@ export class UserService {
         <div class="img-wrap">
         <img src="https://cdn.discordapp.com/attachments/1201496380292726794/1201497252355645460/02.png?ex=65ca0883&is=65b79383&hm=296a93e633af34f5f453112e8e87ab08918fadfdfcd068ced4811d08b943d371&" style="width: 300px; height: 300px;" />
         </div>
-        [HAPPYMONEY] 회원가입: <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
+        [HAPPYMONEY] 회원가입: <a href="/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
       };
 
       await this.userRepository.save({
@@ -102,7 +102,7 @@ export class UserService {
         <div class="img-wrap">
         <img src="https://cdn.discordapp.com/attachments/1201496380292726794/1201497252355645460/02.png?ex=65ca0883&is=65b79383&hm=296a93e633af34f5f453112e8e87ab08918fadfdfcd068ced4811d08b943d371&" style="width: 300px; height: 300px;" />
         </div>
-        [HAPPYMONEY] 회원탈퇴: <a href="http://localhost:3000/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
+        [HAPPYMONEY] 회원탈퇴: <a href="/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
       };
 
       this.emailService.verifyEmail(mailOptions);

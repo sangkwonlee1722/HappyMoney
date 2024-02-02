@@ -11,7 +11,6 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
 import { SlackService } from "src/common/slack/slack.service";
 
-
 @Injectable()
 export class PushService {
   constructor(
@@ -77,7 +76,7 @@ export class PushService {
     const options = {
       TTL: 24 * 60 * 60,
       vapidDetails: {
-        subject: "mailto:chzhgod@gmail.com",
+        subject: "https://happymoneynow.com",
         publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
         privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
       }
@@ -98,7 +97,6 @@ export class PushService {
     const time = new Date();
     time.setDate(time.getDate() - 1);
     console.log("time: ", time);
-
 
     const deleteResult = await this.pushRepository
       .createQueryBuilder()
