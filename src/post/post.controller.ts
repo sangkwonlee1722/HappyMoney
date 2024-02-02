@@ -38,12 +38,16 @@ export class PostController {
   @ApiBearerAuth()
   @Post()
   async create(@UserInfo() user: User, @Body() createPostDto: CreatePostDto) {
-    const { id: userId, nickName } = user;
+    const { title, category } = createPostDto;
+    if (title.trim()==="") {
+      throw new BadRequestException({ success: false, message: "공백만 사용할 수는 없습니다" });
+    };
 
     // 카테고리 값이 유효한지 검사
-    if (!["잡담", "가입인사", "정보", "질문"].includes(createPostDto.category)) {
+    if (!["잡담", "가입인사", "정보", "질문"].includes(category)) {
       throw new BadRequestException();
     }
+    const { id: userId, nickName } = user;
 
     await this.postService.create(userId, nickName, createPostDto);
     return { success: true, message: "okay" };
@@ -113,14 +117,17 @@ export class PostController {
     const data = await this.postService.findOne(+id);
     if (!data) {
       throw new NotFoundException({ success: false, message: "해당 글이 없습니다." });
-    }
+    };
     const userId: number = user.id;
     if (data.userId !== userId) {
       throw new UnauthorizedException({ success: false, message: "권한이 없습니다." });
-    }
-
+    };
+    const { title, category } = updatePostDto;
+    if (title.trim()==="") {
+      throw new BadRequestException({ success: false, message: "공백만 사용할 수는 없습니다" });
+    };
     // 카테고리 값이 유효한지 검사
-    if (!["잡담", "가입인사", "정보", "질문"].includes(updatePostDto.category)) {
+    if (!["잡담", "가입인사", "정보", "질문"].includes(category)) {
       throw new BadRequestException("유효하지 않은 카테고리입니다.");
     }
 
