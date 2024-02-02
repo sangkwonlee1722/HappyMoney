@@ -74,7 +74,7 @@ function isKoreanWorkingHour() {
 function livePriceData() {
   console.log("평일 9시부터 16시까지 실행");
   // 여기에서 새로운 WebSocket 연결을 생성하고 반환
-  const socket = io('ws://localhost:3000/ws/stock', {
+  const socket = io('/ws/stock', {
     transports: ['websocket'],
   });
 
@@ -110,7 +110,7 @@ function livePriceData() {
 async function priceData() {
   try {
     console.log("평일 9시부터 16시 외에 실행");
-    const result = await axios.get(`http://localhost:3000/api/stock/stockPrice?code=${trKey}`);
+    const result = await axios.get(`/api/stock/stockPrice?code=${trKey}`);
     const item = result.data.item.output1;
     const price = result.data.item.output2.stck_prpr;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);
