@@ -60,10 +60,11 @@ export class UserService {
   async login(email: string, password: string) {
     const user = await this.findUserByEmail(email);
 
+    if (!user) throw new UnauthorizedException("이메일을 확인해주세요.");
+
     if (user.isEmailVerified === false) {
       throw new NotFoundException("등록된 이메일 인증을 진행해주세요.");
     }
-    if (!user) throw new UnauthorizedException("이메일을 확인해주세요.");
 
     if (!compareSync(password, user?.password ?? "")) throw new UnauthorizedException("비밀번호를 확인해주세요.");
 

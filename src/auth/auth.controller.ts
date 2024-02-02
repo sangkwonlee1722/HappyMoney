@@ -62,4 +62,12 @@ export class AuthController {
     res.cookie("accessToken", token);
     return res.redirect("/views/main.html");
   }
+
+  @Get("health")
+  async healthCheck() {
+    return {
+      success: true,
+      message: "okay"
+    };
+  }
 }
