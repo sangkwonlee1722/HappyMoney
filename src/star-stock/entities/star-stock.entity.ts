@@ -9,13 +9,13 @@ export class StarStock extends BaseEntity {
   userId: number;
 
   @Column()
-  stockId: number;
+  stockCd: string;
 
   @ManyToOne(() => User, (user) => user.starStocks)
   @JoinColumn({ name: "user_id" })
   user: User;
 
   @ManyToOne(() => Stock, (stock) => stock.starStocks)
-  @JoinColumn({ name: "stock_id" })
+  @JoinColumn({ name: "stock_cd", referencedColumnName: "srtnCd" })
   stock: Stock;
 }
