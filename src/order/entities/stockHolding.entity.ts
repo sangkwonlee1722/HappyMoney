@@ -1,4 +1,4 @@
-import { IsString, IsNumber } from "class-validator";
+import { IsString, IsNumber, IsInt, Min } from "class-validator";
 import { Account } from "src/accounts/entities/account.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { User } from "src/user/entities/user.entity";
@@ -22,11 +22,13 @@ export class StockHolding extends BaseEntity {
   @Column({ nullable: false })
   stockCode: string;
 
-  @IsNumber()
+  @IsInt()
+  @Min(0)
   @Column({ nullable: false })
   numbers: number;
 
-  @IsNumber()
+  @IsInt()
+  @Min(0)
   @Column({ nullable: false })
   ttlPrice: number;
 

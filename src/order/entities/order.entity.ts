@@ -1,13 +1,13 @@
-import { IsString, IsBoolean, IsNumber } from "class-validator";
+import { IsString, IsBoolean, IsNumber, IsPositive } from "class-validator";
 import { Account } from "src/accounts/entities/account.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-export enum orderStatus {
-  Order = "대기",
-  Complete = "완료",
-  Cancel = "취소"
+export enum OrderStatus {
+  Order = "order",
+  Complete = "complete",
+  Cancel = "cancel"
 }
 
 @Entity({ name: "orders" })
@@ -43,7 +43,7 @@ export class Order extends BaseEntity {
    * @example 1
    * @requires true
    */
-  @IsNumber()
+  @IsPositive()
   @Column({ nullable: false })
   orderNumbers: number;
 
@@ -52,7 +52,7 @@ export class Order extends BaseEntity {
    * @example 74000
    * @requires true
    */
-  @IsNumber()
+  @IsPositive()
   @Column({ nullable: false })
   price: number;
 
@@ -64,8 +64,8 @@ export class Order extends BaseEntity {
   @Column({ nullable: false })
   buySell: boolean;
 
-  @Column({ type: "enum", enum: orderStatus, nullable: false, default: orderStatus.Order })
-  status: orderStatus;
+  @Column({ type: "enum", enum: OrderStatus, nullable: false, default: OrderStatus.Order })
+  status: OrderStatus;
 
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: "user_id" })

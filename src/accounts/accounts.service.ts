@@ -95,4 +95,11 @@ export class AccountsService {
 
     await this.accountRepository.softRemove(account);
   }
+
+  // 계좌 찾기
+  async findOneAccount(userId: number) {
+    const account = this.accountRepository.findOne({ where: { userId } });
+
+    return account;
+  }
 }
