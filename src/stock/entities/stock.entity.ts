@@ -1,5 +1,6 @@
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
+import { StarStock } from "../../star-stock/entities/star-stock.entity";
 
 @Entity({ name: "stocks" })
 export class Stock extends BaseEntity {
@@ -20,4 +21,7 @@ export class Stock extends BaseEntity {
 
   @Column({ comment: "전일 기준 종가" })
   clpr: string;
+
+  @OneToMany(() => StarStock, (starStock) => starStock.stock, { cascade: ["soft-remove"] })
+  starStocks: StarStock[];
 }
