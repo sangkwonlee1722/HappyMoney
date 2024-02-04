@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dateElement = document.querySelector(".notice-createdate");
 
       if (titleElement && contentsElement) {
-        titleElement.innerHTML = data.title;
+        titleElement.innerHTML = `[공지사항] ${data.title}`;
         contentsElement.innerHTML = data.contents;
         dateElement.innerHTML = data.createdAt;
 
