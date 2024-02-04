@@ -17,4 +17,7 @@ export class Stock extends BaseEntity {
 
   @Column({ comment: "상장주식수" })
   lstgStCnt: string;
+
+  @Column({ comment: "전일 기준 종가" })
+  clpr: string;
 }
