@@ -126,3 +126,23 @@
 #fixPrice:disabled {
   background-color: #ddd;
 }
+
+.tit-img {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.star-stock {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.tit-img img {
+  height: 32px;
+}
+
+.star-stock:hover {
+  cursor: pointer;
+}

@@ -200,7 +200,7 @@ export class StockService {
     }
   }
 
-  @Cron("55 39 13 * * 2-7") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("0 0 11 * * 2-6") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();

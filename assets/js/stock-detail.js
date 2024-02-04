@@ -1,9 +1,12 @@
 import io from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 import { addComma } from "/js/common.js";
+import getToken from './common.js';
 
 const params = new URLSearchParams(window.location.search);
 const trKey = params.get("code");
 const trName = params.get("name");
+
+const token = getToken()
 
 $('.stock-dt-tit h2').html(`${trName}<span>(${trKey})</span>`);
 
@@ -126,3 +129,72 @@ async function priceData() {
     throw error;
   }
 }
+
+/* 관심 종목일 경우 노란별 */
+async function checkStarStock(trKey) {
+  const apiUrl = `/api/star-stock/${trKey}`
+  const result = await axios.get(apiUrl, {
+    headers: {
+      'Authorization': token,
+    }
+  })
+
+  const isStarStock = result.data.stock
+
+  if (isStarStock) {
+    $('.star-stock-off').css('display', "none")
+    $('.star-stock-on').css('display', "flex")
+    return
+  }
+  $('.star-stock-on').css('display', "none")
+  $('.star-stock-off').css('display', "flex")
+  return
+}
+
+await checkStarStock(trKey);
+
+/* 관심 종목 추가 */
+async function addStarStock() {
+  const apiUrl = `/api/star-stock/${trKey}`
+
+  try {
+    await axios.post(apiUrl, {}, {
+      headers: {
+        'Authorization': token,
+      }
+    })
+    await checkStarStock(trKey);
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
+$('.star-stock-off').on("click", async function () {
+  await addStarStock()
+});
+
+/* 관심 종목 삭제 */
+async function deleteStarStock() {
+  const apiUrl = `/api/star-stock/${trKey}`
+
+  try {
+    await axios.delete(apiUrl, {
+      headers: {
+        'Authorization': token,
+      }
+    })
+
+    await checkStarStock(trKey);
+
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
+$('.star-stock-on').on('click', async function () {
+  await deleteStarStock()
+})

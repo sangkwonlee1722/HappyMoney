@@ -14,7 +14,7 @@ export class StarStockService {
     const existStock: StarStock = await this.checkStarStockByStockCode(userId, stockCode);
 
     if (existStock) {
-      throw new ConflictException("관심 종목으로 이미 추가하였습니다.");
+      throw new ConflictException({ success: false, messgage: "관심 종목으로 이미 추가하였습니다." });
     }
 
     await this.starStockRepository
@@ -50,7 +50,7 @@ export class StarStockService {
     const stock: StarStock = await this.checkStarStockByStockCode(userId, stockCode);
 
     if (!stock) {
-      throw new NotFoundException("해당하는 주식을 찾을 수 없습니다.");
+      throw new NotFoundException({ success: false, message: "해당하는 주식을 찾을 수 없습니다." });
     }
 
     await this.starStockRepository.remove(stock);

@@ -29,7 +29,7 @@ const getMyAccountsByToken = async (token) => {
           // 현재 가치 확인 로직 확인 필요
           return `
       <li class="accounts" data-id="${id}">
-      <a href="#none"></a>
+      <a href="/views/stock-myaccount.html"></a>
       <div class="accounts-left">
         <div class="account-name">
           <span>${name}</span>

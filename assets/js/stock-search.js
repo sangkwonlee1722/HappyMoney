@@ -55,7 +55,7 @@ export const getSearchData = async (keyword) => {
 document.addEventListener("DOMContentLoaded", getSearchData(keyword));
 
 /* 시가 총액 한글 표현으로 계산하는 함수 */
-const formatPrice = (number) => {
+export const formatPrice = (number) => {
   const trillion = Math.floor(number / 1e12);
   const billion = Math.floor((number % 1e12) / 1e8);
 

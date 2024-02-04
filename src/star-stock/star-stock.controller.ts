@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, NotFoundException, Param, Post, UseGuards } from "@nestjs/common";
 import { StarStockService } from "./star-stock.service";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
@@ -45,6 +45,28 @@ export class StarStockController {
       success: true,
       message: "okay",
       starStocks
+    };
+  }
+
+  /**
+   * 관심 종목 확인하기
+   * @param user
+   * @param stockCode
+   * @returns
+   */
+  @Get(":stockCode")
+  async checkStarStock(
+    @UserInfo()
+    user: User,
+    @Param("stockCode")
+    stockCode: string
+  ) {
+    const stock: StarStock = await this.starStockService.checkStarStockByStockCode(user.id, stockCode);
+
+    return {
+      success: true,
+      message: "okay",
+      stock
     };
   }
 
