@@ -112,9 +112,8 @@ async function priceData() {
     console.log("평일 9시부터 16시 외에 실행");
     const result = await axios.get(`/api/stock/stockPrice?code=${trKey}`);
     const item = result.data.item.output1;
-    const price = result.data.item.output2.stck_prpr;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);
-    $('#fixPrice').val(`${price}`);
+    $('#fixPrice').val(`${item.bidp1}`);
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(item[`askp${i}`]));
       $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(item[`askp_rsqn${i}`]));

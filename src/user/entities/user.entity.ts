@@ -7,6 +7,8 @@ import { Twit } from "src/twit/entities/twit.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 import { IsNotEmpty } from "class-validator";
 import { Push } from "src/push/entities/push.entity";
+import { Order } from "src/order/entities/order.entity";
+import { StockHolding } from "src/order/entities/stockHolding.entity";
 
 const role = {
   User: "user",
@@ -69,4 +71,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Push, (push) => push.user, { cascade: ["soft-remove"] })
   pushNotis: Push[];
+
+  @OneToMany(() => Order, (order) => order.user, { cascade: ["soft-remove"] })
+  orders: Order[];
+
+  @OneToMany(() => StockHolding, (stockHolding) => stockHolding.user, { cascade: ["soft-remove"] })
+  stockHoldings: StockHolding[];
 }
