@@ -69,7 +69,7 @@ $(document).ready(function () {
       // 로그인 시 푸시알림 구독 정보 및 서비스워커 등록
       setTimeout(() => {
         registerNotificationService();
-      }, 100);
+      }, 500);
 
       const pushNoitsNumbers = await checkPushNotis();
 
