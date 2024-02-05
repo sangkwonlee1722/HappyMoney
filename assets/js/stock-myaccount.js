@@ -1,6 +1,5 @@
-import { addComma } from "./common.js";
+import { addComma, formatPrice } from "./common.js";
 import getToken from "./common.js"
-import { formatPrice } from "./stock-search.js"
 
 const token = getToken()
 
@@ -30,7 +29,7 @@ export const spreadStarStocks = async () => {
   const mainDom = document.querySelector('.star-stock-list')
   const starStocks = await getStarStocks()
 
-  if (starStocks.lenghth !== 0) {
+  if (starStocks.length !== 0) {
     mainDom.innerHTML = starStocks
       .map(starStock => {
         const { id, stock } = starStock
