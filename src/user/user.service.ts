@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
 import { EmailService } from "../email/email.service";
+import { v4 as uuidv4 } from "uuid";
 
 interface EmailOptions {
   to: string;
@@ -27,9 +28,15 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
+    function generateToken() {
+      return uuidv4();
+    }
+
     try {
       const hashRound = this.configService.get<number>("PASSWORD_HASH_ROUNDS");
       const hashPassword = hashSync(password, hashRound);
+
+      const emailVerifyToken = generateToken();
 
       const mailOptions = {
         from: this.configService.get("NODE_MAIL_ID"),
@@ -39,7 +46,9 @@ export class UserService {
         <div class="img-wrap">
         <img src="https://cdn.discordapp.com/attachments/1201496380292726794/1201497252355645460/02.png?ex=65ca0883&is=65b79383&hm=296a93e633af34f5f453112e8e87ab08918fadfdfcd068ced4811d08b943d371&" style="width: 300px; height: 300px;" />
         </div>
-        [HAPPYMONEY] 회원가입: <a href="/views/signin-email-verify.html?email=${encodeURIComponent(email)}">인증하기</a>`
+        [HAPPYMONEY] 회원가입: <a href="http://localhost:3000/views/signin-email-verify.html?email=${encodeURIComponent(
+          email
+        )}&token=${encodeURIComponent(emailVerifyToken)}">인증하기</a>`
       };
 
       await this.userRepository.save({
@@ -48,10 +57,15 @@ export class UserService {
         nickName,
         phone,
         name,
-        isEmailVerified: false
+        isEmailVerified: false,
+        emailVerifyToken
       });
 
       this.emailService.verifyEmail(mailOptions);
+      return {
+        success: true,
+        message: "okay"
+      };
     } catch (err: any) {
       console.error(err);
     }
@@ -102,10 +116,16 @@ export class UserService {
         <div class="img-wrap">
         <img src="https://cdn.discordapp.com/attachments/1201496380292726794/1201497252355645460/02.png?ex=65ca0883&is=65b79383&hm=296a93e633af34f5f453112e8e87ab08918fadfdfcd068ced4811d08b943d371&" style="width: 300px; height: 300px;" />
         </div>
-        [HAPPYMONEY] 회원탈퇴: <a href="/views/signout-email-verify.html?email=${encodeURIComponent(user.email)}">인증하기</a>`
+        [HAPPYMONEY] 회원탈퇴: <a href="http://localhost:3000/views/signout-email-verify.html?email=${encodeURIComponent(
+          user.email
+        )}&token=${encodeURIComponent(user.emailVerifyToken)}">인증하기</a>`
       };
 
       this.emailService.verifyEmail(mailOptions);
+      return {
+        success: true,
+        message: "okay"
+      };
     } catch (err: any) {
       console.error(err);
     }
@@ -117,7 +137,8 @@ export class UserService {
     });
 
     await this.updateUserVerify(user.id, {
-      isEmailVerified: false
+      isEmailVerified: false,
+      emailVerifyToken: null
     });
     await this.userRepository.softRemove(user);
   }
@@ -132,7 +153,7 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.userRepository.findOne({
-      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
+      select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified", "emailVerifyToken"],
       where: [{ email }]
     });
   }
