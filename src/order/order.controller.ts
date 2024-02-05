@@ -1,10 +1,11 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { CreateOrderDto } from "./dto/create-order.dto";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @ApiBearerAuth()
 @ApiTags("Orders")
@@ -37,6 +38,114 @@ export class OrderController {
     return {
       success: true,
       message: "okay"
+    };
+  }
+
+  /**
+   * 총 주문내역
+   * @returns
+   */
+  @Get("order")
+  async getOrders(@UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const { orders, total } = await this.orderService.getOrders(user, query);
+
+    return {
+      success: true,
+      message: "okay",
+      orders,
+      total
+    };
+  }
+  /**
+   * 해당 주식 주문내역
+   * @returns
+   */
+  @Get("order/:stockCode")
+  async stockOrders(@Param("stockCode") stockCode: string, @UserInfo() user: User, @Query() query: PaginatePostDto) {
+    const data = await this.orderService.stockOrders(stockCode, user, query);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
+   * 주문 대기 내역
+   * @returns
+   */
+  @Get("wait")
+  async getWatingOrders(@UserInfo() user: User) {
+    const data = await this.orderService.getWatingOrders(user);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
+   * 대기 구매(매수)주문 취소
+   * @param id
+   * @returns
+   */
+  @Put("wait/buy:id")
+  async cancelBuyOrder(@Param("id") orderId: number, @UserInfo() user: User) {
+    const data = await this.orderService.cancelBuyOrder(orderId, user);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
+   * 대기 판매(매도)주문 취소
+   * @param id
+   * @returns
+   */
+  @Put("wait/sell/:id")
+  async cancelSellOrder(@Param("id") orderId: number, @UserInfo() user: User) {
+    const data = await this.orderService.cancelSellOrder(orderId, user);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
+   * 보유 주식
+   * @returns
+   */
+  @Get("stock")
+  async getStockHoldings(@UserInfo() user: User) {
+    const data = await this.orderService.getStockHoldings(user);
+
+    return {
+      success: true,
+      message: "okay",
+      data
+    };
+  }
+
+  /**
+   * 보유 주식 상세
+   * @param id
+   * @returns
+   */
+  @Get("stock/:id")
+  async getStockHolding(@Param("id") stockHoldingId: number, @UserInfo() user: User) {
+    const data = await this.orderService.getStockHolding(stockHoldingId, user);
+
+    return {
+      success: true,
+      message: "okay",
+      data
     };
   }
 }

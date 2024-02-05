@@ -20,7 +20,7 @@ import { APP_FILTER } from "@nestjs/core";
 import { SlackService } from "./common/slack/slack.service";
 import { EmailModule } from "./email/email.module";
 import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
-import { OrderModule } from './order/order.module';
+import { OrderModule } from "./order/order.module";
 
 @Module({
   imports: [
@@ -39,9 +39,7 @@ import { OrderModule } from './order/order.module';
     ScheduleModule.forRoot(),
     EmailModule,
     TwitModule,
-
     PushModule,
-
     OrderModule
   ],
   providers: [

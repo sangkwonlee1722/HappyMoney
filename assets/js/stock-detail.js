@@ -35,7 +35,7 @@ $('#stockAmount').focus(function () {
 
 // 현재 시간 확인 후 조건에 따라 로직 실행
 if (isKoreanWeekday() && isKoreanWorkingHour()) {
-  livePriceData();
+  // livePriceData();
 } else {
   priceData();
 }
@@ -51,12 +51,11 @@ $('#fixCheck').on('change', function () {
 
 // 주문총액 계산
 $('#stockAmount').on('input', function () {
-  const fixPrice = parseInt($('#fixPrice').val(), 10);
-  const num = Number($(this).val());
+  const fixPrice = $('#fixPrice').val();
+  const num = $(this).val();
   $('.total-price').text(addComma(fixPrice * num));
 });
 
-console.log(isKoreanWorkingHour());
 function isKoreanWeekday() {
   const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
   const dayOfWeek = new Intl.DateTimeFormat('en-US', koreanOptions).formatToParts(new Date()).find(part => part.type === 'weekday').value;
@@ -64,11 +63,14 @@ function isKoreanWeekday() {
   return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(dayOfWeek);
 }
 
+// console.log(isKoreanWorkingHour());
+// 9:00 ~ 15:20
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
-  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: '2-digit', hour12: false });
-  const time = Number(currentHour.split(" ")[0]);
-  return time >= 9 && time < 16;
+  const currentHour = new Date().toLocaleString('en-US', { ...koreanOptions, hour: '2-digit', minute: '2-digit', hour12: false });
+  const [hour, minute] = currentHour.split(" ")[0].split(":").map(Number);
+  // 시간이 9시부터 15시 20분 사이인지 확인
+  return (hour === 9 && minute >= 0) || (hour > 9 && hour < 15) || (hour === 15 && minute <= 20);
 }
 
 function livePriceData() {
@@ -88,13 +90,22 @@ function livePriceData() {
 
   socket.on('asking_price', async (data) => {
     const price = JSON.parse(data);
-    const tax = parseInt(price.bidp1, 10);
-    console.log(price);
+    const tax = price.bidp1;
+    // console.log(price);
     $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
     // console.log(price.bidp1);
 
+    // 시장가 체크에 따른 수정
+    const fixPrice = $('#fixPrice').val();
+    const num = $('#stockAmount').val();
+    $('#fixCheck').on('change', function () {
+      if (!$(this).is(':checked')) {
+        $('#fixPrice').val(`${tax}`);
+      }
+    });
     if ($('#fixPrice').prop('disabled')) {
       $('#fixPrice').val(`${tax}`);
+      $('.total-price').text(addComma(fixPrice * num));
     }
 
     for (let i = 1; i < 11; i++) {
