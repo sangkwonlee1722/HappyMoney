@@ -36,9 +36,10 @@ export class UserController {
    */
   @Get("email-verify-signin")
   async verifyEmailSignin(@Query("email") email: string, @Query("token") token: string, @Res() res: any) {
+    console.log(email, "1");
     try {
       const user = await this.userService.findUserByEmail(email);
-
+      console.log(user);
       if (!user || user.emailVerifyToken !== token) {
         throw new NotFoundException("유저가 존재하지 않거나 토큰이 일치하지 않습니다.");
       }
@@ -46,13 +47,16 @@ export class UserController {
       await this.userService.updateUserVerify(user.id, {
         isEmailVerified: true
       });
-
+      console.log("hah");
       return {
         success: true,
         message: "okay"
       };
     } catch (error) {
-      console.log(error);
+      return {
+        success: false,
+        message: error.message
+      };
     }
   }
 

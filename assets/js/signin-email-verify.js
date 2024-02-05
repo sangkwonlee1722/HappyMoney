@@ -13,13 +13,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Content-Type": "application/json"
       }
     });
+    console.log(axiosInstance.get);
     // alert("[happymoney] 정상적으로 회원가입 되었습니다.");
     // window.close();
+    console.log("haha");
     const response = await axiosInstance.get(
       `/api/user/email-verify-signin?email=${encodedEmail}&token=${encodedToken}`
     );
     console.log("haha");
-    console.log(response.data);
+    console.log(response);
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원가입 되었습니다.");
       window.close();
@@ -27,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("이메일 인증이 실패했습니다.");
     }
   } catch (error) {
-    console.log(error.response, "haha");
+    console.log(error);
     alert("이메일 인증이 실패했습니다.");
   }
 });

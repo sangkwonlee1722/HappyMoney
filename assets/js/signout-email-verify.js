@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await axiosInstance.get(
       `/api/user/email-verify-signout?email=${encodedEmail}&token=${encodedToken}`
     );
-    console.log(response, "haha");
+
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원탈퇴 되었습니다.");
       window.close();
