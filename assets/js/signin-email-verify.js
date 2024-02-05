@@ -13,15 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Content-Type": "application/json"
       }
     });
-    console.log(axiosInstance.get);
-    // alert("[happymoney] 정상적으로 회원가입 되었습니다.");
-    // window.close();
-    console.log("haha");
+
     const response = await axiosInstance.get(
       `/api/user/email-verify-signin?email=${encodedEmail}&token=${encodedToken}`
     );
-    console.log("haha");
-    console.log(response);
+
     if (response.data.success) {
       alert("[happymoney] 정상적으로 회원가입 되었습니다.");
       window.close();
