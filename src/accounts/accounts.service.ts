@@ -69,6 +69,12 @@ export class AccountsService {
     return accounts;
   }
 
+  // 계좌 찾기
+  async findOneAccount(userId: number) {
+    const account = this.accountRepository.findOne({ where: { userId } });
+    return account;
+  }
+
   async findOneMyAccountById(userId: number, accountId: number): Promise<Account> {
     const account: Account = await this.accountRepository
       .createQueryBuilder("a")
