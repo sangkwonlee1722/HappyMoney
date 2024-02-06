@@ -3,6 +3,7 @@ import getToken from "./common.js"
 
 const token = getToken()
 
+
 /* 나의 계좌 정보 받아오기 */
 export const getMyAccountInfo = async () => {
   const apiUrl = '/api/accounts'
@@ -41,13 +42,23 @@ export const spreadMyAccountInfo = async () => {
   const formatTtlAccountValues = addComma(ttlAccountValues);
 
   /* 보유 주식의 총 가치 평가 */
-  const profitOfStocks = totalStockValue - totalOrderCompletePrice
-  const profitPercentofStocks = ((profitOfStocks / totalOrderCompletePrice) * 100).toFixed(1)
+
+  const originBuyValues = myStocks.map(stock => { // 나의 보유 주식들의 1주 평균 매입단가 * 보유 주식 수 = 투자 원금
+    const averageBuyValues = (stock.totalCompleteBuyOrderPrice / stock.totalCompleteBuyOrderNumbers)
+    const originValues = averageBuyValues * stock.numbers
+    return originValues
+  })
+
+  const ttlOriginBuyValues = originBuyValues.reduce((a, b) => a + b, 0); // 투자원금을 구하기 위해 배열 요소의 합을 구함
+
+  const profitOfStocks = totalStockValue - ttlOriginBuyValues
+  const profitPercentofStocks = ttlOriginBuyValues === 0 ? 0 : ((profitOfStocks / ttlOriginBuyValues) * 100).toFixed(1)
   const formatProfitOfStocks = profitOfStocks > 0 ? `+${addComma(profitOfStocks)}` : `${addComma(profitOfStocks)}`
+
 
   const formatPoint = addComma(point);
   const formatOrderPrice = addComma((totalOrderPrice));
-  const formatStockValue = addComma(totalStockValue);
+  const formatStockValue = ttlOriginBuyValues !== 0 ? addComma(totalStockValue) : 0
 
   let profitOfStockClass
 
@@ -99,8 +110,6 @@ export const spreadMyAccountInfo = async () => {
   `
 }
 
-await spreadMyAccountInfo()
-
 
 /* 나의 보유 주식 가져오기 */
 export const getMyStocks = async () => {
@@ -127,7 +136,7 @@ export const getMyStocks = async () => {
 /* 보유 주식 뿌려주기 */
 export const spreadMyStocks = async () => {
   const mainDom = document.querySelector('.my-stock-list')
-  const myStocks = await getMyStocks()
+
 
   if (myStocks.length !== 0) {
     mainDom.innerHTML = myStocks
@@ -181,12 +190,6 @@ export const spreadMyStocks = async () => {
     `
   }
 }
-
-await spreadMyStocks()
-
-
-
-
 
 /* 나의 관심주식 데이터 받아오기 */
 export const getStarStocks = async () => {
@@ -249,5 +252,7 @@ export const spreadStarStocks = async () => {
     `
   }
 }
-
+const myStocks = await getMyStocks()
+await spreadMyAccountInfo()
+await spreadMyStocks()
 await spreadStarStocks();

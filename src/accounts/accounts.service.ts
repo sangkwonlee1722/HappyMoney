@@ -74,12 +74,20 @@ export class AccountsService {
       .addSelect((subQuery) => {
         return subQuery
           .select(
-            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='0' THEN ao.ttlPrice ELSE 0 END)",
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='1' THEN ao.ttlPrice ELSE 0 END)",
             "totalOrderPrice"
           )
           .from("orders", "ao")
           .where("ao.accountId = a.id");
       }, "totalOrderPrice")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(o.order_numbers)", "totalBuyOrderNumbers")
+          .from("orders", "o")
+          .where("o.accountId =a.id")
+          .andWhere("o.buySell=1")
+          .andWhere("o.status='complete'");
+      }, "totalCompleteBuyOrderNumbers")
       .where("a.userId=:userId", { userId })
       .getRawOne();
 
