@@ -10,6 +10,8 @@ import { Stock } from "src/stock/entities/stock.entity";
 import { Twit } from "src/twit/entities/twit.entity";
 import { Push } from "src/push/entities/push.entity";
 import { StarStock } from "src/star-stock/entities/star-stock.entity";
+import { Order } from "src/order/entities/order.entity";
+import { StockHolding } from "src/order/entities/stockHolding.entity";
 
 export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -24,9 +26,7 @@ export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
     database: configService.get<string>("DB_NAME"),
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
-
-    entities: [User, Notice, Account, Comment, Post, Stock, Twit, Push, StarStock],
-
+    entities: [User, Notice, Account, Comment, Post, Stock, Twit, Push, StarStock, Order, StockHolding],
     logging: true
   })
 };

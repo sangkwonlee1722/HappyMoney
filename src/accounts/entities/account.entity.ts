@@ -1,7 +1,9 @@
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
+import { Order } from "src/order/entities/order.entity";
+import { StockHolding } from "src/order/entities/stockHolding.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 @Entity({ name: "accounts" })
 export class Account extends BaseEntity {
@@ -29,4 +31,10 @@ export class Account extends BaseEntity {
 
   @Column()
   userId: number;
+
+  @OneToMany(() => Order, (order) => order.account, { cascade: ["soft-remove"] })
+  orders: Order[];
+
+  @OneToMany(() => StockHolding, (stockHolding) => stockHolding.account, { cascade: ["soft-remove"] })
+  stockHoldings: StockHolding[];
 }

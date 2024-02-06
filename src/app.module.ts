@@ -20,7 +20,8 @@ import { APP_FILTER } from "@nestjs/core";
 import { SlackService } from "./common/slack/slack.service";
 import { EmailModule } from "./email/email.module";
 import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
-import { StarStockModule } from './star-stock/star-stock.module';
+import { StarStockModule } from "./star-stock/star-stock.module";
+import { OrderModule } from "./order/order.module";
 
 @Module({
   imports: [
@@ -39,10 +40,9 @@ import { StarStockModule } from './star-stock/star-stock.module';
     ScheduleModule.forRoot(),
     EmailModule,
     TwitModule,
-
     PushModule,
-
-    StarStockModule
+    StarStockModule,
+    OrderModule
   ],
   providers: [
     SlackService,
