@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { OrderService } from "./order.service";
@@ -91,7 +91,7 @@ export class OrderController {
    * @param id
    * @returns
    */
-  @Put("wait/buy:id")
+  @Patch("wait/buy:id")
   async cancelBuyOrder(@Param("id") orderId: number, @UserInfo() user: User) {
     const data = await this.orderService.cancelBuyOrder(orderId, user);
 
@@ -107,7 +107,7 @@ export class OrderController {
    * @param id
    * @returns
    */
-  @Put("wait/sell/:id")
+  @Patch("wait/sell/:id")
   async cancelSellOrder(@Param("id") orderId: number, @UserInfo() user: User) {
     const data = await this.orderService.cancelSellOrder(orderId, user);
 

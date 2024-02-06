@@ -9,6 +9,7 @@ import { AccountsService } from "src/accounts/accounts.service";
 import { Account } from "src/accounts/entities/account.entity";
 import { PaginatePostDto } from "src/common/dto/paginate.dto";
 import { Cron } from "@nestjs/schedule";
+import { StockService } from "src/stock/stock.service";
 
 @Injectable()
 export class OrderService {
@@ -18,6 +19,7 @@ export class OrderService {
     @InjectRepository(StockHolding)
     private readonly stockHoldingRepository: Repository<StockHolding>,
     private readonly accountsService: AccountsService,
+    private readonly stockService: StockService,
 
     @InjectEntityManager()
     private readonly entityManager: EntityManager
@@ -165,10 +167,6 @@ export class OrderService {
     }
   }
 
-  // 대기 매수 체결
-
-  // 대기 매도 체결
-
   // 총 주문 내역API
   async getOrders({ id }: User, dto: PaginatePostDto) {
     const account = await this.accountsService.findOneAccount(id);
@@ -222,19 +220,58 @@ export class OrderService {
     return waitingLists;
   }
 
+  // 대기 주문 체결
+  // @Cron("*/10 * * * * *")
+  async waitOrderChk() {
+    try {
+      const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
+      for (const order of orders) {
+        const list = await this.stockService.getStockPrice(order.stockCode);
+        console.log(list);
+      }
+    } catch (error) {
+      console.error("orderChk error", error);
+      throw error;
+    }
+  }
+
   // 주문 대기 삭제
-  // 월~금 오후 3시 30분 대기중인 주문 건 삭제
+  // 월~금 오후 3시 30분 대기중인 주문 건 취소
   @Cron("0 30 15 * * 1-5")
   async cleanupOrders() {
     try {
-      await this.orderRepository.delete({ status: OrderStatus.Order });
-      console.log("주문 대기 건 삭제완료");
+      const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
+
+      /* 대기 주문 취소 트랜잭션 s */
+      await this.entityManager.transaction(async (em) => {
+        for (const order of orders) {
+          // 구매(매수)건일 때,
+          const updateAccount = await em.findOne(Account, { where: { userId: order.userId } });
+          if (order.buySell && order.status === OrderStatus.Order) {
+            // console.log("point", updateAccount.point);
+            // console.log("plusPoint", order.ttlPrice);
+            // console.log("해당 계좌", updateAccount);
+            // console.log("주문내역", order);
+            updateAccount.point += order.ttlPrice;
+            await em.save(updateAccount);
+          }
+          // 주문 상태 업데이트
+          await em.update(Order, { id: order.id }, { status: OrderStatus.Cancel });
+        }
+      });
+      /* 대기 주문 취소 트랜잭션 e */
+
+      console.log("주문 대기 건 취소 완료");
       return {
         success: true,
         message: "체결되지 않은 주문 건이 삭제되었습니다."
       };
     } catch (error) {
       console.error("Error during cleanup:", error);
+      return {
+        success: false,
+        message: "주문 대기 건 취소 중 오류가 발생했습니다."
+      };
     }
   }
 

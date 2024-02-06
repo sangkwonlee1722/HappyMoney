@@ -15,6 +15,7 @@ import { SlackService } from "src/common/slack/slack.service";
     TypeOrmModule.forFeature([Stock])
   ],
   controllers: [StockController],
-  providers: [StockService, StockGateway, SlackService]
+  providers: [StockService, StockGateway, SlackService],
+  exports: [StockService]
 })
 export class StockModule {}
