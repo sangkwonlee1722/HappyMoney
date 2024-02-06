@@ -21,6 +21,7 @@ import { SlackService } from "./common/slack/slack.service";
 import { EmailModule } from "./email/email.module";
 import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
 import { NewsModule } from './news/news.module';
+import { StarStockModule } from './star-stock/star-stock.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { NewsModule } from './news/news.module';
 
     PushModule,
 
-    NewsModule
+    NewsModule,
+    StarStockModule
   ],
   providers: [
     SlackService,

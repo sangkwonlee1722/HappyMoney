@@ -28,7 +28,7 @@ async function fetchPostData(postId) {
       <div class="dt-top-l">
         <div class="mb-2">
         <div class="d-flex justify-content-between">
-          <h2>${data.title}</h2>
+        <h2>[${data.category}] ${data.title}</h2>
           <div class="mc-btn-wrap text-end" data-id="${data.id}" user-id="${data.userId}" style="display: none;">
             <button class="hm-button hm-gray-color update-post-btn">수정</button>
             <button class="hm-button hm-gray-color delete-post-btn" onclick="drPopupOpen('.delete-post-chk')">삭제</button>
@@ -125,32 +125,32 @@ async function deletePost(postId) {
 // 댓글 생성
 document.querySelector(".submit-comment").addEventListener("click", async () => {
   try {
-  const token = getToken();
-  const urlSearchParams = new URL(location.href).searchParams;
-  const idValue = urlSearchParams.get("id");
-  const content = document.querySelector(".form-control").value;
+    const token = getToken();
+    const urlSearchParams = new URL(location.href).searchParams;
+    const idValue = urlSearchParams.get("id");
+    const content = document.querySelector(".form-control").value;
 
-  if (!content) {
-    return alert("댓글을 입력하세요.");
-  }
-  await axios.post(
-    `/api/comments/${idValue}`,
-    {
-      content
-    },
-    {
-      headers: {
-        Authorization: token
-      }
+    if (!content) {
+      return alert("댓글을 입력하세요.");
     }
-  );
-  alert("댓글이 작성되었습니다.");
-  window.location.reload();
+    await axios.post(
+      `/api/comments/${idValue}`,
+      {
+        content
+      },
+      {
+        headers: {
+          Authorization: token
+        }
+      }
+    );
+    alert("댓글이 작성되었습니다.");
+    window.location.reload();
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;
     alert(errorMessage);
-  };
+  }
 });
 
 // 댓글 삭제

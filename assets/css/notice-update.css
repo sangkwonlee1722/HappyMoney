@@ -12,13 +12,13 @@
   width: 100%;
 }
 
-#title {
+.posting-container {
+  text-align: left;
+  margin-bottom: 20px;
   width: 100%;
 }
 
-.smarteditor-container {
-  text-align: left;
-  margin-bottom: 20px;
+#title {
   width: 100%;
 }
 

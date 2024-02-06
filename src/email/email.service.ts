@@ -20,6 +20,10 @@ export class EmailService {
       });
 
       this.transporter.sendMail(mailOptions);
+      return {
+        success: true,
+        message: "okay"
+      };
     } catch (error) {
       console.error(error);
       throw new NotFoundException("User not found. Token is invalid or expired.");
