@@ -9,9 +9,9 @@ import { load } from "cheerio";
 
 @Injectable()
 export class NewsService {
-
   private readonly newsUrl: string = "https://www.google.com/finance/?hl=ko&gl=KR&source=news";
-
+  private readonly selector: string =
+    "#yDmH0d > c-wiz.zQTmif.SSPGKf.ccEnac > div > div.e1AOyf > div > div.ylTiXc > div.fAThCb > c-wiz:nth-child(2) > section > div:nth-child(2) > div > div:nth-child(2)";
   constructor(
     @InjectRepository(News)
     private readonly postRepository: Repository<News>
@@ -26,30 +26,26 @@ export class NewsService {
 
     // 페이지 이동
     await page.goto(this.newsUrl);
-    // 타이틀 가져오기
-    const pageContent = await page.content();
-    // $에 cheerio를 로드한다.
-    const $ = load(pageContent);
-    // 복사한 리스트의 Selector로 리스트를 모두 가져온다.
-    const lists = $("#yDmH0d > c-wiz.zQTmif.SSPGKf.ccEnac > div > div.e1AOyf > div > div > div.fAThCb > c-wiz:nth-child(4) > section > div:nth-child(2) > div");
-    let resultList = [];
-    // 모든 리스트를 순환한다.
-    for (const list of lists) {
-      // 각 리스트의 하위 노드중 호텔 이름에 해당하는 요소를 Selector로 가져와 텍스트값을 가져온다.
-      const name = $(list).find("div:nth-child(2) > div > div.z4rs2b > a > div > div.nkXTJ.W8knGc > div.sfyJob").text();
-      // 인덱스와 함께 로그를 찍는다.#yDmH0d > c-wiz.zQTmif.SSPGKf.ccEnac > div > div.e1AOyf > div > div > div.fAThCb > c-wiz:nth-child(4) > section > div:nth-child(2) > div > div:nth-child(2) > div > div.z4rs2b > a > div > div.Yfwt5
-      console.log({
-        name
-      });
-      resultList.push({
-        name
-      });
-    };
+
+    const content = await page.content();
 
     // 브라우저 닫기
+    await page.close();
     await browser.close();
 
-    return resultList;
+    const $ = load(content);
+    const news = $('.yY3Lee');
+    const result = [];
+    news.each((index, element) => {
+      const newspaper = $(element).attr("data-article-source-name");
+      const title = $(element).text();
+      result.push({
+        newspaper,
+        title
+      });
+    });
+
+    return result;
   }
 
   findOne(id: number) {
