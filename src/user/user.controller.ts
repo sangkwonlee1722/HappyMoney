@@ -35,21 +35,28 @@ export class UserController {
    * @returns
    */
   @Get("email-verify-signin")
-  async verifyEmailSignin(@Query("email") email: string, @Res() res: any) {
-    const user = await this.userService.findUserByEmail(email);
+  async verifyEmailSignin(@Query("email") email: string, @Query("token") token: string) {
+    try {
+      const user = await this.userService.findUserByEmail(email);
 
-    if (!user) {
-      throw new NotFoundException("유저가 존재하지 않습니다.");
+      if (!user || user.emailVerifyToken !== token) {
+        throw new NotFoundException("유저가 존재하지 않거나 토큰이 일치하지 않습니다.");
+      }
+
+      await this.userService.updateUserVerify(user.id, {
+        isEmailVerified: true
+      });
+
+      return {
+        success: true,
+        message: "okay"
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message
+      };
     }
-
-    await this.userService.updateUserVerify(user.id, {
-      isEmailVerified: true
-    });
-
-    return {
-      success: true,
-      message: "okay"
-    };
   }
 
   /**
@@ -197,8 +204,12 @@ export class UserController {
    * @returns
    */
   @Get("email-verify-signout")
-  async verifyEmailSignout(@Query("email") email: string) {
+  async verifyEmailSignout(@Query("email") email: string, @Query("token") token: string) {
     const user = await this.userService.findUserByEmail(email);
+
+    if (!user || user.emailVerifyToken !== token) {
+      throw new NotFoundException("유저가 존재하지 않거나 토큰이 일치하지 않습니다.");
+    }
     await this.userService.deleteUser(user.id);
     return {
       success: true,

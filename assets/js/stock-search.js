@@ -1,4 +1,4 @@
-import { addComma } from "./common.js";
+import { addComma, formatPrice } from "./common.js";
 
 /* 현재 주소에서 Query Keyword 추출 */
 const urlParams = new URLSearchParams(window.location.search);
@@ -54,22 +54,5 @@ export const getSearchData = async (keyword) => {
 
 document.addEventListener("DOMContentLoaded", getSearchData(keyword));
 
-/* 시가 총액 한글 표현으로 계산하는 함수 */
-const formatPrice = (number) => {
-  const trillion = Math.floor(number / 1e12);
-  const billion = Math.floor((number % 1e12) / 1e8);
 
-  const formattedNumber = [];
-
-  if (trillion > 0) {
-    formattedNumber.push(`${trillion.toLocaleString()}조`);
-  }
-
-  if (billion > 0) {
-    const billionString = billion.toLocaleString();
-    formattedNumber.push(`${billionString}억`);
-  }
-
-  return formattedNumber.join(' ');
-}
 

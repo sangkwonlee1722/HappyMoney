@@ -7,6 +7,7 @@ import { Twit } from "src/twit/entities/twit.entity";
 import { Column, Entity, OneToMany } from "typeorm";
 import { IsNotEmpty } from "class-validator";
 import { Push } from "src/push/entities/push.entity";
+import { StarStock } from "src/star-stock/entities/star-stock.entity";
 import { Order } from "src/order/entities/order.entity";
 import { StockHolding } from "src/order/entities/stockHolding.entity";
 
@@ -71,6 +72,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Push, (push) => push.user, { cascade: ["soft-remove"] })
   pushNotis: Push[];
+
+  @OneToMany(() => StarStock, (starStock) => starStock.user, { cascade: ["soft-remove"] })
+  starStocks: StarStock[];
 
   @OneToMany(() => Order, (order) => order.user, { cascade: ["soft-remove"] })
   orders: Order[];

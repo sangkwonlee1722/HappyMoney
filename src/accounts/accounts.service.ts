@@ -13,8 +13,8 @@ export class AccountsService {
   async createNewAccount(name: string, userId: number): Promise<void> {
     const myAccountsNumbers = await this.countMyAllAcounts(userId);
 
-    if (myAccountsNumbers >= 3) {
-      throw new ForbiddenException("계좌는 계정 당 3개까지만 개설이 가능합니다.");
+    if (myAccountsNumbers >= 1) {
+      throw new ForbiddenException("계좌는 계정 당 1개만 개설이 가능합니다.");
     }
 
     const accountNumber: string = await this.generateUniqueAccountNumber();
