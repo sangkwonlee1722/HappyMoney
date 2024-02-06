@@ -1,66 +1,117 @@
 import getToken from "/js/common.js";
+import { baseUrl } from "/js/common.js";
 
 const token = getToken();
-const smartEditors = [];
 
-// 스마트에디터 기본 설정
-const setupSmartEditor = function () {
-  console.log("Naver SmartEditor");
-  nhn.husky.EZCreator.createInIFrame({
-    oAppRef: smartEditors,
-    elPlaceHolder: "editorTxt",
-    sSkinURI: "../smarteditor/SmartEditor2Skin.html",
-    fCreator: "createSEditor2"
-  });
-};
+tinymce.init({
+  language: "ko_KR", // 한글 언어 설정
+  selector: "#editor", // 에디터를 적용할 textarea의 id
+  height: 500,
+  menubar: false,
+  plugins: [
+    "advlist",
+    "autolink",
+    "lists",
+    "link",
+    "image",
+    "charmap",
+    "print",
+    "preview",
+    "anchor",
+    "searchreplace",
+    "visualblocks",
+    "code",
+    "fullscreen",
+    "insertdatetime",
+    "media",
+    "table",
+    "paste",
+    "code",
+    "help",
+    "wordcount",
+    "save"
+  ],
+  toolbar:
+    "formatselect fontselect fontsizeselect | " +
+    "forecolor backcolor | " +
+    "bold italic underline strikethrough | " +
+    "alignjustify alignleft aligncenter alignright | " +
+    "bullist numlist | " +
+    "table tabledelete | " +
+    "link image",
 
-// 버튼에 기능 여기서 설정
-document.addEventListener("DOMContentLoaded", async () => {
+  /*** 이미지 업로드 설정 ***/
+  image_title: true,
+  automatic_uploads: true,
+  file_picker_types: "image",
+  file_picker_callback: function (cb, value, meta) {
+    var input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+
+    input.onchange = function () {
+      var file = this.files[0];
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var id = "blobid" + new Date().getTime();
+        var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+        var base64 = reader.result.split(",")[1];
+        var blobInfo = blobCache.create(id, file, base64);
+        blobCache.add(blobInfo);
+
+        cb(blobInfo.blobUri(), { title: file.name });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  },
+  /*** 이미지 업로드 설정 ***/
+
+  content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
+});
+
+// 게시물 ID를 URL에서 가져오는 함수
+async function getPostId() {
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const postId = urlSearchParams.get("id");
+  return urlSearchParams.get("id");
+}
 
+document.addEventListener("DOMContentLoaded", async function () {
+  // 게시물 ID를 가져와서 변수에 저장
+  const postId = await getPostId();
+
+  // 이전 내용 가져오기
   try {
-    if (postId) {
-      const response = await axios.get(`/api/posts/${postId}`);
-      const data = response.data.data;
-      // 기존 내용 입력된 상태로 넘어가게 하기
-      const titleElement = document.getElementById("title");
-      const contentsElement = document.getElementById("editorTxt");
+    const response = await axios.get(`/api/posts/${postId}`);
+    const data = response.data.data;
 
-      if (titleElement && contentsElement) {
-        titleElement.value = data.title;
-        contentsElement.value = data.contents;
-      }
-    }
+    // 제목과 내용 설정
+    document.getElementById("title").value = data.title;
+    document.getElementById("editor").value = data.contents;
+    document.getElementById("category").value = data.category;
   } catch (error) {
     console.error(error);
   }
 
-  const submitButton = document.querySelector('input[type="button"]');
-  if (submitButton) {
-    submitButton.addEventListener("click", updatePost);
-  }
-});
+  // "수정" 버튼 클릭 시
+  document.getElementById("posting-button").addEventListener("click", function () {
+    var content = tinymce.activeEditor.getContent(); // 에디터 내용 가져오기
+    var title = document.getElementById("title").value; // 제목 가져오기
+    var category = document.getElementById("category").value;
 
-const updatePost = function () {
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const postId = urlSearchParams.get("id");
+    if (!title.trim() || content === "<p>&nbsp;</p>") {
+      // 제목 또는 내용이 비어있을 경우
+      alert("제목과 내용을 입력해주세요.");
+      return;
+    }
 
-  smartEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", []);
-  let title = document.getElementById("title").value;
-  let content = document.getElementById("editorTxt").value;
-  let category = document.getElementById("category").value;
-  if (content == "<p>&nbsp;</p>") {
-    // 콘텐츠 빈거 확인
-    alert("내용을 입력해주세요.");
-    smartEditors.getById["editorTxt"].exec("FOCUS");
-    return;
-  } else {
+    // 게시물 수정 요청 보내기
     axios
       .patch(
-        `/api/posts/${postId}`,
+        `${baseUrl}posts/${postId}`, // "notices"를 "posts"로 변경
         {
-          category: category,
+          category: category, // 말머리 추가
           title: title,
           contents: content
         },
@@ -72,17 +123,13 @@ const updatePost = function () {
       )
       .then(function (response) {
         console.log(response);
-        alert("게시글이 성공적으로 수정되었습니다.");
-
-        window.location.href = `/views/post-read.html?id=${postId}`;
+        alert("게시물이 성공적으로 수정되었습니다.");
+        window.location.href = "/views/post.html?page=1";
       })
       .catch(function (error) {
         console.error(error);
-        alert("게시글 수정에 실패했습니다.");
+        const errorMessage = error.response.data.message;
+        alert("게시물 수정에 실패했습니다.");
       });
-  }
-};
-
-document.addEventListener("DOMContentLoaded", function () {
-  setupSmartEditor();
+  });
 });

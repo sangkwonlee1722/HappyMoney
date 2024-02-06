@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Notice } from "./entities/notice.entity";
@@ -16,6 +16,8 @@ export class NoticeService {
   // 공지사항 작성
   async create(createNoticeDto: CreateNoticeDto, userId: number): Promise<Notice> {
     const notice = this.noticeRepository.create({ ...createNoticeDto, user: { id: userId } });
+    if (createNoticeDto.title.trim() === "")
+      throw new BadRequestException({ success: false, message: "공백만 쓸 수 없습니다" });
     await this.noticeRepository.save(notice);
     return notice;
   }
@@ -45,7 +47,8 @@ export class NoticeService {
   // 공지사항 수정
   async update(id: number, updateNoticeDto: UpdateNoticeDto): Promise<Notice> {
     const notice = await this.getNoticeById(id);
-
+    if (updateNoticeDto.title.trim() === "")
+      throw new BadRequestException({ success: false, message: "공백만 쓸 수 없습니다" });
     await this.noticeRepository.update(id, updateNoticeDto);
     return this.noticeRepository.findOneBy({ id });
   }
