@@ -50,9 +50,9 @@ export class AccountsController {
    * @param user
    * @returns
    */
-  @Get(":accountId")
-  async findOne(@Param("accountId") accountId: number, @UserInfo() user: User) {
-    const account = await this.accountsService.findOneMyAccountById(user.id, accountId);
+  @Get("g")
+  async findOne(@UserInfo() user: User) {
+    const account = await this.accountsService.getMyAccountDetailInfo(user.id);
 
     return {
       success: true,

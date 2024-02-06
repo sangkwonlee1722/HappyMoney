@@ -102,6 +102,90 @@ export const spreadMyAccountInfo = async () => {
 await spreadMyAccountInfo()
 
 
+/* 나의 보유 주식 가져오기 */
+export const getMyStocks = async () => {
+  const apiUrl = '/api/order/stock'
+
+  try {
+    const result = await axios.get(apiUrl, {
+      headers: {
+        'Authorization': token,
+      }
+    })
+
+    const myStocks = result.data.data
+
+    return myStocks
+
+  } catch (error) {
+    console.error(error)
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
+
+/* 보유 주식 뿌려주기 */
+export const spreadMyStocks = async () => {
+  const mainDom = document.querySelector('.my-stock-list')
+  const myStocks = await getMyStocks()
+
+  if (myStocks.length !== 0) {
+    mainDom.innerHTML = myStocks
+      .map(myStock => {
+        const { id, stockName, stockCode, numbers, clpr, totalCompleteBuyOrderNumbers, totalCompleteBuyOrderPrice } = myStock
+
+        /* 현재 해당 주식 평가 금액 (전일 종가 기준) */
+        const stockValues = clpr * numbers
+        const formatStockValues = addComma(stockValues)
+
+        /* 투자 원금 대비 수익액(률) */
+        const averageBuyValues = Math.ceil(totalCompleteBuyOrderPrice / totalCompleteBuyOrderNumbers) // 1주 구매 평균 단가
+        const originValues = averageBuyValues * numbers // 투자 원금 (1주 평균 구매단가 * 현재 보유 주식 수)
+
+        const profit = stockValues - originValues
+        const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
+
+        const profitPercent = ((profit / originValues) * 100).toFixed(1)
+
+        let profitClass
+
+        if (profit > 0) {
+          profitClass = 'red'
+        } else if (profit < 0) {
+          profitClass = 'blue'
+        }
+
+        return `
+        <li data-id=${id}>
+        <a href="/views/stock-detail.html?code=${stockCode}&name=${stockName}"></a>
+        <div class="my-stock-name-box">
+          <div class="name-code">
+            <div class="stock-name">${stockName}</div>
+            <div class="stock-code">${stockCode}</div>
+          </div>
+          <div class="my-stock-counts">${numbers}주</div>
+        </div>
+        <div class="stock-value-box">
+          <div class="ttl-price">${formatStockValues} 원</div>
+          <div class="my-stock-roi ${profitClass}">${formatProfit}원 (${profitPercent}%)</div>
+        </div>
+      </li>
+        `
+      })
+      .join("")
+  } else {
+    mainDom.innerHTML = `
+    <div class="none-contents">
+      <span>보유 종목이 없습니다.</span>
+    </div>
+    `
+  }
+}
+
+await spreadMyStocks()
+
+
+
 
 
 /* 나의 관심주식 데이터 받아오기 */

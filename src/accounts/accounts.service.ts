@@ -63,7 +63,7 @@ export class AccountsService {
   async findMyAccountById(userId: number): Promise<Account> {
     const account = await this.accountRepository
       .createQueryBuilder("a")
-      .select(["a.id AS id", "a.name AS name", "a.point AS point", "a.accountNumber AS accountNumber"])
+      .select(["id", "name", "point", "a.accountNumber AS accountNumber"])
       .addSelect((subQuery) => {
         return subQuery
           .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
@@ -73,21 +73,17 @@ export class AccountsService {
       }, "totalStockValue")
       .addSelect((subQuery) => {
         return subQuery
-          .select("SUM(CASE WHEN ao.status = 'order' THEN ao.ttlPrice ELSE 0 END)", "totalOrderPrice")
+          .select(
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='0' THEN ao.ttlPrice ELSE 0 END)",
+            "totalOrderPrice"
+          )
           .from("orders", "ao")
           .where("ao.accountId = a.id");
       }, "totalOrderPrice")
-      .addSelect((subQuery) => {
-        return subQuery
-          .select("SUM(CASE WHEN ao.status = 'complete' THEN ao.ttlPrice ELSE 0 END)", "totalOrderCompletePrice")
-          .from("orders", "ao")
-          .where("ao.accountId = a.id");
-      }, "totalOrderCompletePrice")
       .where("a.userId=:userId", { userId })
       .getRawOne();
 
     account.totalOrderPrice = Number(account.totalOrderPrice);
-    account.totalOrderCompletePrice = Number(account.totalOrderCompletePrice);
 
     return account;
   }
@@ -98,12 +94,21 @@ export class AccountsService {
     return account;
   }
 
-  async findOneMyAccountById(userId: number, accountId: number): Promise<Account> {
+  async getMyAccountDetailInfo(userId: number): Promise<Account> {
     const account: Account = await this.accountRepository
       .createQueryBuilder("a")
+      .leftJoinAndSelect("a.stockHoldings", "sh")
       .where("a.userId=:userId", { userId })
-      .andWhere("a.id=:accountId", { accountId })
-      .select(["a.id", "a.name", "a.point", "a.userId", "a.accountNumber"]) // 계좌가 보유한 주식 목록 조인 예정
+      .select([
+        "a.id",
+        "a.name",
+        "a.point",
+        "a.userId",
+        "a.accountNumber",
+        "sh.stockName",
+        "sh.stockCode",
+        "sh.numbers"
+      ]) // 계좌가 보유한 주식 목록 조인 예정
       .getOne();
 
     if (!account) {
@@ -114,13 +119,13 @@ export class AccountsService {
   }
 
   async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
-    await this.findOneMyAccountById(userId, accountId);
+    await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.update({ id: accountId }, { name });
   }
 
   async removeMyAccountById(accountId: number, userId: number): Promise<void> {
-    const account: Account = await this.findOneMyAccountById(userId, accountId);
+    const account: Account = await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.softRemove(account);
   }
