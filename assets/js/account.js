@@ -21,10 +21,9 @@ const getMyAccountsByToken = async (token) => {
 
     if (account) {
       const { id, name, point, accountNumber, totalStockValue, totalOrderPrice } = account;
-      console.log('account: ', account);
+
       const baseValue = 100000000
-      const ttlAccountValues = point + totalStockValue + Number(totalOrderPrice)
-      console.log('ttlAccountValues: ', ttlAccountValues);
+      const ttlAccountValues = point + totalStockValue + totalOrderPrice
 
       const profit = ttlAccountValues - baseValue
       const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`

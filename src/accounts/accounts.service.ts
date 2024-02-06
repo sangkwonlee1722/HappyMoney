@@ -61,7 +61,7 @@ export class AccountsService {
   }
 
   async findMyAccountById(userId: number): Promise<Account> {
-    const account: Account = await this.accountRepository
+    const account = await this.accountRepository
       .createQueryBuilder("a")
       .select(["a.id AS id", "a.name AS name", "a.point AS point", "a.accountNumber AS accountNumber"])
       .addSelect((subQuery) => {
@@ -77,8 +77,17 @@ export class AccountsService {
           .from("orders", "ao")
           .where("ao.accountId = a.id");
       }, "totalOrderPrice")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(CASE WHEN ao.status = 'complete' THEN ao.ttlPrice ELSE 0 END)", "totalOrderCompletePrice")
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderCompletePrice")
       .where("a.userId=:userId", { userId })
       .getRawOne();
+
+    account.totalOrderPrice = Number(account.totalOrderPrice);
+    account.totalOrderCompletePrice = Number(account.totalOrderCompletePrice);
 
     return account;
   }
