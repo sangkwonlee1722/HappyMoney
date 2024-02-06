@@ -185,7 +185,8 @@ export class StockService {
           itmsNm: stock.itmsNm,
           mrktCtg: stock.mrktCtg,
           mrktTotAmt: stock.mrktTotAmt,
-          lstgStCnt: stock.lstgStCnt
+          lstgStCnt: stock.lstgStCnt,
+          clpr: stock.clpr
         };
       });
 
@@ -199,7 +200,7 @@ export class StockService {
     }
   }
 
-  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("0 0 11 * * 2-6") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
@@ -211,7 +212,7 @@ export class StockService {
       .insert()
       .into(Stock)
       .values(stocksList)
-      .orUpdate(["srtn_cd", "itms_nm", "mrkt_ctg", "mrkt_tot_amt", "lstg_st_cnt"], "srtn_cd", {
+      .orUpdate(["srtn_cd", "itms_nm", "mrkt_ctg", "mrkt_tot_amt", "lstg_st_cnt", "clpr"], "srtn_cd", {
         skipUpdateIfNoValuesChanged: true,
         upsertType: "on-conflict-do-update"
       })

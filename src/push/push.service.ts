@@ -77,8 +77,8 @@ export class PushService {
       TTL: 24 * 60 * 60,
       vapidDetails: {
         subject: "https://happymoneynow.com",
-        publicKey: this.configService.get<string>("VAPID_PUBLIC_KEY"),
-        privateKey: this.configService.get<string>("VAPID_PRIVATE_KEY")
+        publicKey: this.configService.get<string>("HAPPY_PUBLIC_VAPID"),
+        privateKey: this.configService.get<string>("HAPPY_PRIVATE_VAPID")
       }
     };
 
