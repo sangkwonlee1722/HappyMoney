@@ -35,7 +35,7 @@ export class AccountsController {
    */
   @Get()
   async findAllAccount(@UserInfo() user: User) {
-    const accounts = await this.accountsService.findAllMyAccountsById(user.id);
+    const accounts = await this.accountsService.findMyAccountById(user.id);
     return {
       success: true,
       message: "okay",

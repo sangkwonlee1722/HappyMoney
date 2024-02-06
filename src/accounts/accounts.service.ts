@@ -60,13 +60,27 @@ export class AccountsService {
     return accountNumber;
   }
 
-  async findAllMyAccountsById(userId: number): Promise<Account[]> {
-    const accounts: Account[] = await this.accountRepository.find({
-      where: { userId },
-      select: ["id", "name", "point", "userId", "accountNumber"] // 주식 총 평가금액 추가 예정
-    });
+  async findMyAccountById(userId: number): Promise<Account> {
+    const account: Account = await this.accountRepository
+      .createQueryBuilder("a")
+      .select(["a.id AS id", "a.name AS name", "a.point AS point", "a.accountNumber AS accountNumber"])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
+          .from("stock_holdings", "sh")
+          .leftJoin("sh.stock", "s")
+          .where("sh.accountId = a.id");
+      }, "totalStockValue")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(CASE WHEN ao.status = 'order' THEN ao.ttlPrice ELSE 0 END)", "totalOrderPrice")
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderPrice")
+      .where("a.userId=:userId", { userId })
+      .getRawOne();
 
-    return accounts;
+    return account;
   }
 
   // 계좌 찾기

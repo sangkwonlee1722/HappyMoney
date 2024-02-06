@@ -1002,6 +1002,14 @@ footer.hm-container.hm-fixed {
   color: #a9a9a9;
 }
 
+.calculate-price.blue {
+  color: #5044fa;
+}
+
+.calculate-price.red {
+  color: #ea5555;
+}
+
 .account-pop-text {
   color: #666;
   font-size: 12px;
