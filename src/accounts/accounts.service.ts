@@ -2,10 +2,16 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { InjectRepository } from "@nestjs/typeorm";
 import { Account } from "./entities/account.entity";
 import { Repository } from "typeorm";
+import { Cron } from "@nestjs/schedule";
+import { ConfigService } from "@nestjs/config";
+import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
+import { SlackService } from "src/common/slack/slack.service";
 
 @Injectable()
 export class AccountsService {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly slackService: SlackService,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>
   ) {}
@@ -80,14 +86,6 @@ export class AccountsService {
           .from("orders", "ao")
           .where("ao.accountId = a.id");
       }, "totalOrderPrice")
-      .addSelect((subQuery) => {
-        return subQuery
-          .select("SUM(o.order_numbers)", "totalBuyOrderNumbers")
-          .from("orders", "o")
-          .where("o.accountId =a.id")
-          .andWhere("o.buySell=1")
-          .andWhere("o.status='complete'");
-      }, "totalCompleteBuyOrderNumbers")
       .where("a.userId=:userId", { userId })
       .getRawOne();
 
@@ -136,5 +134,86 @@ export class AccountsService {
     const account: Account = await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.softRemove(account);
+  }
+
+  /* 계좌 가치로 랭킹 구현하기 */
+  @Cron("0 30 11 * * 2-6")
+  async updateAccountValue() {
+    let start = new Date();
+    const calculateAccountValue = await this.calculateAccountValue();
+
+    this.accountRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Account)
+      .values(calculateAccountValue)
+      .orUpdate(["total_value"], "id", {
+        skipUpdateIfNoValuesChanged: true,
+        upsertType: "on-conflict-do-update"
+      })
+      .execute();
+
+    let end = new Date();
+    const time = end.getTime() - start.getTime();
+
+    // 슬랙으로 알림 보내기
+    const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_SCHEDULE");
+    const color: string = slackLineColor.info;
+    const text: string = "Stock Update Schedule";
+    const mrkTitle: string = "주식 가치 정보 업데이트 성공";
+    const mrkValue: string = `업데이트 걸린 시간: ${time}`;
+
+    const message = new SlackMessage(color, text, mrkTitle, mrkValue);
+
+    this.slackService.sendScheduleNoti(message, slackHookUrl);
+
+    console.log("걸린 시간 : ", time);
+  }
+
+  /* 각 계좌의 총 가치 계산하기 */
+  async calculateAccountValue() {
+    const data = await this.accountRepository
+      .createQueryBuilder("a")
+      .select(["id", "point"])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
+          .from("stock_holdings", "sh")
+          .leftJoin("sh.stock", "s")
+          .where("sh.accountId = a.id");
+      }, "totalStockValue")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select(
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='1' THEN ao.ttlPrice ELSE 0 END)",
+            "totalOrderPrice"
+          )
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderPrice")
+      .getRawMany();
+
+    const totalAccountsValue = data.map((data) => {
+      const { id, point, totalStockValue, totalOrderPrice } = data;
+
+      const totalValue = point + totalStockValue + Number(totalOrderPrice);
+
+      return {
+        id,
+        totalValue: +totalValue
+      };
+    });
+
+    return totalAccountsValue;
+  }
+
+  async getRankAccounts(): Promise<Account[]> {
+    const topTenAccounts: Account[] = await this.accountRepository
+      .createQueryBuilder()
+      .orderBy("total_value", "DESC")
+      .take(10)
+      .getMany();
+
+    return topTenAccounts;
   }
 }

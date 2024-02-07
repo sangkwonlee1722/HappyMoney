@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
+import { Account } from "./entities/account.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 
 @ApiBearerAuth()
@@ -45,19 +46,17 @@ export class AccountsController {
   }
 
   /**
-   * 나의 특정 계좌 조회하기
-   * @param accountId
-   * @param user
+   * Top 10 랭킹 가져오기
    * @returns
    */
-  @Get("g")
-  async findOne(@UserInfo() user: User) {
-    const account = await this.accountsService.getMyAccountDetailInfo(user.id);
+  @Get("rank")
+  async getRankAccounts() {
+    const topTenAccounts: Account[] = await this.accountsService.getRankAccounts();
 
     return {
       success: true,
       message: "okay",
-      data: account
+      topTenAccounts
     };
   }
 
