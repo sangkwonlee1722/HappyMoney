@@ -120,7 +120,7 @@ async function modifyAccountName() {
 
 /* DB에 새로 입력된 계좌 이름 업데이트하는 함수 */
 async function updateAccountName(newName, token, accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   await axios.patch(apiUrl, { name: newName }, {
     headers: {
@@ -140,7 +140,7 @@ $('.delete-comment-btn').on('click', function () {
 });
 
 async function deleteAccount(accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   try {
     await axios.delete(apiUrl, {
@@ -165,7 +165,7 @@ const createAccountBtn = $('#accountCreate')
 createAccountBtn.on('click', async function () {
   const accountName = $('#accountName').val()
 
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = '/api/accounts'
 
   try {
     await axios.post(apiUrl, { name: accountName }, {
