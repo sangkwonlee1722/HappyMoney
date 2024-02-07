@@ -11,7 +11,7 @@ export class NewsController {
 
   @Get()
   getSample() {
-    return this.newsService.crawlGoogleTitle();
+    return this.newsService.crawlNews();
   }
 
   @Get(':id')
