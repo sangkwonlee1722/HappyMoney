@@ -60,13 +60,40 @@ export class AccountsService {
     return accountNumber;
   }
 
-  async findAllMyAccountsById(userId: number): Promise<Account[]> {
-    const accounts: Account[] = await this.accountRepository.find({
-      where: { userId },
-      select: ["id", "name", "point", "userId", "accountNumber"] // 주식 총 평가금액 추가 예정
-    });
+  async findMyAccountById(userId: number): Promise<Account> {
+    const account = await this.accountRepository
+      .createQueryBuilder("a")
+      .select(["id", "name", "point", "a.accountNumber AS accountNumber"])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
+          .from("stock_holdings", "sh")
+          .leftJoin("sh.stock", "s")
+          .where("sh.accountId = a.id");
+      }, "totalStockValue")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select(
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='1' THEN ao.ttlPrice ELSE 0 END)",
+            "totalOrderPrice"
+          )
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderPrice")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(o.order_numbers)", "totalBuyOrderNumbers")
+          .from("orders", "o")
+          .where("o.accountId =a.id")
+          .andWhere("o.buySell=1")
+          .andWhere("o.status='complete'");
+      }, "totalCompleteBuyOrderNumbers")
+      .where("a.userId=:userId", { userId })
+      .getRawOne();
 
-    return accounts;
+    account.totalOrderPrice = Number(account.totalOrderPrice);
+
+    return account;
   }
 
   // 계좌 찾기
@@ -75,12 +102,21 @@ export class AccountsService {
     return account;
   }
 
-  async findOneMyAccountById(userId: number, accountId: number): Promise<Account> {
+  async getMyAccountDetailInfo(userId: number): Promise<Account> {
     const account: Account = await this.accountRepository
       .createQueryBuilder("a")
+      .leftJoinAndSelect("a.stockHoldings", "sh")
       .where("a.userId=:userId", { userId })
-      .andWhere("a.id=:accountId", { accountId })
-      .select(["a.id", "a.name", "a.point", "a.userId", "a.accountNumber"]) // 계좌가 보유한 주식 목록 조인 예정
+      .select([
+        "a.id",
+        "a.name",
+        "a.point",
+        "a.userId",
+        "a.accountNumber",
+        "sh.stockName",
+        "sh.stockCode",
+        "sh.numbers"
+      ]) // 계좌가 보유한 주식 목록 조인 예정
       .getOne();
 
     if (!account) {
@@ -91,13 +127,13 @@ export class AccountsService {
   }
 
   async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
-    await this.findOneMyAccountById(userId, accountId);
+    await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.update({ id: accountId }, { name });
   }
 
   async removeMyAccountById(accountId: number, userId: number): Promise<void> {
-    const account: Account = await this.findOneMyAccountById(userId, accountId);
+    const account: Account = await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.softRemove(account);
   }

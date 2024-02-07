@@ -15,19 +15,31 @@ const getMyAccountsByToken = async (token) => {
       }
     });
 
-    const accounts = result.data.data
+    const account = result.data.data
 
     const mainDom = document.querySelector(".accounts-list")
 
-    if (accounts.length !== 0) {
+    if (account) {
+      const { id, name, point, accountNumber, totalStockValue, totalOrderPrice } = account;
 
-      mainDom.innerHTML = accounts
-        .map(account => {
-          const { id, name, point, accountNumber } = account;
+      const baseValue = 100000000
+      const ttlAccountValues = point + totalStockValue + totalOrderPrice
 
-          const formatPrice = addComma(point)
-          // 현재 가치 확인 로직 확인 필요
-          return `
+      const profit = ttlAccountValues - baseValue
+      const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
+      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
+
+      const formatValues = addComma(ttlAccountValues)
+
+      let profitClass
+
+      if (profit > 0) {
+        profitClass = 'red'
+      } else if (profit < 0) {
+        profitClass = 'blue'
+      }
+
+      mainDom.innerHTML = `
       <li class="accounts" data-id="${id}">
       <a href="/views/stock-myaccount.html"></a>
       <div class="accounts-left">
@@ -41,15 +53,14 @@ const getMyAccountsByToken = async (token) => {
       </div>
       <div class="accounts-right">
         <div class="account-prices">
-          <span class="ttl-price">${formatPrice} 원</span>
-          <span class="calculate-price">+0 (0.0%)</span>
+          <span class="ttl-price">${formatValues} 원</span>
+          <span class="calculate-price ${profitClass}">${formatProfit} 원 (${profitPercentage}%)</span>
         </div>
         <button class="hm-button hm-gray-color delete-comment-btn" onclick="drPopupOpen('.delete-account-chk')">삭제</button>
       </div>
     </li>
     <hr />
       `
-        }).join("")
     } else {
       mainDom.innerHTML = `
       <div class="none-contents">
