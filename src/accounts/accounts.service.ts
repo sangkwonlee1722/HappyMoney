@@ -66,7 +66,17 @@ export class AccountsService {
     return accountNumber;
   }
 
-  async findMyAccountById(userId: number): Promise<Account> {
+  async getMyAccountValue(userId: number): Promise<Account> {
+    const account: Account = await this.accountRepository
+      .createQueryBuilder()
+      .select(["id", "account_number AS accountNumber", "point", "total_value AS totalValue", "name"])
+      .where("user_id=:userId", { userId })
+      .getRawOne();
+
+    return account;
+  }
+
+  async getMyAccountDetailInfo(userId: number): Promise<Account> {
     const account = await this.accountRepository
       .createQueryBuilder("a")
       .select(["id", "name", "point", "a.accountNumber AS accountNumber"])
@@ -97,30 +107,6 @@ export class AccountsService {
   // 계좌 찾기
   async findOneAccount(userId: number) {
     const account = this.accountRepository.findOne({ where: { userId } });
-    return account;
-  }
-
-  async getMyAccountDetailInfo(userId: number): Promise<Account> {
-    const account: Account = await this.accountRepository
-      .createQueryBuilder("a")
-      .leftJoinAndSelect("a.stockHoldings", "sh")
-      .where("a.userId=:userId", { userId })
-      .select([
-        "a.id",
-        "a.name",
-        "a.point",
-        "a.userId",
-        "a.accountNumber",
-        "sh.stockName",
-        "sh.stockCode",
-        "sh.numbers"
-      ]) // 계좌가 보유한 주식 목록 조인 예정
-      .getOne();
-
-    if (!account) {
-      throw new NotFoundException("해당하는 계좌를 찾을 수 없습니다.");
-    }
-
     return account;
   }
 

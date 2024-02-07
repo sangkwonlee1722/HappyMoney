@@ -6,7 +6,7 @@ const token = getToken()
 
 /* 나의 계좌 정보 받아오기 */
 export const getMyAccountInfo = async () => {
-  const apiUrl = '/api/accounts'
+  const apiUrl = '/api/accounts/info'
 
   try {
     const result = await axios.get(apiUrl, {

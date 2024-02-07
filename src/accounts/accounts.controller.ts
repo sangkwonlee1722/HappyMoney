@@ -31,17 +31,34 @@ export class AccountsController {
   }
 
   /**
-   * 나의 모든 계좌 조회하기
+   * 나의 계좌 전체 가치 가져오기
+   * @param user
    * @returns
    */
   @Get()
-  async findAllAccount(@UserInfo() user: User) {
-    const accounts = await this.accountsService.findMyAccountById(user.id);
+  async getMyAccountValue(@UserInfo() user: User) {
+    const account: Account = await this.accountsService.getMyAccountValue(user.id);
 
     return {
       success: true,
       message: "okay",
-      data: accounts
+      data: account
+    };
+  }
+
+  /**
+   * 나의 계좌 상세 정보 가져오기
+   * @param user
+   * @returns
+   */
+  @Get("info")
+  async getMyAccountInfo(@UserInfo() user: User) {
+    const account: Account = await this.accountsService.getMyAccountDetailInfo(user.id);
+
+    return {
+      success: true,
+      message: "okay",
+      data: account
     };
   }
 
