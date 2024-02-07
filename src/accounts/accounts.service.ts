@@ -195,8 +195,10 @@ export class AccountsService {
 
   async getRankAccounts(): Promise<Account[]> {
     const topTenAccounts: Account[] = await this.accountRepository
-      .createQueryBuilder()
-      .orderBy("total_value", "DESC")
+      .createQueryBuilder("a")
+      .leftJoinAndSelect("a.user", "u")
+      .select(["a.id", "a.accountNumber", "a.point", "a.totalValue", "a.name", "u.nickName"])
+      .orderBy("a.totalValue", "DESC")
       .take(10)
       .getMany();
 
