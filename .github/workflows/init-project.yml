@@ -5,20 +5,20 @@ name: Happymoney_Init
 
 on:
   push:
-    branches: -${{ github.ref }} # dev 브랜치에 푸시 이벤트 발생 시
+    branches: ["dev"] # dev 브랜치에 푸시 이벤트 발생 시
   pull_request:
-    branches: [ "dev" ] # dev 브랜치에 PR 올렸을 때
+    branches: ["dev"] # dev 브랜치에 PR 올렸을 때
 
 jobs:
   build:
     runs-on: ubuntu-latest # ubuntu 최신 버전에서 실행
 
     steps:
-    - uses: actions/checkout@v3 # checkout 이라는 이미 구축된 action을 사용
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3 # setup-node 액션을 사용 : 노드 환경 구축
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci # Happymoney 프로젝트의 의존성 설치
-    - run: npm run build # HappyMoney 서버 빌드 진행
+      - uses: actions/checkout@v3 # checkout 이라는 이미 구축된 action을 사용
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3 # setup-node 액션을 사용 : 노드 환경 구축
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm ci # Happymoney 프로젝트의 의존성 설치
+      - run: npm run build # HappyMoney 서버 빌드 진행
