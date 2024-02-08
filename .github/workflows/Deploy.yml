@@ -21,6 +21,13 @@ jobs:
           node-version: 20.11
           cache: "npm"
 
+        env:
+          S3_BUCKET_NAME: happymoneynow.com # S3 버킷 이름입니다.
+          PROJECT_NAME: final-project-happymoney # S3 버킷 내 폴더 이름입니다. 임의로 정하면 알아서 생성해줍니다.
+          AWS_CODEDEPLOY_APPLICATION_NAME: happymoney-app # CodeDeploy 애플리케이션 이름입니다.
+          AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: happymoney-api-server-a # CodeDeploy 배포 그룹 이름입니다.
+          HAPPY_MONEY: happymoney_server
+
       - name: Install Dependencies
         run: npm ci
 
@@ -39,14 +46,8 @@ jobs:
       - name: Make a zip file
         run: zip -r ./$HAPPY_MONEY.zip . -x "node_modules/*" "coverage/*" "test/*" "README.md" "*.git*"
 
-        env:
-          S3_BUCKET_NAME: happymoneynow.com # S3 버킷 이름입니다.
-          PROJECT_NAME: final-project-happymoney # S3 버킷 내 폴더 이름입니다. 임의로 정하면 알아서 생성해줍니다.
-          AWS_CODEDEPLOY_APPLICATION_NAME: happymoney-app # CodeDeploy 애플리케이션 이름입니다.
-          AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: happymoney-api-server-a # CodeDeploy 배포 그룹 이름입니다.
-
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$HAPPY_MONEY.zip s3://${{ env.S3_BUCKET_NAME }}/${{ env.PROJECT_NAME }}/$HAPPY_MONEY.zip
 
       - name: Request Deployment
-        run: aws deploy create-deployment --application-name $AWS_CODEDEPLOY_APPLICATION_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$HAPPY_MONEY.zip
+        run: aws deploy create-deployment --application-name ${{ env.AWS_CODEDEPLOY_APPLICATION_NAME }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.PROJECT_NAME }}/${{ env.HAPPY_MONEY }}
