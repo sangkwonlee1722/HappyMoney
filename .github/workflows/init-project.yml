@@ -22,3 +22,4 @@ jobs:
           cache: "npm"
       - run: npm ci # Happymoney 프로젝트의 의존성 설치
       - run: npm run build # HappyMoney 서버 빌드 진행
+
