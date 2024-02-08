@@ -46,7 +46,7 @@ jobs:
           AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: happymoney-api-server-a # CodeDeploy 배포 그룹 이름입니다.
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$HAPPY_MONEY.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$HAPPY_MONEY.zip
+        run: aws s3 cp --region ap-northeast-2 ./$HAPPY_MONEY.zip s3://${{ env.S3_BUCKET_NAME }}/${{ env.PROJECT_NAME }}/$HAPPY_MONEY.zip
 
       - name: Request Deployment
         run: aws deploy create-deployment --application-name $AWS_CODEDEPLOY_APPLICATION_NAME --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name $AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$HAPPY_MONEY.zip
