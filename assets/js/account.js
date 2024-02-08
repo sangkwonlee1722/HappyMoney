@@ -2,11 +2,10 @@ import { addComma } from "./common.js";
 import getToken from "./common.js";
 
 const token = getToken()
-const apiBaseUrl = `/api/`
 
 /* 나의 계좌 가져오는 함수 */
 const getMyAccountsByToken = async (token) => {
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = '/api/accounts'
 
   try {
     const result = await axios.get(apiUrl, {
@@ -15,19 +14,30 @@ const getMyAccountsByToken = async (token) => {
       }
     });
 
-    const accounts = result.data.data
+    const account = result.data.data
 
     const mainDom = document.querySelector(".accounts-list")
 
-    if (accounts.length !== 0) {
+    if (account) {
+      const { id, name, accountNumber, totalValue } = account;
 
-      mainDom.innerHTML = accounts
-        .map(account => {
-          const { id, name, point, accountNumber } = account;
+      const baseValue = 100000000
 
-          const formatPrice = addComma(point)
-          // 현재 가치 확인 로직 확인 필요
-          return `
+      const profit = totalValue - baseValue
+      const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
+      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
+
+      const formatValues = addComma(totalValue)
+
+      let profitClass
+
+      if (profit > 0) {
+        profitClass = 'red'
+      } else if (profit < 0) {
+        profitClass = 'blue'
+      }
+
+      mainDom.innerHTML = `
       <li class="accounts" data-id="${id}">
       <a href="/views/stock-myaccount.html"></a>
       <div class="accounts-left">
@@ -41,15 +51,14 @@ const getMyAccountsByToken = async (token) => {
       </div>
       <div class="accounts-right">
         <div class="account-prices">
-          <span class="ttl-price">${formatPrice} 원</span>
-          <span class="calculate-price">+0 (0.0%)</span>
+          <span class="ttl-price">${formatValues} 원</span>
+          <span class="calculate-price ${profitClass}">${formatProfit} 원 (${profitPercentage}%)</span>
         </div>
         <button class="hm-button hm-gray-color delete-comment-btn" onclick="drPopupOpen('.delete-account-chk')">삭제</button>
       </div>
     </li>
     <hr />
       `
-        }).join("")
     } else {
       mainDom.innerHTML = `
       <div class="none-contents">
@@ -111,7 +120,7 @@ async function modifyAccountName() {
 
 /* DB에 새로 입력된 계좌 이름 업데이트하는 함수 */
 async function updateAccountName(newName, token, accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   await axios.patch(apiUrl, { name: newName }, {
     headers: {
@@ -131,7 +140,7 @@ $('.delete-comment-btn').on('click', function () {
 });
 
 async function deleteAccount(accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   try {
     await axios.delete(apiUrl, {
@@ -156,7 +165,7 @@ const createAccountBtn = $('#accountCreate')
 createAccountBtn.on('click', async function () {
   const accountName = $('#accountName').val()
 
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = '/api/accounts'
 
   try {
     await axios.post(apiUrl, { name: accountName }, {

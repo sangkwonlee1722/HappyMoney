@@ -1,6 +1,7 @@
 import { IsString, IsNumber, IsInt, Min } from "class-validator";
 import { Account } from "src/accounts/entities/account.entity";
 import { BaseEntity } from "src/common/entities/base.entity";
+import { Stock } from "src/stock/entities/stock.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
@@ -39,4 +40,8 @@ export class StockHolding extends BaseEntity {
   @ManyToOne(() => Account, (account) => account.stockHoldings)
   @JoinColumn({ name: "account_id" })
   account: Account;
+
+  @ManyToOne(() => Stock, (stock) => stock.stockHoldings)
+  @JoinColumn({ name: "stock_code", referencedColumnName: "srtnCd" })
+  stock: Stock;
 }
