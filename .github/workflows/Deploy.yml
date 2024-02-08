@@ -32,6 +32,7 @@ jobs:
         with:
            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: ap-northeast-2
 
         # 레포지토리를 압축시킵니다.
         # 다만 불필요한 node_module, coverage, src, test, readme, .git* 등의 파일은 제외시킵니다.
