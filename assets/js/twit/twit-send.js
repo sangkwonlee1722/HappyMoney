@@ -8,7 +8,7 @@ $('#sendTwit').on('click', function () {
   getDetailTwitData(`/api/twits`);
 })
 
-// 쪽지 조회API 
+// 쪽지 생성API 
 async function getDetailTwitData(url) {
   try {
     const content = document.querySelector('#sendContent').value;
