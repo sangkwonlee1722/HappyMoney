@@ -27,6 +27,12 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
         # 레포지토리를 압축시킵니다.
         # 다만 불필요한 node_module, coverage, src, test, readme, .git* 등의 파일은 제외시킵니다.
       - name: Make a zip file
