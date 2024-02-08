@@ -24,6 +24,12 @@ export class Account extends BaseEntity {
   @Column({ default: 100000000 })
   totalValue: number;
 
+  @Column({ default: 0 })
+  profit: number;
+
+  @Column({ default: "0.0" })
+  profitPercentage: string;
+
   @IsString()
   @Column({ nullable: false, unique: true })
   accountNumber: string;

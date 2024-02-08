@@ -14,7 +14,7 @@ import { PaginatePostDto } from "src/common/dto/paginate.dto";
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   /**
-   * 구매(매도)
+   * 구매(매수)
    * @param createTwitDto
    * @returns
    */
@@ -28,7 +28,7 @@ export class OrderController {
   }
 
   /**
-   * 판매(매수)
+   * 판매(매도)
    * @param createTwitDto
    * @returns
    */
