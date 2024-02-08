@@ -50,4 +50,4 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./HAPPY_MONEY.zip s3://happymoneynow.com/final-project-happymoney/HAPPY_MONEY.zip
 
       - name: Request Deployment
-        run: aws deploy create-deployment --application-name happymoney-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name happymoney-api-server-a --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY
+        run: aws deploy create-deployment --application-name happymoney-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name happymoney-api-server-a --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY.zip
