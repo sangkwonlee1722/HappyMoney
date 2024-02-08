@@ -69,12 +69,9 @@ async function spreadTopTenAccounts() {
 
   mainDom.innerHTML = topTenAccounts
     .map(account => {
-      const { id, name: accountName, totalValue, accountNumber, user } = account
+      const { id, name: accountName, totalValue, profit, profitPercentage, accountNumber, user } = account
 
-      const baseValue = 100000000
-      const profit = totalValue - baseValue
       const formatProfit = profit > 0 ? `${addComma(profit)}` : `${addComma(profit)}`
-      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
       const formatValues = addComma(totalValue)
 

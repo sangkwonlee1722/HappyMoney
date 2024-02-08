@@ -8,6 +8,7 @@ import { Cron } from "@nestjs/schedule";
 import webpush from "web-push";
 import { SlackService } from "src/common/slack/slack.service";
 import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
+import { AccountsService } from "src/accounts/accounts.service";
 
 @Injectable()
 export class StockService {
@@ -25,6 +26,7 @@ export class StockService {
   constructor(
     private readonly configService: ConfigService,
     private readonly slackService: SlackService,
+    private readonly accountService: AccountsService,
 
     @InjectRepository(Stock)
     private readonly stocksRepository: Repository<Stock>
@@ -201,6 +203,14 @@ export class StockService {
   }
 
   @Cron("0 0 11 * * 2-6") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  async updateStockAndRank() {
+    // 전일 기준 종목 시가총액, 발행주 수, 종가 업데이트
+    await this.saveStocks();
+
+    // 업데이트 된 종가를 반영하여 보유주식 가치 평가 적용
+    await this.accountService.updateAccountValue();
+  }
+
   async saveStocks() {
     console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
