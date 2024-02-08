@@ -81,7 +81,7 @@ export class NewsService {
     return { news, count };
   }
 
-  @Cron("0 */5 * * * *") // 30분마다 뉴스 크롤링
+  @Cron("0 */30 * * * *") // 30분마다 뉴스 크롤링
   async saveCrawledNews() {
     console.log("뉴스 크롤링 시작");
     let start = new Date();
