@@ -1,9 +1,6 @@
-!/bin/bash
-sudo chmod -R 777 /home/ubuntu/HappyMoney
-
-#navigate into our working directory
+#!/bin/bash
 cd /home/ubuntu/HappyMoney
 
-sudo npm ci
-sudo npm run build
-sudo pm2 reload api-server
+npm ci
+npm run build
+pm2 reload api-server
