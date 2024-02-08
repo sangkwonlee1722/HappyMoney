@@ -44,10 +44,10 @@ jobs:
         # 레포지토리를 압축시킵니다.
         # 다만 불필요한 node_module, coverage, src, test, readme, .git* 등의 파일은 제외시킵니다.
       - name: Make a zip file
-        run: zip -r ./$HAPPY_MONEY.zip . -x "node_modules/*" "coverage/*" "test/*" "README.md" "*.git*"
+        run: zip -r ./HAPPY_MONEY.zip . -x "node_modules/*" "coverage/*" "test/*" "README.md" "*.git*"
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$HAPPY_MONEY.zip s3://${{ env.S3_BUCKET_NAME }}/${{ env.PROJECT_NAME }}/$HAPPY_MONEY.zip
+        run: aws s3 cp --region ap-northeast-2 ./HAPPY_MONEY.zip s3://happymoneynow.com/final-project-happymoney/HAPPY_MONEY.zip
 
       - name: Request Deployment
-        run: aws deploy create-deployment --application-name ${{ env.AWS_CODEDEPLOY_APPLICATION_NAME }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME }} --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.PROJECT_NAME }}/${{ env.HAPPY_MONEY }}
+        run: aws deploy create-deployment --application-name happymoney-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name happymoney-api-server-a --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY
