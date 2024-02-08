@@ -5,6 +5,7 @@ import { News } from "./entities/news.entity";
 import { Repository } from "typeorm";
 import { load } from "cheerio";
 import { Cron } from "@nestjs/schedule";
+import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class NewsService {
@@ -88,8 +89,16 @@ export class NewsService {
     }
   }
 
-  findAll() {
-    return `This action returns news`;
+  async findAll(query: PaginatePostDto) {
+    const [news, count]: [News[], number] = await this.newsRepository
+      .createQueryBuilder("p")
+      .select(["p.newspaper", "p.title", "p.link"])
+      .skip(query.take * (query.page - 1))
+      .take(query.take)
+      .orderBy("p.createdAt", query.order__createdAt)
+      .getManyAndCount();
+
+    return { news, count };
   }
 
   remove(id: number) {
