@@ -34,13 +34,101 @@ $('#stockAmount').focus(function () {
   $('.percent li').removeClass('on');
 })
 
-
-
 // 현재 시간 확인 후 조건에 따라 로직 실행
 if (isKoreanWeekday() && isKoreanWorkingHour()) {
-  // livePriceData();
+  livePriceData();
 } else {
   priceData();
+}
+
+// 구매(매수)버튼 클릭 시
+$('#buyBtn').on('click', function () {
+  if (isKoreanWeekday() && isKoreanWorkingHour()) {
+    const bidp = $('.sell.num1 .price').text();
+    const bidp1 = parseFloat(bidp.replace(',', ''));
+    buyFatchData(bidp1);
+  } else {
+    alert('장 운영 일자가 주문일과 상이합니다.');
+    return;
+  }
+})
+
+// 판매(매도)버튼 클릭 시
+$('#sellBtn').on('click', function () {
+  if (isKoreanWeekday() && isKoreanWorkingHour()) {
+    const bidp = $('.sell.num1 .price').text();
+    const bidp1 = parseFloat(bidp.replace(',', ''));
+    sellFatchData(bidp1);
+  } else {
+    alert('장 운영 일자가 주문일과 상이합니다.');
+    return;
+  }
+})
+
+// 구매API
+async function buyFatchData(bidp) {
+  try {
+    const stockName = trName;
+    const stockCode = trKey;
+    const orderNumbers = $('#stockAmount').val();
+    const price = $('#fixPrice').val();
+    const header = {
+      headers: {
+        'Authorization': `${getToken()}`,
+        'Content-Type': 'application/json'
+      },
+    };
+    const body = {
+      status: bidp > price ? 'order' : 'complete',
+      stockName,
+      stockCode,
+      orderNumbers,
+      price
+    };
+    const result = await axios.post('/api/order/buy', body, header);
+    const data = result.data;
+    if (data.success === true) {
+      alert(`해당 주식을 구매(매수) 했습니다.`);
+    } else {
+      alert('구매(매수)에 실패했습니다.');
+    }
+  } catch (error) {
+    alert(error.response.data.message);
+    console.error(error);
+  }
+}
+
+// 판매API
+async function sellFatchData(bidp) {
+  try {
+    const stockName = trName;
+    const stockCode = trKey;
+    const orderNumbers = $('#stockAmount').val();
+    const price = $('#fixPrice').val();
+    const header = {
+      headers: {
+        'Authorization': `${getToken()}`,
+        'Content-Type': 'application/json'
+      },
+    };
+    const body = {
+      status: bidp < price ? 'order' : 'complete',
+      stockName,
+      stockCode,
+      orderNumbers,
+      price,
+    };
+    const result = await axios.post('/api/order/sell', body, header);
+    const data = result.data;
+    if (data.success === true) {
+      alert(`해당 주식을 판매(매도) 했습니다.`);
+    } else {
+      alert('판매(매도)에 실패했습니다.');
+    }
+  } catch (error) {
+    alert(error.response.data.message);
+    console.error(error);
+  }
 }
 
 // 시장가 체크 유무
@@ -52,12 +140,20 @@ $('#fixCheck').on('change', function () {
   }
 });
 
-// 주문총액 계산
+// 주문수량 바꿀 때 계산
 $('#stockAmount').on('input', function () {
   const fixPrice = $('#fixPrice').val();
   const num = $(this).val();
+  $('.total-price').text('');
   $('.total-price').text(addComma(fixPrice * num));
 });
+// 가격을 바꿀 때 계산
+$("#fixPrice").on('input', function () {
+  const fixPrice = $(this).val();
+  const num = $('#stockAmount').val();
+  $('.total-price').text('');
+  $('.total-price').text(addComma(fixPrice * num));
+})
 
 function isKoreanWeekday() {
   const koreanOptions = { timeZone: 'Asia/Seoul', weekday: 'long' };
@@ -77,7 +173,7 @@ function isKoreanWorkingHour() {
 }
 
 function livePriceData() {
-  console.log("평일 9시부터 16시까지 실행");
+  console.log("평일 9시부터 15시20분 까지 실행");
   // 여기에서 새로운 WebSocket 연결을 생성하고 반환
   const socket = io('/ws/stock', {
     transports: ['websocket'],
@@ -101,15 +197,14 @@ function livePriceData() {
     // 시장가 체크에 따른 수정
     const fixPrice = $('#fixPrice').val();
     const num = $('#stockAmount').val();
-    $('#fixCheck').on('change', function () {
-      if (!$(this).is(':checked')) {
-        $('#fixPrice').val(`${tax}`);
-      }
-    });
+
     if ($('#fixPrice').prop('disabled')) {
       $('#fixPrice').val(`${tax}`);
-      $('.total-price').text(addComma(fixPrice * num));
+      $('.total-price').text('');
     }
+    $('.total-price').text(addComma(fixPrice * num));
+
+
 
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
@@ -118,12 +213,11 @@ function livePriceData() {
       $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
     }
   })
-
 }
 
 async function priceData() {
   try {
-    console.log("평일 9시부터 16시 외에 실행");
+    console.log("평일 9시부터 15시20분 외에 실행");
     const result = await axios.get(`/api/stock/stockPrice?code=${trKey}`);
     const item = result.data.item.output1;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);
