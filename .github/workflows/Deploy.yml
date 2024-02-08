@@ -40,7 +40,7 @@ jobs:
         run: zip -r ./$HAPPY_MONEY.zip . -x "node_modules/*" "coverage/*" "test/*" "README.md" "*.git*"
 
         env:
-          S3_BUCKET_NAME: arn:aws:s3:::happymoney-final # S3 버킷 이름입니다.
+          S3_BUCKET_NAME: happymoneynow.com # S3 버킷 이름입니다.
           PROJECT_NAME: final-project-happymoney # S3 버킷 내 폴더 이름입니다. 임의로 정하면 알아서 생성해줍니다.
           AWS_CODEDEPLOY_APPLICATION_NAME: happymoney-app # CodeDeploy 애플리케이션 이름입니다.
           AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: happymoney-api-server-a # CodeDeploy 배포 그룹 이름입니다.
