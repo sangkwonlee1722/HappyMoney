@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["test/cd"]
   pull_request:
     branches: ["main"]
 
@@ -23,11 +23,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-        working-directory: ./HappyMoney
 
       - name: Build
         run: npm run build --if-present
-        working-directory: ./HappyMoney
 
         # 레포지토리를 압축시킵니다.
         # 다만 불필요한 node_module, coverage, src, test, readme, .git* 등의 파일은 제외시킵니다.
