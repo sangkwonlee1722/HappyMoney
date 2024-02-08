@@ -65,6 +65,12 @@ async function spreadTopTenAccounts() {
   const mainDom = document.querySelector('.account-rank-list')
   const topTenAccounts = await getAccountRank()
 
+  /* 랭킹 기준 날짜 보여주기 */
+  const updateDate = new Date(topTenAccounts[0].updatedAt)
+  const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
+
+  $('.criteria-date').text(`* ${koreanTime} 기준`)
+
   let rank = 0
 
   mainDom.innerHTML = topTenAccounts

@@ -140,7 +140,7 @@ export class AccountsService {
       .insert()
       .into(Account)
       .values(calculateAccountValue)
-      .orUpdate(["total_value", "profit", "profit_percentage"], "id", {
+      .orUpdate(["total_value", "profit", "profit_percentage", "updated_at"], "id", {
         skipUpdateIfNoValuesChanged: true,
         upsertType: "on-conflict-do-update"
       })
@@ -219,6 +219,7 @@ export class AccountsService {
         "a.profitPercentage",
         "a.name",
         "a.createdAt",
+        "a.updatedAt",
         "u.nickName"
       ])
       .orderBy("a.totalValue", "DESC")
