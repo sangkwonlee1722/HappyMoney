@@ -21,6 +21,9 @@ export class Account extends BaseEntity {
   @Column({ default: 100000000 })
   point: number;
 
+  @Column({ default: 100000000 })
+  totalValue: number;
+
   @IsString()
   @Column({ nullable: false, unique: true })
   accountNumber: string;

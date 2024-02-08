@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
+import { Account } from "./entities/account.entity";
 // import { JwtAuthGuard } from "src/auth/jwt.auth.guard";
 
 @ApiBearerAuth()
@@ -30,34 +31,49 @@ export class AccountsController {
   }
 
   /**
-   * 나의 모든 계좌 조회하기
-   * @returns
-   */
-  @Get()
-  async findAllAccount(@UserInfo() user: User) {
-    const accounts = await this.accountsService.findMyAccountById(user.id);
-
-    return {
-      success: true,
-      message: "okay",
-      data: accounts
-    };
-  }
-
-  /**
-   * 나의 특정 계좌 조회하기
-   * @param accountId
+   * 나의 계좌 전체 가치 가져오기
    * @param user
    * @returns
    */
-  @Get("g")
-  async findOne(@UserInfo() user: User) {
-    const account = await this.accountsService.getMyAccountDetailInfo(user.id);
+  @Get()
+  async getMyAccountValue(@UserInfo() user: User) {
+    const account: Account = await this.accountsService.getMyAccountValue(user.id);
 
     return {
       success: true,
       message: "okay",
       data: account
+    };
+  }
+
+  /**
+   * 나의 계좌 상세 정보 가져오기
+   * @param user
+   * @returns
+   */
+  @Get("info")
+  async getMyAccountInfo(@UserInfo() user: User) {
+    const account: Account = await this.accountsService.getMyAccountDetailInfo(user.id);
+
+    return {
+      success: true,
+      message: "okay",
+      data: account
+    };
+  }
+
+  /**
+   * Top 10 랭킹 가져오기
+   * @returns
+   */
+  @Get("rank")
+  async getRankAccounts() {
+    const topTenAccounts: Account[] = await this.accountsService.getRankAccounts();
+
+    return {
+      success: true,
+      message: "okay",
+      topTenAccounts
     };
   }
 

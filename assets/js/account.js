@@ -2,11 +2,10 @@ import { addComma } from "./common.js";
 import getToken from "./common.js";
 
 const token = getToken()
-const apiBaseUrl = `/api/`
 
 /* 나의 계좌 가져오는 함수 */
 const getMyAccountsByToken = async (token) => {
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = '/api/accounts'
 
   try {
     const result = await axios.get(apiUrl, {
@@ -20,16 +19,15 @@ const getMyAccountsByToken = async (token) => {
     const mainDom = document.querySelector(".accounts-list")
 
     if (account) {
-      const { id, name, point, accountNumber, totalStockValue, totalOrderPrice } = account;
+      const { id, name, accountNumber, totalValue } = account;
 
       const baseValue = 100000000
-      const ttlAccountValues = point + totalStockValue + totalOrderPrice
 
-      const profit = ttlAccountValues - baseValue
+      const profit = totalValue - baseValue
       const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
       const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
-      const formatValues = addComma(ttlAccountValues)
+      const formatValues = addComma(totalValue)
 
       let profitClass
 
@@ -122,7 +120,7 @@ async function modifyAccountName() {
 
 /* DB에 새로 입력된 계좌 이름 업데이트하는 함수 */
 async function updateAccountName(newName, token, accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   await axios.patch(apiUrl, { name: newName }, {
     headers: {
@@ -142,7 +140,7 @@ $('.delete-comment-btn').on('click', function () {
 });
 
 async function deleteAccount(accountId) {
-  const apiUrl = apiBaseUrl + `accounts/${accountId}`;
+  const apiUrl = `/api/accounts/${accountId}`;
 
   try {
     await axios.delete(apiUrl, {
@@ -167,7 +165,7 @@ const createAccountBtn = $('#accountCreate')
 createAccountBtn.on('click', async function () {
   const accountName = $('#accountName').val()
 
-  const apiUrl = apiBaseUrl + 'accounts'
+  const apiUrl = '/api/accounts'
 
   try {
     await axios.post(apiUrl, { name: accountName }, {

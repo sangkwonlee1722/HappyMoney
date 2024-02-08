@@ -2,10 +2,16 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { InjectRepository } from "@nestjs/typeorm";
 import { Account } from "./entities/account.entity";
 import { Repository } from "typeorm";
+import { Cron } from "@nestjs/schedule";
+import { ConfigService } from "@nestjs/config";
+import { SlackMessage, slackLineColor } from "src/common/slack/slack.config";
+import { SlackService } from "src/common/slack/slack.service";
 
 @Injectable()
 export class AccountsService {
   constructor(
+    private readonly configService: ConfigService,
+    private readonly slackService: SlackService,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>
   ) {}
@@ -60,7 +66,17 @@ export class AccountsService {
     return accountNumber;
   }
 
-  async findMyAccountById(userId: number): Promise<Account> {
+  async getMyAccountValue(userId: number): Promise<Account> {
+    const account: Account = await this.accountRepository
+      .createQueryBuilder()
+      .select(["id", "account_number AS accountNumber", "point", "total_value AS totalValue", "name"])
+      .where("user_id=:userId", { userId })
+      .getRawOne();
+
+    return account;
+  }
+
+  async getMyAccountDetailInfo(userId: number): Promise<Account> {
     const account = await this.accountRepository
       .createQueryBuilder("a")
       .select(["id", "name", "point", "a.accountNumber AS accountNumber"])
@@ -80,14 +96,6 @@ export class AccountsService {
           .from("orders", "ao")
           .where("ao.accountId = a.id");
       }, "totalOrderPrice")
-      .addSelect((subQuery) => {
-        return subQuery
-          .select("SUM(o.order_numbers)", "totalBuyOrderNumbers")
-          .from("orders", "o")
-          .where("o.accountId =a.id")
-          .andWhere("o.buySell=1")
-          .andWhere("o.status='complete'");
-      }, "totalCompleteBuyOrderNumbers")
       .where("a.userId=:userId", { userId })
       .getRawOne();
 
@@ -102,30 +110,6 @@ export class AccountsService {
     return account;
   }
 
-  async getMyAccountDetailInfo(userId: number): Promise<Account> {
-    const account: Account = await this.accountRepository
-      .createQueryBuilder("a")
-      .leftJoinAndSelect("a.stockHoldings", "sh")
-      .where("a.userId=:userId", { userId })
-      .select([
-        "a.id",
-        "a.name",
-        "a.point",
-        "a.userId",
-        "a.accountNumber",
-        "sh.stockName",
-        "sh.stockCode",
-        "sh.numbers"
-      ]) // 계좌가 보유한 주식 목록 조인 예정
-      .getOne();
-
-    if (!account) {
-      throw new NotFoundException("해당하는 계좌를 찾을 수 없습니다.");
-    }
-
-    return account;
-  }
-
   async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
     await this.getMyAccountDetailInfo(userId);
 
@@ -136,5 +120,88 @@ export class AccountsService {
     const account: Account = await this.getMyAccountDetailInfo(userId);
 
     await this.accountRepository.softRemove(account);
+  }
+
+  /* 계좌 가치로 랭킹 구현하기 */
+  @Cron("0 30 11 * * 2-6")
+  async updateAccountValue() {
+    let start = new Date();
+    const calculateAccountValue = await this.calculateAccountValue();
+
+    this.accountRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Account)
+      .values(calculateAccountValue)
+      .orUpdate(["total_value"], "id", {
+        skipUpdateIfNoValuesChanged: true,
+        upsertType: "on-conflict-do-update"
+      })
+      .execute();
+
+    let end = new Date();
+    const time = end.getTime() - start.getTime();
+
+    // 슬랙으로 알림 보내기
+    const slackHookUrl: string = this.configService.get("SLACK_ALARM_URI_SCHEDULE");
+    const color: string = slackLineColor.info;
+    const text: string = "Stock Update Schedule";
+    const mrkTitle: string = "주식 가치 정보 업데이트 성공";
+    const mrkValue: string = `업데이트 걸린 시간: ${time}`;
+
+    const message = new SlackMessage(color, text, mrkTitle, mrkValue);
+
+    this.slackService.sendScheduleNoti(message, slackHookUrl);
+
+    console.log("걸린 시간 : ", time);
+  }
+
+  /* 각 계좌의 총 가치 계산하기 */
+  async calculateAccountValue() {
+    const data = await this.accountRepository
+      .createQueryBuilder("a")
+      .select(["id", "point"])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
+          .from("stock_holdings", "sh")
+          .leftJoin("sh.stock", "s")
+          .where("sh.accountId = a.id");
+      }, "totalStockValue")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select(
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='1' THEN ao.ttlPrice ELSE 0 END)",
+            "totalOrderPrice"
+          )
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderPrice")
+      .getRawMany();
+
+    const totalAccountsValue = data.map((data) => {
+      const { id, point, totalStockValue, totalOrderPrice } = data;
+
+      const totalValue = point + totalStockValue + Number(totalOrderPrice);
+
+      return {
+        id,
+        totalValue: +totalValue
+      };
+    });
+
+    return totalAccountsValue;
+  }
+
+  async getRankAccounts(): Promise<Account[]> {
+    const topTenAccounts: Account[] = await this.accountRepository
+      .createQueryBuilder("a")
+      .leftJoinAndSelect("a.user", "u")
+      .select(["a.id", "a.accountNumber", "a.point", "a.totalValue", "a.name", "u.nickName"])
+      .orderBy("a.totalValue", "DESC")
+      .take(10)
+      .getMany();
+
+    return topTenAccounts;
   }
 }

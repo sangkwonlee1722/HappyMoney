@@ -37,3 +37,59 @@
 .rank-list-wrap .rank-price span {
   font-size: 12px;
 }
+
+/* 랭킹보드 부분 s */
+.stock-ranking-header h3 {
+  font-weight: bold;
+}
+
+.stock-ranking-header-contents {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.ranking-season {
+  font-weight: bold;
+}
+
+.criteria-date {
+  color: #797979;
+  font-size: 12px;
+}
+
+.stock-ranking-body {
+  background-color: #e8f1fe;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 3rem;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  width: 90%;
+}
+
+.stock-ranking-discribtion {
+  margin-bottom: 3rem;
+  width: 90%;
+}
+
+.stock-ranking-discribtion h5 {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 0.5rem;
+}
+
+.stock-ranking-discribtion-contents {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+/* 랭킹보드 부분 e */
