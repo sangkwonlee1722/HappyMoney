@@ -25,13 +25,14 @@ export class OrderService implements OnModuleInit {
     private readonly entityManager: EntityManager
   ) {}
   // 작업을 수행할지 여부
-  private shouldRunTask = false;
+  private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
   @Cron("0 00 09 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
-    this.waitOrderChk();
+    const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
+    this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
   }
 
   // 평일 15시 25분에 종료
@@ -53,10 +54,12 @@ export class OrderService implements OnModuleInit {
     if (!this.shouldRunTask) {
       return;
     }
-
     try {
-      const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
+      let orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
+      // 작업 시작 전에 orders를 다시 체크하여 업데이트
+      orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
 
+      console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
 
@@ -65,7 +68,6 @@ export class OrderService implements OnModuleInit {
         for (const order of orders) {
           // 해당주문이 앞에서 완료 됐을 때 바로 넘어감
           if (order.status !== OrderStatus.Order) return;
-
           // 가격비교를 위한 현재가 호가OpenAPI
           const list = await this.stockService.getStockPrice(order.stockCode);
 
@@ -73,6 +75,8 @@ export class OrderService implements OnModuleInit {
           const buyOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
           });
+          console.log("buy", buyOrderCode);
+
           for (const buyOrder of buyOrderCode) {
             if (buyOrder.price >= list.bidp1) {
               buyOrder.status = OrderStatus.Complete;
@@ -84,6 +88,8 @@ export class OrderService implements OnModuleInit {
           const sellOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: false }
           });
+          console.log("sell", sellOrderCode);
+
           for (const sellOrder of sellOrderCode) {
             const sellAccount = await em.findOne(Account, { where: { userId: sellOrder.userId } });
             if (sellOrder.price <= list.bidp1) {
@@ -106,10 +112,13 @@ export class OrderService implements OnModuleInit {
       console.error("orderChk error", error);
       throw error;
     } finally {
-      // 작업이 끝났을 때 다음 작업을 예약
       if (this.shouldRunTask) {
-        const timeout = setTimeout(() => this.waitOrderChk(), 1000);
-        this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
+        // waitOrderChk 작업이 이미 등록되어 있는지 확인
+        const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
+        if (!existingTimeout) {
+          const timeout = setTimeout(() => this.waitOrderChk(), 1000);
+          this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
+        }
       }
     }
   }

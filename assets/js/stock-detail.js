@@ -41,17 +41,25 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
   priceData();
 }
 
-// 장 닫았을 때,구매(매수)버튼 클릭 시
+// 구매(매수)버튼 클릭 시
 $('#buyBtn').on('click', function () {
-  if (!isKoreanWeekday() || !isKoreanWorkingHour()) {
+  if (isKoreanWeekday() && isKoreanWorkingHour()) {
+    const bidp = $('.sell.num1 .price').text();
+    const bidp1 = parseFloat(bidp.replace(',', ''));
+    buyFatchData(bidp1);
+  } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
     return;
   }
 })
 
-// 장 닫았을 때, 판매(매도)버튼 클릭 시
+// 판매(매도)버튼 클릭 시
 $('#sellBtn').on('click', function () {
-  if (!isKoreanWeekday() || !isKoreanWorkingHour()) {
+  if (isKoreanWeekday() && isKoreanWorkingHour()) {
+    const bidp = $('.sell.num1 .price').text();
+    const bidp1 = parseFloat(bidp.replace(',', ''));
+    sellFatchData(bidp1);
+  } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
     return;
   }
@@ -108,9 +116,9 @@ async function sellFatchData(bidp) {
       stockName,
       stockCode,
       orderNumbers,
-      price
+      price,
     };
-    const result = await axios.post('/api/order/buy', body, header);
+    const result = await axios.post('/api/order/sell', body, header);
     const data = result.data;
     if (data.success === true) {
       alert(`해당 주식을 판매(매도) 했습니다.`);
@@ -139,11 +147,10 @@ $('#stockAmount').on('input', function () {
   $('.total-price').text('');
   $('.total-price').text(addComma(fixPrice * num));
 });
-
 // 가격을 바꿀 때 계산
 $("#fixPrice").on('input', function () {
-  const fixPrice = $('#fixPrice').val();
-  const num = $(this).val();
+  const fixPrice = $(this).val();
+  const num = $('#stockAmount').val();
   $('.total-price').text('');
   $('.total-price').text(addComma(fixPrice * num));
 })
@@ -190,25 +197,14 @@ function livePriceData() {
     // 시장가 체크에 따른 수정
     const fixPrice = $('#fixPrice').val();
     const num = $('#stockAmount').val();
-    $('#fixCheck').on('change', function () {
-      if (!$(this).is(':checked')) {
-        $('#fixPrice').val('');
-        $('.total-price').text('');
-      }
-    });
+
     if ($('#fixPrice').prop('disabled')) {
       $('#fixPrice').val(`${tax}`);
       $('.total-price').text('');
-      $('.total-price').text(addComma(fixPrice * num));
     }
+    $('.total-price').text(addComma(fixPrice * num));
 
-    $('#buyBtn').on('click', function () {
-      buyFatchData(price.bidp1);
-    })
 
-    $('#sellBtn').on('click', function () {
-      sellFatchData(price.bidp1);
-    })
 
     for (let i = 1; i < 11; i++) {
       $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
