@@ -4,19 +4,19 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { News } from "./entities/news.entity";
 import { Repository } from "typeorm";
 import { load } from "cheerio";
-import { Cron } from "@nestjs/schedule";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
 @Injectable()
 export class NewsService {
   private readonly newsUrl: string = "https://www.google.com/finance/?hl=ko&gl=KR&source=news";
   private readonly newsSelector: string = "div[data-tab-id = localMarketNews]";
-  private readonly newsLimit = 50; // Adjust the threshold as needed
   constructor(
     @InjectRepository(News)
     private readonly newsRepository: Repository<News>
   ) {}
 
+  //뉴스 크롤링
   async crawlNews() {
     try {
       // 브라우저 열기
@@ -68,27 +68,7 @@ export class NewsService {
     }
   }
 
-  async deleteNews() {
-    try {
-      const count = await this.newsRepository.count();
-
-      if (count > this.newsLimit) {
-        const oldRecords = await this.newsRepository.find({
-          order: {
-            createdAt: "ASC"
-          },
-          take: count - this.newsLimit
-        });
-
-        await Promise.all(oldRecords.map((record) => this.newsRepository.delete(record.id)));
-
-        console.log(`Deleted ${oldRecords.length} records.`);
-      }
-    } catch (error) {
-      console.error("Error in delete:", error.message);
-    }
-  }
-
+  // 뉴스 조회
   async findAll(query: PaginatePostDto) {
     const [news, count]: [News[], number] = await this.newsRepository
       .createQueryBuilder("p")
@@ -101,21 +81,29 @@ export class NewsService {
     return { news, count };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} news`;
-  }
-
-  @Cron("0 */30 * * * *") // 30분마다 갱신
+  @Cron("0 */5 * * * *") // 30분마다 뉴스 크롤링
   async saveCrawledNews() {
     console.log("뉴스 크롤링 시작");
     let start = new Date();
     await this.crawlNews();
     console.log("뉴스 크롤링 완료");
-    console.log("뉴스 삭제 시작");
-    await this.deleteNews();
     let end = new Date();
-    console.log("뉴스 삭제 완료");
     const time = end.getTime() - start.getTime();
     console.log("걸린 시간 : ", time);
+  }
+
+  // 매일 자정에 뉴스중 크롤링 후 7일이 지난 뉴스 삭제
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async deleteOldNews() {
+    const time = new Date();
+    time.setDate(time.getDate() - 7);
+    console.log("time: ", time);
+
+    await this.newsRepository
+    .createQueryBuilder()
+    .delete()
+    .from(News)
+    .where("createdAt <= :time", { time })
+    .execute();
   }
 }
