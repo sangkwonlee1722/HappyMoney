@@ -1,6 +1,10 @@
 #!/bin/bash
-cd /home/ubuntu/HappyMoney
 
-/home/ubuntu/.nvm/versions/node/v20.11.0/bin/npm ci
-/home/ubuntu/.nvm/versions/node/v20.11.0/bin/npm run build
-/home/ubuntu/.nvm/versions/node/v20.11.0/bin/pm2 start dist/main.js --name api-server
+# Node.js와 npm이 설치된 경로를 환경 변수로 설정
+NODE_PATH="/home/ubuntu/.nvm/versions/node/v20.11.0/bin"
+export PATH="$NODE_PATH:$PATH"
+
+# npm 명령 실행
+npm ci
+npm run build
+pm2 start dist/main.js --name api-server
