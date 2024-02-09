@@ -4,6 +4,8 @@
 NODE_PATH="/home/ubuntu/.nvm/versions/node/v20.11.0/bin"
 export PATH="$NODE_PATH:$PATH"
 
+cd /home/ubuntu/HappyMoney
+
 # npm 명령 실행
 npm ci
 npm run build
