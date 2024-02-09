@@ -24,8 +24,8 @@ jobs:
         env:
           S3_BUCKET_NAME: happymoneynow.com # S3 버킷 이름입니다.
           PROJECT_NAME: final-project-happymoney # S3 버킷 내 폴더 이름입니다. 임의로 정하면 알아서 생성해줍니다.
-          AWS_CODEDEPLOY_APPLICATION_NAME: happymoney-app # CodeDeploy 애플리케이션 이름입니다.
-          AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: happymoney-api-server-a # CodeDeploy 배포 그룹 이름입니다.
+          AWS_CODEDEPLOY_APPLICATION_NAME: happymoney # CodeDeploy 애플리케이션 이름입니다.
+          AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: HappyMoney-Deploy # CodeDeploy 배포 그룹 이름입니다.
           HAPPY_MONEY: happymoney_server
 
       - name: Install Dependencies
@@ -50,4 +50,4 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./HAPPY_MONEY.zip s3://happymoneynow.com/final-project-happymoney/HAPPY_MONEY.zip
 
       - name: Request Deployment
-        run: aws deploy create-deployment --application-name happymoney-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name happymoney-api-server-a --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY.zip
+        run: aws deploy create-deployment --application-name happymoney --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name HappyMoney-Deploy --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY.zip
