@@ -1,0 +1,36 @@
+PS C:\workspace\sparta\NestJS\happy_money\HappyMoney> docker ps       
+CONTAINER ID   IMAGE          COMMAND                   CREATED         STATUS         PORTS                    NAMES
+bc90b455ef9a   redis:latest   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:6379->6379/tcp   happymoney-my-redis-1        
+PS C:\workspace\sparta\NestJS\happy_money\HappyMoney> docker exec -it bc90b455ef9a /bin/bash
+root@bc90b455ef9a:/data# redis-cli
+127.0.0.1:6379> keys *
+(empty array)
+127.0.0.1:6379> set qqq apple
+OK
+127.0.0.1:6379> keys *
+1) "qqq"
+127.0.0.1:6379> ttl qqq
+(integer) -1
+127.0.0.1:6379> expire qqq 20
+(integer) 1
+127.0.0.1:6379> ttl qqq
+(integer) 15
+127.0.0.1:6379> ttl qqq
+(integer) 11
+127.0.0.1:6379> key qqq
+(error) ERR unknown command 'key', with args beginning with: 'qqq'    
+127.0.0.1:6379> get qqq
+(nil)
+127.0.0.1:6379> get qqq
+(nil)
+127.0.0.1:6379> key *
+(error) ERR unknown command 'key', with args beginning with: '*'      
+127.0.0.1:6379> keys *
+(empty array)
+127.0.0.1:6379>
+
+#필요한 라이브러리
+npm i redis
+npm i cache-manager@4.1.0
+npm i cache-manager-redis-store@2.0.0
+npm i -d @types/cache-manager-redis-store

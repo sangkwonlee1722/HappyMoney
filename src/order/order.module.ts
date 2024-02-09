@@ -7,10 +7,25 @@ import { AccountsModule } from "src/accounts/accounts.module";
 import { StockHolding } from "./entities/stockHolding.entity";
 import { StockModule } from "src/stock/stock.module";
 import { StockService } from "src/stock/stock.service";
+import { BullModule } from "@nestjs/bull";
+import { orderProcessor } from "./order.processor";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, StockHolding]), AccountsModule, StockModule],
+  imports: [
+    TypeOrmModule.forFeature([Order, StockHolding]),
+    AccountsModule,
+    StockModule,
+    BullModule.forRoot({
+      redis: {
+        host: "localhost",
+        port: 6379
+      }
+    }),
+    BullModule.registerQueue({
+      name: "orders"
+    })
+  ],
   controllers: [OrderController],
-  providers: [OrderService]
+  providers: [OrderService, orderProcessor]
 })
 export class OrderModule {}
