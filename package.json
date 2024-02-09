@@ -13,9 +13,9 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
+    "test": "jest --forceExit ./star-stock/test/star-stock.controller.spec.ts",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest --coverage --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
@@ -73,11 +73,11 @@
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
-    "@nestjs/testing": "^10.0.0",
+    "@nestjs/testing": "^10.3.2",
     "@types/bcrypt": "^5.0.2",
     "@types/cron": "^2.4.0",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.2",
+    "@types/jest": "^29.5.12",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.3.1",
     "@types/socket.io-client": "^3.0.0",
@@ -104,7 +104,13 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
+    "moduleNameMapper": {
+      "^@common/(.*)$": "<rootDir>/src/common/$1",
+      "^@stock/(.*)$": "<rootDir>/src/stock/$1",
+      "^@user/(.*)$": "<rootDir>/src/user/$1",
+      "^@star-stock/(.*)$": "<rootDir>/src/star-stock/$1"
+    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
