@@ -9,4 +9,3 @@ cd /home/ubuntu/HappyMoney
 # npm 명령 실행
 npm ci
 npm run build
-pm2 start dist/main.js --name api-server
