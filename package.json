@@ -104,13 +104,15 @@
       "json",
       "ts"
     ],
-    "rootDir": ".",
-    "moduleNameMapper": {
-      "^@common/(.*)$": "<rootDir>/src/common/$1",
-      "^@stock/(.*)$": "<rootDir>/src/stock/$1",
-      "^@user/(.*)$": "<rootDir>/src/user/$1",
-      "^@star-stock/(.*)$": "<rootDir>/src/star-stock/$1"
-    },
+    "roots": [
+      "<rootDir>"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleDirectories": [
+      "node_modules"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
