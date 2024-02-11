@@ -1,0 +1,21 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/HappyMoney # 이 디렉토리 내에 배포가 진행된다
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  BeforeInstall:
+    - location: scripts/before.install.sh
+      timeout: 300
+
+  AfterInstall:
+    - location: scripts/after.install.sh
+      timeout: 300
