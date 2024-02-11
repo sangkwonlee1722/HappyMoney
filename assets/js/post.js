@@ -63,7 +63,7 @@ async function fetchPostData(url) {
       })
       .join("");
 
-    renderPagination(total, postPage, "/views/post.html");
+    renderPagination(total, postPage, "/views/post.html?");
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;

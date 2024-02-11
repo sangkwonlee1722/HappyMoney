@@ -21,7 +21,7 @@ async function rankListData() {
         const priceClass = parseFloat(list.prdy_ctrt) < 0 ? percentClass : "";
         return `
             <li>
-              <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}'></a>
+              <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}&page=1'></a>
               <div class="rank-name">
                 <p><span>${list.data_rank}</span> ${list.hts_kor_isnm}</p>
               </div>

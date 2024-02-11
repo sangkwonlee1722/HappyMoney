@@ -100,7 +100,7 @@ const spreadOrderLists = async () => {
             </li>
         `
       }).join("")
-    renderPagination(ordersTotal, ordersPage, '/views/stock-order.html');
+    renderPagination(ordersTotal, ordersPage, '/views/stock-order.html?');
   } else {
     mainDom.innerHTML = `
     <div class="none-contents">

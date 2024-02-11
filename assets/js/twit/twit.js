@@ -56,7 +56,7 @@ async function getTwitData(url) {
         `
       }).join("");
 
-    pageUrl ? renderPagination(total, twit_page, '/views/twit/receive-twit.html') : renderPagination(total, twit_page, '/views/twit/twit.html');
+    pageUrl ? renderPagination(total, twit_page, '/views/twit/receive-twit.html?') : renderPagination(total, twit_page, '/views/twit/twit.html?');
   } catch (error) {
     alert(error.response.data.message);
     console.error(error);

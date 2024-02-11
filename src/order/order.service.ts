@@ -449,14 +449,47 @@ export class OrderService implements OnModuleInit {
   }
 
   // 해당 주식 조회API
-  async getStockHolding(stockHoldingId: number, { id }: User) {
+  async getStockHolding(stockCode: string, { id }: User) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
 
-    const data = await this.stockHoldingRepository.findOne({
-      where: { id: stockHoldingId, userId: id, accountId: account.id }
-    });
-    if (!data) throw new NotFoundException({ success: false, message: "해당 주식을 찾을 수 없습니다." });
+    // const data = await this.stockHoldingRepository.findOne({
+    //   where: { id: stockHoldingId, userId: id, accountId: account.id }
+    // });
+    // if (!data) throw new NotFoundException({ success: false, message: "해당 주식을 찾을 수 없습니다." });
+
+    const data = await this.stockHoldingRepository
+      .createQueryBuilder("sh")
+      .leftJoinAndSelect("sh.stock", "s")
+      .select([
+        "sh.id AS id",
+        "sh.stockName AS stockName",
+        "sh.userId AS userId",
+        "sh.stockCode AS stockCode",
+        "sh.numbers AS numbers",
+        "s.clpr as clpr"
+      ])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(o.order_numbers)", "totalBuyOrderNumbers")
+          .from("orders", "o")
+          .where("o.accountId =:accountId", { accountId: account.id })
+          .andWhere("o.buySell=1")
+          .andWhere("o.status='complete'")
+          .andWhere("o.stockCode=sh.stockCode");
+      }, "totalCompleteBuyOrderNumbers")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(o.ttl_price)", "totalBuyOrderPrice")
+          .from("orders", "o")
+          .where("o.accountId =:accountId", { accountId: account.id })
+          .andWhere("o.buySell=1")
+          .andWhere("o.status='complete'")
+          .andWhere("o.stockCode=sh.stockCode");
+      }, "totalCompleteBuyOrderPrice")
+      .where("sh.userId=:userId", { userId: id })
+      .andWhere("sh.stockCode=:stockCode", { stockCode })
+      .getRawOne();
 
     return data;
   }

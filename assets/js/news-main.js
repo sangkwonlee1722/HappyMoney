@@ -36,7 +36,7 @@ async function fetchNewsData(url) {
       })
       .join("");
 
-    renderPagination(total, newsPage, "/views/news-main.html");
+    renderPagination(total, newsPage, "/views/news-main.html?");
   } catch (error) {
     console.error(error);
     const errorMessage = error.response.data.message;

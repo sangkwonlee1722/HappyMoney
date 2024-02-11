@@ -59,7 +59,7 @@ const spreadPostsList = async () => {
       `
       }).join("")
 
-    renderPagination(total, postsPage, '/views/my-posts.html');
+    renderPagination(total, postsPage, '/views/my-posts.html?');
   } else {
     mainDom.innerHTML = `
     <div class="none-contents">

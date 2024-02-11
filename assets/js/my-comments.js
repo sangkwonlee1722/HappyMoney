@@ -62,7 +62,7 @@ const spreadCommentsList = async () => {
       </li>
       `
       }).join("")
-    renderPagination(total, commentsPage, '/views/my-comments.html');
+    renderPagination(total, commentsPage, '/views/my-comments.html?');
   } else {
     mainDom.innerHTML = `
     <div class="none-contents">

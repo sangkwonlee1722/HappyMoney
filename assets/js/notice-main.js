@@ -47,7 +47,7 @@ const getNoticeData = async () => {
         `;
         })
         .join("");
-      renderPagination(noticeTotal, noticePage, "/views/notice-main.html");
+      renderPagination(noticeTotal, noticePage, "/views/notice-main.html?");
     }
   } catch (error) {
     console.error(error);
