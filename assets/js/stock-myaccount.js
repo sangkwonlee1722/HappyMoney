@@ -85,6 +85,7 @@ export const spreadMyAccountInfo = async () => {
     <span class="my-account-roi ${profitClass}"> ${formatProfit} 원 (${profitPercentage}%)</span>
   </div>
   <div class="my-order-btn">
+    <a href="stock-order.html?page=1"></a>
     <button class="hm-button">주문내역 보기</button>
   </div>
 </div>

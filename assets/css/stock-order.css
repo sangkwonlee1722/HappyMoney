@@ -1,0 +1,55 @@
+.order-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.parent-category {
+  margin-right: 2rem;
+  font-weight: bold;
+}
+
+.stock-name {
+  margin-right: 2rem;
+  font-weight: bold;
+}
+
+.order-info {
+  display: flex;
+  text-align: center;
+}
+
+.child-category {
+  margin-right: 2rem;
+}
+
+.stock-name {
+  width: 150px;
+}
+
+.order-ttl-price {
+  width: 150px;
+  margin-right: 1rem;
+}
+
+.order-numbers {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.order-date-btn button {
+  margin-right: 2rem;
+}
+
+.buy {
+  color: #db1515;
+}
+
+.sell {
+  color: #405fff;
+}
+
+.pending {
+  color: #797979;
+}

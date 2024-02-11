@@ -91,7 +91,7 @@ export class OrderController {
    * @param id
    * @returns
    */
-  @Patch("wait/buy:id")
+  @Patch("wait/buy/:id")
   async cancelBuyOrder(@Param("id") orderId: number, @UserInfo() user: User) {
     const data = await this.orderService.cancelBuyOrder(orderId, user);
 
