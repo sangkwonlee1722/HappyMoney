@@ -19,13 +19,10 @@ const getMyAccountsByToken = async (token) => {
     const mainDom = document.querySelector(".accounts-list")
 
     if (account) {
-      const { id, name, accountNumber, totalValue } = account;
+      const { id, name, accountNumber, totalValue, profit, profitPercentage } = account;
 
-      const baseValue = 100000000
 
-      const profit = totalValue - baseValue
       const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
-      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
       const formatValues = addComma(totalValue)
 

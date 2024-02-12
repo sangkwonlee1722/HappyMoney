@@ -40,6 +40,7 @@ async function getTwitData(url) {
         console.log('receive', receiverName, 'send', senderName)
         const send = url === `/api/twits/getReceive?page=${twit_page}` ? false : true;
         const dateObject = new Date(createdAt);
+        dateObject.setHours(dateObject.getHours() - 9)
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
         return `
         <li class="contents">
@@ -56,7 +57,7 @@ async function getTwitData(url) {
         `
       }).join("");
 
-    pageUrl ? renderPagination(total, twit_page, '/views/twit/receive-twit.html') : renderPagination(total, twit_page, '/views/twit/twit.html');
+    pageUrl ? renderPagination(total, twit_page, '/views/twit/receive-twit.html?') : renderPagination(total, twit_page, '/views/twit/twit.html?');
   } catch (error) {
     alert(error.response.data.message);
     console.error(error);

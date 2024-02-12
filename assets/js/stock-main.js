@@ -21,7 +21,7 @@ async function rankListData() {
         const priceClass = parseFloat(list.prdy_ctrt) < 0 ? percentClass : "";
         return `
             <li>
-              <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}'></a>
+              <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}&page=1'></a>
               <div class="rank-name">
                 <p><span>${list.data_rank}</span> ${list.hts_kor_isnm}</p>
               </div>
@@ -65,16 +65,21 @@ async function spreadTopTenAccounts() {
   const mainDom = document.querySelector('.account-rank-list')
   const topTenAccounts = await getAccountRank()
 
+  /* 랭킹 기준 날짜 보여주기 */
+  const updateDate = new Date(topTenAccounts[0].updatedAt)
+  updateDate.setHours(updateDate.getHours() - 9); // 한국 시간으로 변환하기 위해 9시간을 빼줍니다.
+
+  const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
+
+  $('.criteria-date').text(`* ${koreanTime} 기준`)
+
   let rank = 0
 
   mainDom.innerHTML = topTenAccounts
     .map(account => {
-      const { id, name: accountName, totalValue, accountNumber, user } = account
+      const { id, name: accountName, totalValue, profit, profitPercentage, accountNumber, user } = account
 
-      const baseValue = 100000000
-      const profit = totalValue - baseValue
       const formatProfit = profit > 0 ? `${addComma(profit)}` : `${addComma(profit)}`
-      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
       const formatValues = addComma(totalValue)
 

@@ -16,10 +16,10 @@ export default function renderPagination(_totalCount, currentPage, url) {
   const fragmentPage = document.createDocumentFragment();
   if (prev > 0) {
     let allpreli = document.createElement('li');
-    allpreli.insertAdjacentHTML("beforeend", `<a href='${url}?page=1' id='allprev' class="arrow">《</a>`);
+    allpreli.insertAdjacentHTML("beforeend", `<a href='${url}page=1' id='allprev' class="arrow">《</a>`);
 
     let preli = document.createElement('li');
-    preli.insertAdjacentHTML("beforeend", `<a href='${url}?page=${Number(page) - 1}' id='prev' class="arrow">〈</a>`);
+    preli.insertAdjacentHTML("beforeend", `<a href='${url}page=${Number(page) - 1}' id='prev' class="arrow">〈</a>`);
 
     fragmentPage.appendChild(allpreli);
     fragmentPage.appendChild(preli);
@@ -27,16 +27,16 @@ export default function renderPagination(_totalCount, currentPage, url) {
 
   for (let i = first; i <= last; i++) {
     const li = document.createElement("li");
-    li.insertAdjacentHTML("beforeend", `<a href='${url}?page=${i}' id='page-${i}' data-num='${i}'>${i}</a>`);
+    li.insertAdjacentHTML("beforeend", `<a href='${url}page=${i}' id='page-${i}' data-num='${i}'>${i}</a>`);
     fragmentPage.appendChild(li);
   }
 
   if (last < totalPage) {
     let allendli = document.createElement('li');
-    allendli.insertAdjacentHTML("beforeend", `<a href='${url}?page=${totalPage}'  id='allnext' class="arrow">》</a>`);
+    allendli.insertAdjacentHTML("beforeend", `<a href='${url}page=${totalPage}'  id='allnext' class="arrow">》</a>`);
 
     let endli = document.createElement('li');
-    endli.insertAdjacentHTML("beforeend", `<a  href='${url}?page=${Number(page) + 1}'  id='next' class="arrow">〉</a>`);
+    endli.insertAdjacentHTML("beforeend", `<a  href='${url}page=${Number(page) + 1}'  id='next' class="arrow">〉</a>`);
 
     fragmentPage.appendChild(endli);
     fragmentPage.appendChild(allendli);
