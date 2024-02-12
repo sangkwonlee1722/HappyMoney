@@ -41,6 +41,7 @@ async function fetchPostData(url) {
         const { nickName, title, commentNumbers, category, createdAt, id } = post;
         const commentClass = commentNumbers === 0 ? "comment hidden" : "comment";
         const dateObject = new Date(createdAt);
+        dateObject.setHours(dateObject.getHours() - 9)
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
         return `
       <li class="contents">

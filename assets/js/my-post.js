@@ -35,7 +35,11 @@ const spreadPostsList = async () => {
     mainDom.innerHTML = posts
       .map(post => {
         const { id, category, title, nickName, createdAt, commentNumbers } = post
-        const formattedDate = createdAt.split("T")[0]
+
+        const dateObject = new Date(createdAt)
+        dateObject.setHours(dateObject.getHours() - 9)
+
+        const formattedDate = dateObject.toISOString().split("T")[0];
 
         const commentClass = commentNumbers === 0 ? "comment hidden" : "comment";
 

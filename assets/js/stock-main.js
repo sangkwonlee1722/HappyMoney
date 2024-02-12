@@ -67,6 +67,8 @@ async function spreadTopTenAccounts() {
 
   /* 랭킹 기준 날짜 보여주기 */
   const updateDate = new Date(topTenAccounts[0].updatedAt)
+  updateDate.setHours(updateDate.getHours() - 9); // 한국 시간으로 변환하기 위해 9시간을 빼줍니다.
+
   const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
 
   $('.criteria-date').text(`* ${koreanTime} 기준`)
