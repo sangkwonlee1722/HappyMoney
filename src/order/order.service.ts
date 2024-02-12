@@ -197,7 +197,7 @@ export class OrderService implements OnModuleInit {
           attempts: 5, // 주문 처리가 실패했을 때 최대 5번까지 재시도
           backoff: 1000, // 재시도 간의 지연 시간
           removeOnComplete: true, // 주문이 성공적으로 처리되면 큐에서 제거
-          jobId: `${buyOrder.userId}-${Date.now()}` // 주문 ID를 설정
+          jobId: `${buyOrder.userId}-${buyOrder.stockCode}-${Date.now()}` // 주문 ID를 설정
         }
       );
     } catch (error) {
@@ -233,7 +233,7 @@ export class OrderService implements OnModuleInit {
           attempts: 5,
           backoff: 1000,
           removeOnComplete: true,
-          jobId: `${sellOrder.userId}-${Date.now()}`
+          jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${Date.now()}`
         }
       );
     } catch (error) {
