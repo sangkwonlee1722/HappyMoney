@@ -8,7 +8,7 @@ export class JwtGoogleStrategy extends PassportStrategy(Strategy, "google") {
     super({
       clientID: process.env.GMAIL_OAUTH_CLIENT_ID,
       clientSecret: process.env.GAMIL_OAUTH_CLIENT_SECRET,
-      callbackURL: "/api/google/callback",
+      callbackURL: "https://happymoneynow.com/api/google/callback",
       scope: ["email", "profile"]
     });
   }
