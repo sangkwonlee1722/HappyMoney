@@ -29,7 +29,11 @@ const getNoticeData = async () => {
       mainDom.innerHTML = noticeList
         .map((notice) => {
           const { id, title, createdAt } = notice;
-          const formattedDate = createdAt.split("T")[0];
+
+          const dateObject = new Date(createdAt)
+          dateObject.setHours(dateObject.getHours() - 9)
+
+          const formattedDate = dateObject.toISOString().split("T")[0];
 
           return `
         <li class="contents">
@@ -47,7 +51,7 @@ const getNoticeData = async () => {
         `;
         })
         .join("");
-      renderPagination(noticeTotal, noticePage, "/views/notice-main.html");
+      renderPagination(noticeTotal, noticePage, "/views/notice-main.html?");
     }
   } catch (error) {
     console.error(error);

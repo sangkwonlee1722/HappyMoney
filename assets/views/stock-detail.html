@@ -13,9 +13,15 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/stock-detail.css" />
+    <link rel="stylesheet" href="/css/stock-order.css" />
     <title>HappyMoney</title>
   </head>
   <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap delete-order-chk"></div>
+    <!-- 삭제 확인 팝업 e -->
+
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
@@ -33,10 +39,10 @@
             </div>
             <div class="stock-dt-tit-box mt-3">
               <div class="price"></div>
-              <div class="tab-button-wrap">
-                <button class="hm-button fw-bold me-3">호가</button>
-                <button class="hm-button hm-gray-color fw-bold">내 주식</button>
-              </div>
+              <!-- <div class="tab-button-wrap">
+                <button class="hm-button fw-bold me-3" id="stock-price-button">호가</button>
+                <button class="hm-button hm-gray-color fw-bold" id="my-stock-button">내 주식</button>
+              </div> -->
             </div>
           </div>
           <div class="stock-dt-cont-wrap">
@@ -169,7 +175,15 @@
               </div>
             </div>
           </div>
+          <div class="stock-dt-order-wrap mt-5">
+            <div class="stock-dt-my-order-info-wrap"></div>
+            <div class="stock-dt-my-order-list mt-5">
+              <h2>주문 내역</h2>
+              <ul class="order-list mt-3"></ul>
+            </div>
+          </div>
         </div>
+        <ul id="hm-pagination"></ul>
       </div>
       <footer id="footer_wrap"></footer>
     </div>

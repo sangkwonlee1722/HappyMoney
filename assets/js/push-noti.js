@@ -51,6 +51,7 @@ export async function spreadMyAllPushNotis() {
         const readStatusClass = isRead === false ? "unread" : "read";
 
         const dateObject = new Date(createdAt);
+        dateObject.setHours(dateObject.getHours() - 9)
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
         let message

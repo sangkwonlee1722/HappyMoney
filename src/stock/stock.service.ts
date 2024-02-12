@@ -202,7 +202,7 @@ export class StockService {
     }
   }
 
-  @Cron("0 0 11 * * 2-6") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
+  @Cron("0 0 11 * * 1-5") // 공공데이터 업데이트 시간 확인 (월-금 오전 11시 1회 업데이트)
   async updateStockAndRank() {
     // 전일 기준 종목 시가총액, 발행주 수, 종가 업데이트
     await this.saveStocks();
