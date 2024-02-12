@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="https://cdn.socket.io/4.7.4/socket.io.esm.min.js"></script>
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/stock-common.js"></script>
+    <script type="module" src="/js/stock-detail-my.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/stock-detail.css" />
+    <link rel="stylesheet" href="/css/stock-order.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap delete-order-chk"></div>
+    <!-- 삭제 확인 팝업 e -->
+
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <div id="stock-header"></div>
+        <div class="stock-dt-wrap mt-5">
+          <div class="stock-dt-tit mb-5">
+            <div class="stock-dt-tit tit-img">
+              <h2></h2>
+              <div class="star-stock star-stock-off">
+                <img src="../images/empty-star.png" alt="empty-star" />
+              </div>
+              <div class="star-stock star-stock-on">
+                <img src="../images/yellow-star.png" alt="yellow-star" />
+              </div>
+            </div>
+            <div class="stock-dt-tit-box mt-3">
+              <div class="price"></div>
+              <!-- <div class="tab-button-wrap">
+                <button class="hm-button fw-bold me-3" id="stock-price-button"><a href=""></a>호가</button>
+                <button class="hm-button hm-gray-color fw-bold" id="my-stock-button">내 주식</button>
+              </div> -->
+            </div>
+          </div>
+          <div class="stock-dt-cont-wrap">
+            <ul class="stock-dt-live">
+              <li class="title">
+                <div class="price">호가</div>
+                <div class="amount">
+                  <span style="color: #405fff">매도</span>/<span style="color: #ff2828">매수</span> 잔량
+                </div>
+              </li>
+              <li class="buy num10">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num9">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num8">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num7">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num6">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num5">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num4">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num3">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num2">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="buy num1">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num1">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num2">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num3">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num4">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num5">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num6">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num7">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num8">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num9">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+              <li class="sell num10">
+                <div class="price"></div>
+                <div class="amount"></div>
+              </li>
+            </ul>
+            <div class="stock-dt-right">
+              <ul class="sell-buy-tab mb-4">
+                <li class="me-3 buy-tab on">구매<span>(매수)</span></li>
+                <li class="sell-tab">판매<span>(매도)</span></li>
+              </ul>
+              <div class="sell-buy-cont">
+                <div class="up">
+                  <div class="hm-input-wrap fw-bold mb-4">
+                    <label for="fixPrice">지정가</label>
+                    <input type="number" class="hm-input" id="fixPrice" value="" disabled />
+                  </div>
+                  <div class="hm-checkbox fw-bold mb-4">
+                    <input type="checkbox" id="fixCheck" checked />
+                    <label for="fixCheck">시장가</label>
+                  </div>
+                  <div class="hm-input-wrap fw-bold">
+                    <label for="stockAmount">수량</label>
+                    <input type="number" class="hm-input" id="stockAmount" value="" />
+                  </div>
+                  <ul class="percent mt-3">
+                    <li>10%</li>
+                    <li>25%</li>
+                    <li>50%</li>
+                    <li>100%</li>
+                  </ul>
+                  <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p>
+                </div>
+                <div class="down">
+                  <p class="fw-bold fs-4 mb-2">주문 총액</p>
+                  <div class="text-end mb-3 fs-3 fw-bold">
+                    <p class="total-price d-inline-block" style="color: #db1515">0</p>
+                    <span>원</span>
+                  </div>
+                  <div class="hm-button-wrap">
+                    <button class="hm-button w-100 fw-bold buy-btn" id="buyBtn">구매</button>
+                    <button class="hm-button w-100 fw-bold sell-btn" id="sellBtn" style="display: none">판매</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="stock-dt-order-wrap mt-5">
+            <div class="stock-dt-my-order-info-wrap"></div>
+            <div class="stock-dt-my-order-list mt-5">
+              <h2>주문 내역</h2>
+              <ul class="order-list mt-3"></ul>
+            </div>
+          </div>
+        </div>
+        <ul id="hm-pagination"></ul>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+</html>

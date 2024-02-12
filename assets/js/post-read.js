@@ -61,7 +61,7 @@ async function fetchPostData(postId) {
       <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
-          <div class="comment-nickName">${nickName}<a href='/views/twit/twit-send.html?name=${data.nickName}' class="ms-3 fw-normal" id="twit" user-id="${userId}" style="display: none; font-size:13px">
+          <div class="comment-nickName">${nickName}<a href='/views/twit/twit-send.html?name=${nickName}' class="ms-3 fw-normal" id="twit" user-id="${userId}" style="display: none; font-size:13px">
             쪽지 보내기
             </a>
           </div>
