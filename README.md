@@ -31,6 +31,9 @@ SLACK_ALARM_URI_SCHEDULE = 슬랙 웹 훅 URL
 KAKAO_CLIENT_ID= kakao 애플리케이션 API CLIENT ID
 KAKAO_CLIENT_SECRET =  kakao 애플리케이션 API CLIENT SECRET
 
+REDIS_HOST= 레디스 클라우드 주소
+REDIS_PORT= 레디스 클라우드 포트번호
+REDIS_PASSWORD= 레디스 클라우드 비밀번호
 ```
 
 ## 실행 방법
