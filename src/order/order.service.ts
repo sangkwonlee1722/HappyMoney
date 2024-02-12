@@ -31,7 +31,7 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 00 09 * * 1-5")
+  @Cron("0 26 18 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
@@ -58,10 +58,7 @@ export class OrderService implements OnModuleInit {
       return;
     }
     try {
-      let orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-      // 작업 시작 전에 orders를 다시 체크하여 업데이트
-      orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-
+      const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
       console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
@@ -118,12 +115,15 @@ export class OrderService implements OnModuleInit {
       throw error;
     } finally {
       if (this.shouldRunTask) {
-        // waitOrderChk 작업이 이미 등록되어 있는지 확인
+        // 기존에 등록된 작업이 있다면 제거
         const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
-        if (!existingTimeout) {
-          const timeout = setTimeout(() => this.waitOrderChk(), 1000);
-          this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          this.schedulerRegistry.deleteTimeout("waitOrderChk");
         }
+        // waitOrderChk 작업을 1초 후에 다시 실행
+        const timeout = setTimeout(() => this.waitOrderChk(), 1000);
+        this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
       }
     }
   }
