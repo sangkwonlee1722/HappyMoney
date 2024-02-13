@@ -39,7 +39,7 @@ const getNoticeData = async () => {
         <li class="contents">
         <a href="/views/notice-page.html?id=${id}"></a>
           <div class="list-info">
-            <div class="classification">NOTICE</div>
+            <div class="classification">공지사항</div>
             <div class="title">${title}</div>
           </div>
           <div class="list-info-2">
