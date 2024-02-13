@@ -26,6 +26,7 @@ async function getDetailTwitData(url) {
     const { senderName, receiverName, createdAt, contents, isRead } = item;
     const mainDom = document.querySelector("#twitDetailWrap");
     const dateObject = new Date(createdAt);
+    dateObject.setHours(dateObject.getHours() - 9)
     const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
     mainDom.innerHTML = `

@@ -11,7 +11,6 @@ async function rankListData() {
   try {
     const stockList = await axios.get(stockUrl);
     const list = stockList.data.list.output.slice(0, 10);
-    // console.log(list);
 
     const mainDom = document.querySelector(".rank-list-wrap");
     mainDom.innerHTML = list
@@ -65,16 +64,21 @@ async function spreadTopTenAccounts() {
   const mainDom = document.querySelector('.account-rank-list')
   const topTenAccounts = await getAccountRank()
 
+  /* 랭킹 기준 날짜 보여주기 */
+  const updateDate = new Date(topTenAccounts[0].updatedAt)
+  updateDate.setHours(updateDate.getHours() - 9); // 한국 시간으로 변환하기 위해 9시간을 빼줍니다.
+
+  const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
+
+  $('.criteria-date').text(`* ${koreanTime} 기준`)
+
   let rank = 0
 
   mainDom.innerHTML = topTenAccounts
     .map(account => {
-      const { id, name: accountName, totalValue, accountNumber, user } = account
+      const { id, name: accountName, totalValue, profit, profitPercentage, accountNumber, user } = account
 
-      const baseValue = 100000000
-      const profit = totalValue - baseValue
       const formatProfit = profit > 0 ? `${addComma(profit)}` : `${addComma(profit)}`
-      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
       const formatValues = addComma(totalValue)
 

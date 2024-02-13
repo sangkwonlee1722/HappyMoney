@@ -14,7 +14,7 @@ import { PaginatePostDto } from "src/common/dto/paginate.dto";
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
   /**
-   * 구매(매도)
+   * 구매(매수)
    * @param createTwitDto
    * @returns
    */
@@ -28,7 +28,7 @@ export class OrderController {
   }
 
   /**
-   * 판매(매수)
+   * 판매(매도)
    * @param createTwitDto
    * @returns
    */
@@ -91,7 +91,7 @@ export class OrderController {
    * @param id
    * @returns
    */
-  @Patch("wait/buy:id")
+  @Patch("wait/buy/:id")
   async cancelBuyOrder(@Param("id") orderId: number, @UserInfo() user: User) {
     const data = await this.orderService.cancelBuyOrder(orderId, user);
 
@@ -134,13 +134,14 @@ export class OrderController {
   }
 
   /**
-   * 보유 주식 상세
-   * @param id
+   * 특정 종목 보유 주식
+   * @param stockCode
+   * @param user
    * @returns
    */
-  @Get("stock/:id")
-  async getStockHolding(@Param("id") stockHoldingId: number, @UserInfo() user: User) {
-    const data = await this.orderService.getStockHolding(stockHoldingId, user);
+  @Get("stock/:stockCode")
+  async getStockHolding(@Param("stockCode") stockCode: string, @UserInfo() user: User) {
+    const data = await this.orderService.getStockHolding(stockCode, user);
 
     return {
       success: true,

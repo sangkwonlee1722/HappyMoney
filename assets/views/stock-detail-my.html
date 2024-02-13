@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="https://cdn.socket.io/4.7.4/socket.io.esm.min.js"></script>
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/stock-common.js"></script>
+    <script type="module" src="/js/stock-detail-my.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/stock-detail.css" />
+    <link rel="stylesheet" href="/css/stock-order.css" />
+    <title>HappyMoney</title>
+  </head>
+  <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap delete-order-chk"></div>
+    <!-- 삭제 확인 팝업 e -->
+
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <div id="stock-header"></div>
+        <div class="stock-dt-wrap mt-5">
+          <div class="stock-dt-tit mb-5">
+            <div class="stock-dt-tit tit-img">
+              <h2></h2>
+              <div class="star-stock star-stock-off">
+                <img src="../images/empty-star.png" alt="empty-star" />
+              </div>
+              <div class="star-stock star-stock-on">
+                <img src="../images/yellow-star.png" alt="yellow-star" />
+              </div>
+            </div>
+            <div class="stock-dt-tit-box mt-3">
+              <div class="price"></div>
+              <div id="stockDtTab"></div>
+              </div>
+            </div>
+          </div>
+          <div class="stock-dt-order-wrap mt-5">
+            <div class="stock-dt-my-order-info-wrap"></div>
+            <div class="stock-dt-my-order-list mt-5">
+              <h2>주문 내역</h2>
+              <ul class="order-list mt-3"></ul>
+            </div>
+          </div>
+        </div>
+        <ul id="hm-pagination"></ul>
+      </div>
+      <footer id="footer_wrap"></footer>
+    </div>
+  </body>
+</html>

@@ -96,7 +96,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100% - 60px);
+  /* height: calc(100% - 60px); */
 }
 .percent {
   display: flex;
@@ -146,3 +146,68 @@
 .star-stock img:hover {
   cursor: pointer;
 }
+
+/* 내 주식 s */
+.stock-dt-my-order-info-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.stock-dt-order-wrap h2 {
+  font-weight: bold;
+}
+
+.my-order-header-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.my-order-header-top-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-order-header-top-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-order-total-price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-order-header-bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.my-order-header-bottom-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-order-header-bottom-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-number {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.ttl-profit {
+  font-size: 14px;
+  text-align: end;
+}
+
+.ttl-profit.red {
+  color: #eb5665;
+}
+
+.ttl-profit.blue {
+  color: #5044fa;
+}
+/* 내 주식 e */

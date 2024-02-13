@@ -69,7 +69,15 @@ export class AccountsService {
   async getMyAccountValue(userId: number): Promise<Account> {
     const account: Account = await this.accountRepository
       .createQueryBuilder()
-      .select(["id", "account_number AS accountNumber", "point", "total_value AS totalValue", "name"])
+      .select([
+        "id",
+        "account_number AS accountNumber",
+        "point",
+        "total_value AS totalValue",
+        "profit",
+        "profit_percentage AS profitPercentage",
+        "name"
+      ])
       .where("user_id=:userId", { userId })
       .getRawOne();
 
@@ -123,7 +131,6 @@ export class AccountsService {
   }
 
   /* 계좌 가치로 랭킹 구현하기 */
-  @Cron("0 30 11 * * 2-6")
   async updateAccountValue() {
     let start = new Date();
     const calculateAccountValue = await this.calculateAccountValue();
@@ -133,7 +140,7 @@ export class AccountsService {
       .insert()
       .into(Account)
       .values(calculateAccountValue)
-      .orUpdate(["total_value"], "id", {
+      .orUpdate(["total_value", "profit", "profit_percentage", "updated_at"], "id", {
         skipUpdateIfNoValuesChanged: true,
         upsertType: "on-conflict-do-update"
       })
@@ -184,9 +191,15 @@ export class AccountsService {
 
       const totalValue = point + totalStockValue + Number(totalOrderPrice);
 
+      const basePoint = 100000000;
+      const profit = totalValue - basePoint;
+      const profitPercentage = ((profit / basePoint) * 100).toFixed(1);
+
       return {
         id,
-        totalValue: +totalValue
+        totalValue: +totalValue,
+        profit,
+        profitPercentage
       };
     });
 
@@ -197,8 +210,20 @@ export class AccountsService {
     const topTenAccounts: Account[] = await this.accountRepository
       .createQueryBuilder("a")
       .leftJoinAndSelect("a.user", "u")
-      .select(["a.id", "a.accountNumber", "a.point", "a.totalValue", "a.name", "u.nickName"])
+      .select([
+        "a.id",
+        "a.accountNumber",
+        "a.point",
+        "a.totalValue",
+        "a.profit",
+        "a.profitPercentage",
+        "a.name",
+        "a.createdAt",
+        "a.updatedAt",
+        "u.nickName"
+      ])
       .orderBy("a.totalValue", "DESC")
+      .addOrderBy("a.createdAt", "DESC")
       .take(10)
       .getMany();
 

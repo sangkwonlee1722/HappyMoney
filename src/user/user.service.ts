@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/co
 import { CreateUserDto } from "./dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { Repository } from "typeorm";
+import { IsNull, Not, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { compareSync, hashSync } from "bcrypt";
 import { User } from "./entities/user.entity";
@@ -144,7 +144,10 @@ export class UserService {
   }
 
   async find() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      select: ["id", "email", "name", "deletedAt", "nickName"],
+      withDeleted: true // soft delete된 항목도 포함
+    });
   }
 
   async findUserById(id: number) {

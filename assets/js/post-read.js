@@ -21,6 +21,7 @@ async function fetchPostData(postId) {
     const commentsResponse = await axios.get(`/api/comments/post/${postId}`);
     const comments = commentsResponse.data.data;
     const createdAt = new Date(data.createdAt);
+    createdAt.setHours(createdAt.getHours() - 9)
     const formattedCreatedAt = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")} ${String(createdAt.getHours()).padStart(2, "0")}:${String(createdAt.getMinutes()).padStart(2, "0")}`;
 
     postBox.innerHTML = `
@@ -53,13 +54,14 @@ async function fetchPostData(postId) {
         const { id: dataId, createdAt, content } = comment;
         const { nickName, id: userId } = comment.commentUser;
         const dateObject = new Date(createdAt);
+        dateObject.setHours(dateObject.getHours() - 9)
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
         return `
       <div class="comment" data-id="${dataId}">
       <div class="mc-contents-wrap">
         <div class="mc-info-wrap">
-          <div class="comment-nickName">${nickName}<a href='/views/twit/twit-send.html?name=${data.nickName}' class="ms-3 fw-normal" id="twit" user-id="${userId}" style="display: none; font-size:13px">
+          <div class="comment-nickName">${nickName}<a href='/views/twit/twit-send.html?name=${nickName}' class="ms-3 fw-normal" id="twit" user-id="${userId}" style="display: none; font-size:13px">
             쪽지 보내기
             </a>
           </div>

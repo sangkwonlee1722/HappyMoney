@@ -13,9 +13,15 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/stock-detail.css" />
+    <link rel="stylesheet" href="/css/stock-order.css" />
     <title>HappyMoney</title>
   </head>
   <body>
+    <!-- 삭제 확인 팝업 s -->
+    <div class="hm-dim" onclick="drPopupClose(this)"></div>
+    <div class="hm-popup-wrap delete-order-chk"></div>
+    <!-- 삭제 확인 팝업 e -->
+
     <div class="hm-container">
       <header id="header_wrap"></header>
       <div id="main-content">
@@ -33,10 +39,7 @@
             </div>
             <div class="stock-dt-tit-box mt-3">
               <div class="price"></div>
-              <div class="tab-button-wrap">
-                <button class="hm-button fw-bold me-3">호가</button>
-                <button class="hm-button hm-gray-color fw-bold">내 주식</button>
-              </div>
+              <div id="stockDtTab"></div>
             </div>
           </div>
           <div class="stock-dt-cont-wrap">
@@ -147,23 +150,23 @@
                     <label for="stockAmount">수량</label>
                     <input type="number" class="hm-input" id="stockAmount" value="" />
                   </div>
-                  <ul class="percent mt-3">
+                  <!-- <ul class="percent mt-3">
                     <li>10%</li>
                     <li>25%</li>
                     <li>50%</li>
                     <li>100%</li>
-                  </ul>
-                  <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p>
+                  </ul> -->
+                  <!-- <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p> -->
                 </div>
-                <div class="down">
+                <div class="down mt-5">
                   <p class="fw-bold fs-4 mb-2">주문 총액</p>
                   <div class="text-end mb-3 fs-3 fw-bold">
                     <p class="total-price d-inline-block" style="color: #db1515">0</p>
                     <span>원</span>
                   </div>
                   <div class="hm-button-wrap">
-                    <button class="hm-button w-100 fw-bold buy-btn">구매</button>
-                    <button class="hm-button w-100 fw-bold sell-btn" style="display: none">판매</button>
+                    <button class="hm-button w-100 fw-bold buy-btn" id="buyBtn">구매</button>
+                    <button class="hm-button w-100 fw-bold sell-btn" id="sellBtn" style="display: none">판매</button>
                   </div>
                 </div>
               </div>

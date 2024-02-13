@@ -16,7 +16,10 @@ const getMyInfoByToken = async (token) => {
 
     const { createdAt, email, name, nickName, phone, signupType } = result.data;
 
-    const formattedDate = createdAt.split("T")[0];
+    const dateObject = new Date(createdAt)
+    dateObject.setHours(dateObject.getHours() - 9)
+
+    const formattedDate = dateObject.toISOString().split("T")[0];
 
     const mainDom = document.querySelector(".profile-wrap");
     if (signupType !== "local") {

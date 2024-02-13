@@ -85,6 +85,7 @@ export const spreadMyAccountInfo = async () => {
     <span class="my-account-roi ${profitClass}"> ${formatProfit} 원 (${profitPercentage}%)</span>
   </div>
   <div class="my-order-btn">
+    <a href="stock-order.html?page=1"></a>
     <button class="hm-button">주문내역 보기</button>
   </div>
 </div>
@@ -166,7 +167,7 @@ export const spreadMyStocks = async () => {
 
         return `
         <li data-id=${id}>
-        <a href="/views/stock-detail.html?code=${stockCode}&name=${stockName}"></a>
+        <a href="/views/stock-detail.html?code=${stockCode}&name=${stockName}&page=1"></a>
         <div class="my-stock-name-box">
           <div class="name-code">
             <div class="stock-name">${stockName}</div>
@@ -228,7 +229,7 @@ export const spreadStarStocks = async () => {
 
         return `
         <li data-id=${id}>
-        <a href="/views/stock-detail.html?code=${srtnCd}&name=${itmsNm}"></a>
+        <a href="/views/stock-detail.html?code=${srtnCd}&name=${itmsNm}&page=1"></a>
         <div class="stock-name-box">
           <div class="market">${mrktCtg}</div>
           <div class="name-code">
