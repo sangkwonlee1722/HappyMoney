@@ -31,7 +31,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       name: "orders",
       limiter: {
         max: 1,
-        duration: 500
+        duration: 1000
       }
     })
   ],
