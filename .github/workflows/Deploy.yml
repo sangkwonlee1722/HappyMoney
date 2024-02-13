@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: HappyMoney CD
 
 on:
   push:
@@ -50,4 +50,4 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./HAPPY_MONEY.zip s3://happymoneynow.com/final-project-happymoney/HAPPY_MONEY.zip
 
       - name: Request Deployment
-        run: aws deploy create-deployment --application-name happymoney --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name HappyMoney-Deploy --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY.zip
+        run: aws deploy create-deployment --application-name happymoney-cd --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name happymoney-final --s3-location bucket=happymoneynow.com,bundleType=zip,key=final-project-happymoney/HAPPY_MONEY.zip
