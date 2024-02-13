@@ -26,6 +26,8 @@ export class orderProcessor {
     const { buyOrder, id } = job.data;
 
     const account = await this.accountsService.findOneAccount(id);
+    // 계좌에 해당 주식 확인
+    const sH = await this.orderService.findOneStock(account.id, buyOrder.stockCode);
     /* 주식 구매(매수) 시 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       try {
@@ -40,9 +42,6 @@ export class orderProcessor {
             point: account.point - buyOrder.ttlPrice
           }
         );
-
-        // 계좌에 해당 주식 확인
-        const sH = await this.orderService.findOneStock(account.id, buyOrder.stockCode);
 
         // 계좌에 해당 주식이 없고 체결 됐을 때,
         if (!sH && buyOrder.status === OrderStatus.Complete) {
@@ -83,25 +82,13 @@ export class orderProcessor {
     const { sellOrder, id } = job.data;
 
     const account = await this.accountsService.findOneAccount(id);
-    // 계좌에 해당 주식 확인
     const sH = await this.orderService.findOneStock(account.id, sellOrder.stockCode);
-    if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
-    if (sH.numbers < sellOrder.orderNumbers)
-      throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
 
     /* 주식 판매(매도) 시 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       try {
         // 판매(매도) 내역 저장
         await em.save(Order, sellOrder);
-
-        // 예약 매도 수량 확인
-        const orderChk = await em.find(Order, {
-          where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
-        });
-        const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
-        if (totalOrderNumbers > sH.numbers)
-          throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
 
         // 체결 됐을 때,
         if (sH && sellOrder.status === OrderStatus.Complete) {

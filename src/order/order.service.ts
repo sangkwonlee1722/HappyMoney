@@ -58,10 +58,7 @@ export class OrderService implements OnModuleInit {
       return;
     }
     try {
-      let orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-      // 작업 시작 전에 orders를 다시 체크하여 업데이트
-      orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-
+      const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
       console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
@@ -74,8 +71,6 @@ export class OrderService implements OnModuleInit {
           // 가격비교를 위한 현재가 호가OpenAPI
           const list = await this.stockService.getStockPrice(order.stockCode);
           const stockPr = list.output1.bidp1;
-          // console.log("여기 찾아!!", stockPr);
-
           // 구매(매수)일 때,
           const buyOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
@@ -83,9 +78,35 @@ export class OrderService implements OnModuleInit {
           console.log("buy", buyOrderCode);
 
           for (const buyOrder of buyOrderCode) {
+            // 계좌에 해당 주식 확인
+            const sH = await this.findOneStock(buyOrder.accountId, order.stockCode);
             if (buyOrder.price >= stockPr) {
               buyOrder.status = OrderStatus.Complete;
               await em.save(buyOrder);
+            }
+            // 계좌에 해당 주식이 없고 체결 됐을 때,
+            if (!sH && buyOrder.status === OrderStatus.Complete) {
+              const createSh = em.create(StockHolding, {
+                userId: buyOrder.userId,
+                accountId: buyOrder.accountId,
+                stockName: buyOrder.stockName,
+                stockCode: buyOrder.stockCode,
+                numbers: buyOrder.orderNumbers,
+                ttlPrice: buyOrder.ttlPrice
+              });
+
+              await em.save(StockHolding, createSh);
+            }
+            // 계좌에 해당 주식이 있고 체결 됐을 때,
+            if (sH && buyOrder.status === OrderStatus.Complete) {
+              await em.update(
+                StockHolding,
+                { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
+                {
+                  numbers: sH.numbers + buyOrder.orderNumbers,
+                  ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
+                }
+              );
             }
           }
 
@@ -96,6 +117,8 @@ export class OrderService implements OnModuleInit {
           console.log("sell", sellOrderCode);
 
           for (const sellOrder of sellOrderCode) {
+            // 계좌에 해당 주식 확인
+            const sH = await this.findOneStock(sellOrder.accountId, order.stockCode);
             const sellAccount = await em.findOne(Account, { where: { userId: sellOrder.userId } });
             if (sellOrder.price <= stockPr) {
               sellOrder.status = OrderStatus.Complete;
@@ -103,6 +126,15 @@ export class OrderService implements OnModuleInit {
 
               sellAccount.point += sellOrder.ttlPrice;
               await em.save(sellAccount);
+
+              await em.update(
+                StockHolding,
+                { accountId: sellOrder.accountId, stockCode: sellOrder.stockCode },
+                {
+                  numbers: sH.numbers - sellOrder.orderNumbers,
+                  ttlPrice: sH.ttlPrice - sellOrder.ttlPrice
+                }
+              );
             }
           }
 
@@ -118,12 +150,15 @@ export class OrderService implements OnModuleInit {
       throw error;
     } finally {
       if (this.shouldRunTask) {
-        // waitOrderChk 작업이 이미 등록되어 있는지 확인
+        // 기존에 등록된 작업이 있다면 제거
         const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
-        if (!existingTimeout) {
-          const timeout = setTimeout(() => this.waitOrderChk(), 1000);
-          this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          this.schedulerRegistry.deleteTimeout("waitOrderChk");
         }
+        // waitOrderChk 작업을 1초 후에 다시 실행
+        const timeout = setTimeout(() => this.waitOrderChk(), 1000);
+        this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
       }
     }
   }
@@ -193,11 +228,11 @@ export class OrderService implements OnModuleInit {
         "buy",
         { buyOrder, id },
         {
-          priority: buyOrder.status === "complete" ? 1 : 2, // 체결되는 주문이 우선순위로 설정
-          attempts: 5, // 주문 처리가 실패했을 때 최대 5번까지 재시도
+          priority: 1, // 우선순위 설정
+          attempts: 3, // 주문 처리가 실패했을 때 최대 3번까지 재시도
           backoff: 1000, // 재시도 간의 지연 시간
           removeOnComplete: true, // 주문이 성공적으로 처리되면 큐에서 제거
-          jobId: `${buyOrder.userId}-${buyOrder.stockCode}-${Date.now()}` // 주문 ID를 설정
+          jobId: `${buyOrder.userId}-${buyOrder.stockCode}-${buyOrder.buySell}-${Date.now()}` // 주문 ID를 설정
         }
       );
     } catch (error) {
@@ -210,7 +245,6 @@ export class OrderService implements OnModuleInit {
   async sellStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-
     // 판매(매도) 내역 생성
     const sellOrder = this.orderRepository.create({
       userId: id,
@@ -224,16 +258,30 @@ export class OrderService implements OnModuleInit {
       status
     });
 
+    // 계좌에 해당 주식 확인
+    const sH = await this.findOneStock(account.id, sellOrder.stockCode);
+    if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
+    if (sH.numbers < sellOrder.orderNumbers)
+      throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
+
+    // 예약 매도 수량 확인
+    const orderChk = await this.orderRepository.find({
+      where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
+    });
+    const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
+    if (totalOrderNumbers > sH.numbers)
+      throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
+
     try {
       await this.ordersQueue.add(
         "sell",
         { sellOrder, id },
         {
-          priority: sellOrder.status === "complete" ? 1 : 2,
-          attempts: 5,
+          priority: 1,
+          attempts: 3,
           backoff: 1000,
           removeOnComplete: true,
-          jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${Date.now()}`
+          jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${sellOrder.buySell}-${Date.now()}`
         }
       );
     } catch (error) {
