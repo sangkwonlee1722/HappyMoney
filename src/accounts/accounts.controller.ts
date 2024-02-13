@@ -102,8 +102,8 @@ export class AccountsController {
    * @returns
    */
   @Delete(":accountId")
-  async removeMyAccountById(@Param("accountId") accountId: number, @UserInfo() user: User) {
-    await this.accountsService.removeMyAccountById(accountId, user.id);
+  async removeMyAccountById(@UserInfo() user: User) {
+    await this.accountsService.removeMyAccountById(user.id);
     return {
       success: true,
       message: "okay"

@@ -81,10 +81,11 @@ export class NewsService {
     return { news, count };
   }
 
-  @Cron("0 */30 * * * *") // 30분마다 뉴스 크롤링
+  @Cron("* */30 * * * *") // 30분마다 뉴스 크롤링
   async saveCrawledNews() {
     console.log("뉴스 크롤링 시작");
     let start = new Date();
+    console.log("지금 시간은?", start);
     await this.crawlNews();
     console.log("뉴스 크롤링 완료");
     let end = new Date();
@@ -99,11 +100,6 @@ export class NewsService {
     time.setDate(time.getDate() - 7);
     console.log("time: ", time);
 
-    await this.newsRepository
-    .createQueryBuilder()
-    .delete()
-    .from(News)
-    .where("createdAt <= :time", { time })
-    .execute();
+    await this.newsRepository.createQueryBuilder().delete().from(News).where("createdAt <= :time", { time }).execute();
   }
 }

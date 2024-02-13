@@ -81,6 +81,8 @@ export class AccountsService {
       .where("user_id=:userId", { userId })
       .getRawOne();
 
+    await this.updateMyAccountValue(account);
+
     return account;
   }
 
@@ -114,18 +116,23 @@ export class AccountsService {
 
   // 계좌 찾기
   async findOneAccount(userId: number) {
-    const account = this.accountRepository.findOne({ where: { userId } });
+    const account = await this.accountRepository.findOne({ where: { userId }, relations: ["orders", "stockHoldings"] });
+
+    if (!account) {
+      throw new NotFoundException({ success: false, message: "해당하는 계좌를 찾을 수 없습니다." });
+    }
+
     return account;
   }
 
   async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
-    await this.getMyAccountDetailInfo(userId);
+    await this.findOneAccount(userId);
 
     await this.accountRepository.update({ id: accountId }, { name });
   }
 
-  async removeMyAccountById(accountId: number, userId: number): Promise<void> {
-    const account: Account = await this.getMyAccountDetailInfo(userId);
+  async removeMyAccountById(userId: number): Promise<void> {
+    const account: Account = await this.findOneAccount(userId);
 
     await this.accountRepository.softRemove(account);
   }
@@ -228,5 +235,52 @@ export class AccountsService {
       .getMany();
 
     return topTenAccounts;
+  }
+
+  async updateMyAccountValue(myAccount: Account) {
+    const { id, totalValue, profit, profitPercentage } = await this.calculateMyAccountValue(myAccount.id);
+
+    await this.accountRepository.update({ id, totalValue, profit, profitPercentage }, { id });
+  }
+
+  async calculateMyAccountValue(accountId: number) {
+    const data = await this.accountRepository
+      .createQueryBuilder("a")
+      .where("a.id=:accountId", { accountId })
+      .select(["id", "point"])
+      .addSelect((subQuery) => {
+        return subQuery
+          .select("SUM(sh.numbers * s.clpr)", "totalStockValue")
+          .from("stock_holdings", "sh")
+          .leftJoin("sh.stock", "s")
+          .where("sh.accountId = a.id");
+      }, "totalStockValue")
+      .addSelect((subQuery) => {
+        return subQuery
+          .select(
+            "SUM(CASE WHEN ao.status = 'order' AND ao.buySell='1' THEN ao.ttlPrice ELSE 0 END)",
+            "totalOrderPrice"
+          )
+          .from("orders", "ao")
+          .where("ao.accountId = a.id");
+      }, "totalOrderPrice")
+      .getRawOne();
+
+    const { id, point, totalStockValue, totalOrderPrice } = data;
+
+    const totalValue = point + totalStockValue + Number(totalOrderPrice);
+
+    const basePoint = 100000000;
+    const profit = totalValue - basePoint;
+    const profitPercentage = ((profit / basePoint) * 100).toFixed(1);
+
+    const myAccountValue = {
+      id,
+      totalValue: +totalValue,
+      profit,
+      profitPercentage
+    };
+
+    return myAccountValue;
   }
 }

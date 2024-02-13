@@ -31,7 +31,6 @@ const getNoticeData = async () => {
           const { id, title, createdAt } = notice;
 
           const dateObject = new Date(createdAt)
-          dateObject.setHours(dateObject.getHours() - 9)
 
           const formattedDate = dateObject.toISOString().split("T")[0];
 
