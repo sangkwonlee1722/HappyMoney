@@ -33,7 +33,7 @@ export class orderProcessor {
         // 구매(매수) 내역 저장
         await em.save(Order, buyOrder);
 
-        // 계좌 포인트
+        // 계좌 포인트ㄷ
         await em.update(
           Account,
           { id: account.id },
@@ -41,7 +41,7 @@ export class orderProcessor {
             point: account.point - buyOrder.ttlPrice
           }
         );
-
+        console.log("1. test", buyOrder);
         // 계좌에 해당 주식이 없고 체결 됐을 때,
         if (!sH && buyOrder.status === OrderStatus.Complete) {
           const createSh = em.create(StockHolding, {
@@ -56,6 +56,7 @@ export class orderProcessor {
           await em.save(StockHolding, createSh);
         }
 
+        console.log("2. test", buyOrder);
         // 계좌에 해당 주식이 있고 체결 됐을 때,
         if (sH && buyOrder.status === OrderStatus.Complete) {
           await em.update(
@@ -67,6 +68,7 @@ export class orderProcessor {
             }
           );
         }
+        console.log("3. test", buyOrder);
       } catch (error) {
         console.error(error);
         throw error;
