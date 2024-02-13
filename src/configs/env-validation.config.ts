@@ -13,6 +13,5 @@ export const configModuleValidationSchema = Joi.object({
   PROD_APPKEY: Joi.string().required(),
   PROD_APPSECRET: Joi.string().required(),
   REDIS_HOST: Joi.string().required(),
-  REDIS_PORT: Joi.string().required(),
-  REDIS_PASSWORD: Joi.string().required()
+  REDIS_PORT: Joi.string().required()
 });
