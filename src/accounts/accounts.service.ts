@@ -242,7 +242,12 @@ export class AccountsService {
   async updateMyAccountValue(myAccount: Account) {
     const { id, totalValue, profit, profitPercentage } = await this.calculateMyAccountValue(myAccount.id);
 
-    await this.accountRepository.update({ id, totalValue, profit, profitPercentage }, { id });
+    await this.accountRepository
+      .createQueryBuilder()
+      .update(Account)
+      .set({ totalValue, profit, profitPercentage })
+      .where("id = :accountId", { accountId: id })
+      .execute();
   }
 
   async calculateMyAccountValue(accountId: number) {
