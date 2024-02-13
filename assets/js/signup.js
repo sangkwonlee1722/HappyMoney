@@ -46,7 +46,7 @@ emailCheckBtn.addEventListener("click", async () => {
       return;
     }
   } catch (error) {
-    console.error("Error:", error.response);
+    console.error("Error:", error);
   }
 });
 
@@ -191,6 +191,7 @@ signupBtn.addEventListener("click", async () => {
     if (response.data.success) {
       alert("이메일 인증 후 로그인 해주세요.");
       window.location.href = "/views/main.html";
+      window.history.replaceState(null, null, "/views/main.html");
     } else {
       const errorMessage = response.data.message;
       alert(errorMessage);
