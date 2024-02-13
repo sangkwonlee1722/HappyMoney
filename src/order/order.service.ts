@@ -31,7 +31,7 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 0 9 * * 1-5")
+  @Cron("0 10 0 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
