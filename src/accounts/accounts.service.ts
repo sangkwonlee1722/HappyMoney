@@ -114,18 +114,23 @@ export class AccountsService {
 
   // 계좌 찾기
   async findOneAccount(userId: number) {
-    const account = this.accountRepository.findOne({ where: { userId } });
+    const account = await this.accountRepository.findOne({ where: { userId }, relations: ["orders", "stockHoldings"] });
+
+    if (!account) {
+      throw new NotFoundException({ success: false, message: "해당하는 계좌를 찾을 수 없습니다." });
+    }
+
     return account;
   }
 
   async updateMyAccount(accountId: number, userId: number, name: string): Promise<void> {
-    await this.getMyAccountDetailInfo(userId);
+    await this.findOneAccount(userId);
 
     await this.accountRepository.update({ id: accountId }, { name });
   }
 
-  async removeMyAccountById(accountId: number, userId: number): Promise<void> {
-    const account: Account = await this.getMyAccountDetailInfo(userId);
+  async removeMyAccountById(userId: number): Promise<void> {
+    const account: Account = await this.findOneAccount(userId);
 
     await this.accountRepository.softRemove(account);
   }
