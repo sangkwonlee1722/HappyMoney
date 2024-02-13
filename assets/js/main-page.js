@@ -5,9 +5,13 @@ const getNoticeData = async () => {
     const apiUrl = baseUrl + `notices?page=1`;
 
     const result = await axios.get(apiUrl);
-    const latestNotices = result.data.list.slice(0, 3);
+    const latestNotices = result.data.list.slice(0, 5);
 
     const mainDom = document.querySelector(".notice-list");
+
+    if (latestNotices.length === 0) {
+      return (mainDom.innerHTML = `<div class="text-center my-5">공지사항이 없습니다.</div>`);
+    }
 
     mainDom.innerHTML = latestNotices
       .map((notice) => {
@@ -44,9 +48,13 @@ const getBoardData = async () => {
     const apiUrl = baseUrl + `posts?page=1`;
 
     const result = await axios.get(apiUrl);
-    const latestPosts = result.data.list.slice(0, 3);
+    const latestPosts = result.data.list.slice(0, 5);
 
     const mainDom = document.querySelector(".board-list");
+
+    if (latestPosts.length === 0) {
+      return (mainDom.innerHTML = `<div class="text-center my-5">글이 없습니다.</div>`);
+    }
 
     mainDom.innerHTML = latestPosts
       .map((post) => {
@@ -81,3 +89,42 @@ const getBoardData = async () => {
 };
 
 await getBoardData();
+
+/* 뉴스 최신글 가져오는 함수 */
+await fetchNewsData(`/api/news/`);
+
+async function fetchNewsData(url) {
+  try {
+    const response = await axios.get(url);
+    const list = response.data.list.slice(0, 5);
+
+    // Display data for the current page
+    const dataContainer = document.querySelector(".news-list");
+
+    if (list.length === 0) {
+      return (dataContainer.innerHTML = `<div class="text-center my-5">뉴스가 없습니다.</div>`);
+    }
+
+    dataContainer.innerHTML = list
+      .map((post) => {
+        const { newspaper, title, link } = post;
+        return `
+      <li class="contents">
+        <a href="${link}"target="_blank"></a>
+        <div class="list-info">
+          <div class="title">${title}</div>
+        </div>
+        <div class="list-info-2">
+        <div class="newspaper">${newspaper}</div>
+        </div>
+      </li>
+      <hr />
+      `;
+      })
+      .join("");
+  } catch (error) {
+    console.error(error);
+    const errorMessage = error.response.data.message;
+    alert(errorMessage);
+  }
+}
