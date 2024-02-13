@@ -20,7 +20,10 @@ export class NewsService {
   async crawlNews() {
     try {
       // 브라우저 열기
-      const browser = await launch({ headless: "new" });
+      const browser = await launch({ 
+        headless: "new", 
+        executablePath: "/usr/bin/chromium-browser"
+       });
 
       // 새 페이지 생성
       const page = await browser.newPage();
@@ -81,11 +84,10 @@ export class NewsService {
     return { news, count };
   }
 
-  @Cron("* */30 * * * *") // 30분마다 뉴스 크롤링
+  @Cron("0 */30 * * * *") // 30분마다 뉴스 크롤링
   async saveCrawledNews() {
     console.log("뉴스 크롤링 시작");
     let start = new Date();
-    console.log("지금 시간은?", start);
     await this.crawlNews();
     console.log("뉴스 크롤링 완료");
     let end = new Date();
