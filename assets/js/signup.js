@@ -46,7 +46,7 @@ emailCheckBtn.addEventListener("click", async () => {
       return;
     }
   } catch (error) {
-    console.error("Error:", error.response);
+    console.error("Error:", error);
   }
 });
 
