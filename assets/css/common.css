@@ -160,6 +160,9 @@ video {
   line-height: 32px;
   min-width: 100px;
 }
+.hm-button > a {
+  display: block;
+}
 
 /* Text field states s */
 /* input */
