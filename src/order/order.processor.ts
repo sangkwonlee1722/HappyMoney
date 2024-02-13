@@ -26,6 +26,8 @@ export class orderProcessor {
     const { buyOrder, id } = job.data;
 
     const account = await this.accountsService.findOneAccount(id);
+    // 계좌에 해당 주식 확인
+    const sH = await this.orderService.findOneStock(account.id, buyOrder.stockCode);
     /* 주식 구매(매수) 시 트랜잭션 s */
     await this.entityManager.transaction(async (em) => {
       try {
@@ -40,9 +42,6 @@ export class orderProcessor {
             point: account.point - buyOrder.ttlPrice
           }
         );
-
-        // 계좌에 해당 주식 확인
-        const sH = await this.orderService.findOneStock(account.id, buyOrder.stockCode);
 
         // 계좌에 해당 주식이 없고 체결 됐을 때,
         if (!sH && buyOrder.status === OrderStatus.Complete) {

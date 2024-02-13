@@ -84,14 +84,30 @@ export class OrderService implements OnModuleInit {
               buyOrder.status = OrderStatus.Complete;
               await em.save(buyOrder);
             }
-            await em.update(
-              StockHolding,
-              { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
-              {
-                numbers: sH.numbers + buyOrder.orderNumbers,
-                ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
-              }
-            );
+            // 계좌에 해당 주식이 없고 체결 됐을 때,
+            if (!sH && buyOrder.status === OrderStatus.Complete) {
+              const createSh = em.create(StockHolding, {
+                userId: buyOrder.userId,
+                accountId: buyOrder.accountId,
+                stockName: buyOrder.stockName,
+                stockCode: buyOrder.stockCode,
+                numbers: buyOrder.orderNumbers,
+                ttlPrice: buyOrder.ttlPrice
+              });
+
+              await em.save(StockHolding, createSh);
+            }
+            // 계좌에 해당 주식이 있고 체결 됐을 때,
+            if (sH && buyOrder.status === OrderStatus.Complete) {
+              await em.update(
+                StockHolding,
+                { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
+                {
+                  numbers: sH.numbers + buyOrder.orderNumbers,
+                  ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
+                }
+              );
+            }
           }
 
           // 판매(매도)일 때,
@@ -213,10 +229,10 @@ export class OrderService implements OnModuleInit {
         { buyOrder, id },
         {
           priority: 1, // 우선순위 설정
-          attempts: 5, // 주문 처리가 실패했을 때 최대 5번까지 재시도
+          attempts: 3, // 주문 처리가 실패했을 때 최대 3번까지 재시도
           backoff: 1000, // 재시도 간의 지연 시간
           removeOnComplete: true, // 주문이 성공적으로 처리되면 큐에서 제거
-          jobId: `${buyOrder.userId}-${buyOrder.stockCode}-${Date.now()}` // 주문 ID를 설정
+          jobId: `${buyOrder.userId}-${buyOrder.stockCode}-${buyOrder.buySell}-${Date.now()}` // 주문 ID를 설정
         }
       );
     } catch (error) {
@@ -262,10 +278,10 @@ export class OrderService implements OnModuleInit {
         { sellOrder, id },
         {
           priority: 1,
-          attempts: 5,
+          attempts: 3,
           backoff: 1000,
           removeOnComplete: true,
-          jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${Date.now()}`
+          jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${sellOrder.buySell}-${Date.now()}`
         }
       );
     } catch (error) {

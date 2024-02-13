@@ -39,10 +39,7 @@
             </div>
             <div class="stock-dt-tit-box mt-3">
               <div class="price"></div>
-              <!-- <div class="tab-button-wrap">
-                <button class="hm-button fw-bold me-3" id="stock-price-button">호가</button>
-                <button class="hm-button hm-gray-color fw-bold" id="my-stock-button">내 주식</button>
-              </div> -->
+              <div id="stockDtTab"></div>
             </div>
           </div>
           <div class="stock-dt-cont-wrap">
@@ -153,15 +150,15 @@
                     <label for="stockAmount">수량</label>
                     <input type="number" class="hm-input" id="stockAmount" value="" />
                   </div>
-                  <ul class="percent mt-3">
+                  <!-- <ul class="percent mt-3">
                     <li>10%</li>
                     <li>25%</li>
                     <li>50%</li>
                     <li>100%</li>
-                  </ul>
-                  <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p>
+                  </ul> -->
+                  <!-- <p class="max-price mt-4 text-end">최대 <span style="color: #db1515"></span>원</p> -->
                 </div>
-                <div class="down">
+                <div class="down mt-5">
                   <p class="fw-bold fs-4 mb-2">주문 총액</p>
                   <div class="text-end mb-3 fs-3 fw-bold">
                     <p class="total-price d-inline-block" style="color: #db1515">0</p>
@@ -175,15 +172,7 @@
               </div>
             </div>
           </div>
-          <div class="stock-dt-order-wrap mt-5">
-            <div class="stock-dt-my-order-info-wrap"></div>
-            <div class="stock-dt-my-order-list mt-5">
-              <h2>주문 내역</h2>
-              <ul class="order-list mt-3"></ul>
-            </div>
-          </div>
         </div>
-        <ul id="hm-pagination"></ul>
       </div>
       <footer id="footer_wrap"></footer>
     </div>
