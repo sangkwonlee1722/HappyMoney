@@ -31,7 +31,7 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 26 18 * * 1-5")
+  @Cron("0 00 09 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
@@ -71,8 +71,6 @@ export class OrderService implements OnModuleInit {
           // 가격비교를 위한 현재가 호가OpenAPI
           const list = await this.stockService.getStockPrice(order.stockCode);
           const stockPr = list.output1.bidp1;
-          // console.log("여기 찾아!!", stockPr);
-
           // 구매(매수)일 때,
           const buyOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
@@ -80,10 +78,20 @@ export class OrderService implements OnModuleInit {
           console.log("buy", buyOrderCode);
 
           for (const buyOrder of buyOrderCode) {
+            // 계좌에 해당 주식 확인
+            const sH = await this.findOneStock(buyOrder.accountId, order.stockCode);
             if (buyOrder.price >= stockPr) {
               buyOrder.status = OrderStatus.Complete;
               await em.save(buyOrder);
             }
+            await em.update(
+              StockHolding,
+              { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
+              {
+                numbers: sH.numbers + buyOrder.orderNumbers,
+                ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
+              }
+            );
           }
 
           // 판매(매도)일 때,
@@ -93,6 +101,8 @@ export class OrderService implements OnModuleInit {
           console.log("sell", sellOrderCode);
 
           for (const sellOrder of sellOrderCode) {
+            // 계좌에 해당 주식 확인
+            const sH = await this.findOneStock(sellOrder.accountId, order.stockCode);
             const sellAccount = await em.findOne(Account, { where: { userId: sellOrder.userId } });
             if (sellOrder.price <= stockPr) {
               sellOrder.status = OrderStatus.Complete;
@@ -100,6 +110,15 @@ export class OrderService implements OnModuleInit {
 
               sellAccount.point += sellOrder.ttlPrice;
               await em.save(sellAccount);
+
+              await em.update(
+                StockHolding,
+                { accountId: sellOrder.accountId, stockCode: sellOrder.stockCode },
+                {
+                  numbers: sH.numbers - sellOrder.orderNumbers,
+                  ttlPrice: sH.ttlPrice - sellOrder.ttlPrice
+                }
+              );
             }
           }
 
@@ -193,7 +212,7 @@ export class OrderService implements OnModuleInit {
         "buy",
         { buyOrder, id },
         {
-          priority: buyOrder.status === "complete" ? 1 : 2, // 체결되는 주문이 우선순위로 설정
+          priority: 1, // 우선순위 설정
           attempts: 5, // 주문 처리가 실패했을 때 최대 5번까지 재시도
           backoff: 1000, // 재시도 간의 지연 시간
           removeOnComplete: true, // 주문이 성공적으로 처리되면 큐에서 제거
@@ -210,7 +229,6 @@ export class OrderService implements OnModuleInit {
   async sellStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-
     // 판매(매도) 내역 생성
     const sellOrder = this.orderRepository.create({
       userId: id,
@@ -224,12 +242,26 @@ export class OrderService implements OnModuleInit {
       status
     });
 
+    // 계좌에 해당 주식 확인
+    const sH = await this.findOneStock(account.id, sellOrder.stockCode);
+    if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
+    if (sH.numbers < sellOrder.orderNumbers)
+      throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
+
+    // 예약 매도 수량 확인
+    const orderChk = await this.orderRepository.find({
+      where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
+    });
+    const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
+    if (totalOrderNumbers > sH.numbers)
+      throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
+
     try {
       await this.ordersQueue.add(
         "sell",
         { sellOrder, id },
         {
-          priority: sellOrder.status === "complete" ? 1 : 2,
+          priority: 1,
           attempts: 5,
           backoff: 1000,
           removeOnComplete: true,
