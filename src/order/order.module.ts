@@ -28,7 +28,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       })
     }),
     BullModule.registerQueue({
-      name: "orders"
+      name: "orders",
+      limiter: {
+        max: 1,
+        duration: 500
+      }
     })
   ],
   controllers: [OrderController],

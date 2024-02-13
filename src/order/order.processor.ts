@@ -43,30 +43,30 @@ export class orderProcessor {
         );
 
         // 계좌에 해당 주식이 없고 체결 됐을 때,
-        // if (!sH && buyOrder.status === OrderStatus.Complete) {
-        //   const createSh = em.create(StockHolding, {
-        //     userId: id,
-        //     accountId: account.id,
-        //     stockName: buyOrder.stockName,
-        //     stockCode: buyOrder.stockCode,
-        //     numbers: buyOrder.orderNumbers,
-        //     ttlPrice: buyOrder.ttlPrice
-        //   });
+        if (!sH && buyOrder.status === OrderStatus.Complete) {
+          const createSh = em.create(StockHolding, {
+            userId: id,
+            accountId: account.id,
+            stockName: buyOrder.stockName,
+            stockCode: buyOrder.stockCode,
+            numbers: buyOrder.orderNumbers,
+            ttlPrice: buyOrder.ttlPrice
+          });
 
-        //   await em.save(StockHolding, createSh);
-        // }
+          await em.save(StockHolding, createSh);
+        }
 
         // 계좌에 해당 주식이 있고 체결 됐을 때,
-        // if (sH && buyOrder.status === OrderStatus.Complete) {
-        //   await em.update(
-        //     StockHolding,
-        //     { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
-        //     {
-        //       numbers: sH.numbers + buyOrder.orderNumbers,
-        //       ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
-        //     }
-        //   );
-        // }
+        if (sH && buyOrder.status === OrderStatus.Complete) {
+          await em.update(
+            StockHolding,
+            { accountId: buyOrder.accountId, stockCode: buyOrder.stockCode },
+            {
+              numbers: sH.numbers + buyOrder.orderNumbers,
+              ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
+            }
+          );
+        }
       } catch (error) {
         console.error(error);
         throw error;
