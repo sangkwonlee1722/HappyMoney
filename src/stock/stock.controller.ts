@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Patch, Query } from "@nestjs/common";
 import { StockService } from "./stock.service";
 import { ApiTags } from "@nestjs/swagger";
 import { Stock } from "./entities/stock.entity";
@@ -36,6 +36,15 @@ export class StockController {
   async getStockRank() {
     const list = await this.stockService.getStockRank();
     return { list };
+  }
+
+  @Patch("upadateStock")
+  async updateStockValue() {
+    await this.stockService.updateStockAndRank();
+    return {
+      success: true,
+      message: "okay"
+    };
   }
 
   /**
