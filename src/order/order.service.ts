@@ -206,9 +206,9 @@ export class OrderService implements OnModuleInit {
   // 구매(매수)API
   async buyStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
-
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-
+    if (!orderNumbers || !price)
+      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
     // 매수 내역 생성
     const buyOrder = this.orderRepository.create({
       userId: id,
@@ -245,6 +245,8 @@ export class OrderService implements OnModuleInit {
   async sellStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
+    if (!orderNumbers || !price)
+      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
     // 판매(매도) 내역 생성
     const sellOrder = this.orderRepository.create({
       userId: id,
