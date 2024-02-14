@@ -6,11 +6,12 @@ function displaySearchResults(data) {
   const postsList = document.getElementById("postsList");
   const stocksList = document.getElementById("stocksList");
 
-  data.notices.forEach((notice) => {
-    const listItem = document.createElement("li");
-    const { id, title, createdAt } = notice;
-    const formattedDate = createdAt.split("T")[0];
-    listItem.innerHTML = `
+  if (data.notices.length > 0) {
+    data.notices.forEach((notice) => {
+      const listItem = document.createElement("li");
+      const { id, title, createdAt } = notice;
+      const formattedDate = createdAt.split("T")[0];
+      listItem.innerHTML = `
         <a href="/views/notice-page.html?id=${id}" class="notice-page-item">
             <div class="list-info">
                 <div class="classification">공지사항</div>
@@ -21,16 +22,23 @@ function displaySearchResults(data) {
                 </div>
             </div>
         </a>`;
-    noticesList.appendChild(listItem);
-  });
+      noticesList.appendChild(listItem);
+    });
+  } else {
+    // 검색 결과가 없는 경우 메시지 표시
+    const noResultsMessage = document.createElement("li");
+    noResultsMessage.textContent = "검색 결과가 없습니다.";
+    noticesList.appendChild(noResultsMessage);
+  }
 
-  data.posts.forEach((post) => {
-    const listItem = document.createElement("li");
-    const { nickName, title, category, createdAt, id } = post;
-    const dateObject = new Date(createdAt);
-    const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
+  if (data.posts.length > 0) {
+    data.posts.forEach((post) => {
+      const listItem = document.createElement("li");
+      const { nickName, title, category, createdAt, id } = post;
+      const dateObject = new Date(createdAt);
+      const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;
 
-    listItem.innerHTML = `
+      listItem.innerHTML = `
         <a href="/views/post-read.html?id=${id}" class="post-item">
             <div class="list-info">
                 <div class="classification">${category}</div>
@@ -41,26 +49,33 @@ function displaySearchResults(data) {
                 </div>
             </div>
         </a>`;
-    postsList.appendChild(listItem);
-  });
+      postsList.appendChild(listItem);
+    });
+  } else {
+    // 검색 결과가 없는 경우 메시지 표시
+    const noResultsMessage = document.createElement("li");
+    noResultsMessage.textContent = "검색 결과가 없습니다.";
+    postsList.appendChild(noResultsMessage);
+  }
 
-  data.stocks.forEach((stock) => {
-    const listItem = document.createElement("li");
+  if (data.stocks.length > 0) {
+    data.stocks.forEach((stock) => {
+      const listItem = document.createElement("li");
 
-    console.log(stock);
-    const {
-      srtnCd: stockCode,
-      itmsNm: stockName,
-      mrktCtg: market,
-      mrktTotAmt: totalPrice,
-      lstgStCnt: stockCounts
-    } = stock;
+      console.log(stock);
+      const {
+        srtnCd: stockCode,
+        itmsNm: stockName,
+        mrktCtg: market,
+        mrktTotAmt: totalPrice,
+        lstgStCnt: stockCounts
+      } = stock;
 
-    const formattedPrice = formatPrice(totalPrice);
-    const formattedStockNumbers = addComma(stockCounts);
+      const formattedPrice = formatPrice(totalPrice);
+      const formattedStockNumbers = addComma(stockCounts);
 
-    const listItemContent = `
-        
+      const listItemContent = `
+
             <a href="/views/stock-detail.html?code=${stockCode}&name=${encodeURIComponent(stockName)}"></a>
             <div class="stock-name-box">
                 <div class="market">${market}</div>
@@ -73,12 +88,25 @@ function displaySearchResults(data) {
                 <div class="ttl-price">${formattedPrice}</div>
                 <div class="stock-counts">${formattedStockNumbers} 주</div>
             </div>
-        
+
     `;
 
-    listItem.innerHTML = listItemContent;
-    stocksList.appendChild(listItem);
-  });
+      listItem.innerHTML = listItemContent;
+      stocksList.appendChild(listItem);
+
+      $(listItem)
+        .find("a")
+        .on("click", function (e) {
+          e.preventDefault();
+          alert("아직 준비중입니다.");
+        });
+    });
+  } else {
+    // 검색 결과가 없는 경우 메시지 표시
+    const noResultsMessage = document.createElement("li");
+    noResultsMessage.textContent = "검색 결과가 없습니다.";
+    stocksList.appendChild(noResultsMessage);
+  }
 }
 
 // URL에서 검색 키워드를 가져오기

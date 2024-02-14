@@ -23,6 +23,7 @@ import { GlobalExceptionsFilter } from "./common/global-exceptions.filter";
 import { NewsModule } from "./news/news.module";
 import { StarStockModule } from "./star-stock/star-stock.module";
 import { SearchModule } from "./search/search.module";
+import { OrderModule } from "./order/order.module";
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { SearchModule } from "./search/search.module";
     NewsModule,
 
     StarStockModule,
-
+    OrderModule,
     SearchModule
   ],
   providers: [
