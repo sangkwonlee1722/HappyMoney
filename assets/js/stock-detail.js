@@ -196,27 +196,29 @@ function livePriceData() {
   socket.on('asking_price', async (data) => {
     const price = JSON.parse(data);
     const tax = price.bidp1;
-    // console.log(price);
-    $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
-    // console.log(price.bidp1);
+    const liveCode = price.mksc_shrn_iscd.split("|")[3];
+    console.log(liveCode);
+    // 코드가 같은거만 나오게
+    if (liveCode === trKey) {
+      $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
+      // console.log(price.bidp1);
 
-    // 시장가 체크에 따른 수정
-    const fixPrice = $('#fixPrice').val();
-    const num = $('#stockAmount').val();
+      // 시장가 체크에 따른 수정
+      const fixPrice = $('#fixPrice').val();
+      const num = $('#stockAmount').val();
 
-    if ($('#fixPrice').prop('disabled')) {
-      $('#fixPrice').val(`${tax}`);
-      $('.total-price').text('');
-    }
-    $('.total-price').text(addComma(fixPrice * num));
+      if ($('#fixPrice').prop('disabled')) {
+        $('#fixPrice').val(`${tax}`);
+        $('.total-price').text('');
+      }
+      $('.total-price').text(addComma(fixPrice * num));
 
-
-
-    for (let i = 1; i < 11; i++) {
-      $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
-      $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
-      $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
-      $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
+      for (let i = 1; i < 11; i++) {
+        $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
+        $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
+        $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
+        $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
+      }
     }
   })
 }
