@@ -1,7 +1,7 @@
 import { addComma } from "/js/common.js";
 import getToken from "./common.js";
 
-const token = getToken()
+const token = getToken();
 
 rankListData();
 
@@ -40,48 +40,52 @@ async function rankListData() {
 /* 랭킹 데이터 가져오기 */
 
 async function getAccountRank() {
-  const apiUrl = '/api/accounts/rank'
+  const apiUrl = "/api/accounts/rank";
 
   try {
     const result = await axios.get(apiUrl, {
       headers: {
-        'Authorization': token,
+        Authorization: token
       }
-    })
+    });
 
-    const topTenAccounts = result.data.topTenAccounts
-    console.log('topTenAccount: ', topTenAccounts);
+    const topTenAccounts = result.data.topTenAccounts;
+    console.log("topTenAccount: ", topTenAccounts);
 
-    return topTenAccounts
+    return topTenAccounts;
   } catch (error) {
-    console.error(error);
-    const errorMessage = error.response.data.message;
-    alert(errorMessage);
+    if (error.response.status === 401) {
+      alert("로그인이 필요합니다.");
+    } else {
+      console.error(error.response);
+      const errorMessage = error.response.data.message;
+      alert(errorMessage);
+    }
   }
 }
 
 async function spreadTopTenAccounts() {
-  const mainDom = document.querySelector('.account-rank-list')
-  const topTenAccounts = await getAccountRank()
+  const mainDom = document.querySelector(".account-rank-list");
+  const topTenAccounts = await getAccountRank();
 
   /* 랭킹 기준 날짜 보여주기 */
-  const updateDate = new Date(topTenAccounts[0].updatedAt)
+  const updateDate = new Date(topTenAccounts[0].updatedAt);
 
   const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
 
-  $('.criteria-date').text(`* ${koreanTime} 기준`)
+  $(".criteria-date").text(`* ${koreanTime} 기준`);
 
-  let rank = 0
+  let rank = 0;
 
   mainDom.innerHTML = topTenAccounts
-    .map(account => {
-      const { id, name: accountName, totalValue, profit, profitPercentage, accountNumber, user } = account
+    .map((account) => {
+      const { id, name: accountName, totalValue, profit, profitPercentage, accountNumber, user } = account;
 
-      const formatProfit = profit > 0 ? `${addComma(profit)}` : `${addComma(profit)}`
+      const formatProfit = profit > 0 ? `${addComma(profit)}` : `${addComma(profit)}`;
 
-      const formatValues = addComma(totalValue)
+      const formatValues = addComma(totalValue);
 
-      rank += 1
+      rank += 1;
 
       return `
       <tr data-id=${id}>
@@ -93,8 +97,9 @@ async function spreadTopTenAccounts() {
       <td>${profitPercentage}%</td>
       <td>${formatValues} 원</td>
     </tr>
-      `
-    }).join("")
+      `;
+    })
+    .join("");
 }
 
-await spreadTopTenAccounts()
+await spreadTopTenAccounts();

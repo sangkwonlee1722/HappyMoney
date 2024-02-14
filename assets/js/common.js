@@ -50,7 +50,7 @@ export default function getToken() {
   const token = `Bearer ${getCookie("accessToken")}`;
 
   if (token === "Bearer null") {
-    alert("로그인이 필요합니다.");
+    // alert("로그인이 필요합니다.");
     window.location.href = "/views/main.html";
   }
 
@@ -175,7 +175,7 @@ export function deleteCookie(name) {
 export function addComma(number) {
   // 값이 정의되어 있지 않다면 빈 문자열 반환
   if (number === undefined || number === null) {
-    return '';
+    return "";
   }
 
   // 값이 정의되어 있다면 toString 메서드 호출
@@ -295,5 +295,5 @@ export const formatPrice = (number) => {
     formattedNumber.push(`${billionString}억`);
   }
 
-  return formattedNumber.join(' ');
-}
+  return formattedNumber.join(" ");
+};
