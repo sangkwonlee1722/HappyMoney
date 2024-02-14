@@ -28,18 +28,6 @@ export class StockGateway implements OnGatewayConnection {
     console.log(`on connect called: ${socket.id}`);
   }
 
-  async handleDisconnect(socket: WebSocket) {
-    console.log(`on disconnect called: ${socket.id}`);
-    await new Promise((resolve) => {
-      this.wsClient.on("close", () => {
-        console.log("WebSocket disconnected.");
-        resolve(true);
-      });
-      this.wsClient.terminate();
-    });
-    this.wsClient = null;
-  }
-
   private async initializeWebSocketClient() {
     // try {
     //   const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
@@ -99,7 +87,7 @@ export class StockGateway implements OnGatewayConnection {
 
   // 실시간 호가API
   @SubscribeMessage("asking_price")
-  async getAskingPrice(socket: WebSocket, @MessageBody() tr_key: string) {
+  async getAskingPrice(@MessageBody() tr_key: string) {
     // if (
     //   this.wsClient &&
     //   (this.wsClient.readyState === WebSocket.OPEN || this.wsClient.readyState === WebSocket.CONNECTING)
@@ -115,7 +103,6 @@ export class StockGateway implements OnGatewayConnection {
     // }
 
     await this.initializeWebSocketClient();
-    console.log(socket);
     console.log(tr_key);
     // asking_price 이벤트 발생
     try {
@@ -146,7 +133,7 @@ export class StockGateway implements OnGatewayConnection {
       this.wsClient.on("message", async (data) => {
         const messageString = data.toString(); // Buffer를 문자열로 변환
         const jsonData = this.stockhoka(messageString);
-        const addCode = jsonData.mksc_shrn_iscd.split("|")[3];
+        // const addCode = jsonData.mksc_shrn_iscd.split("|")[3];
 
         // if (!test.includes(addCode)) {
         //   test.push(addCode); // addCode 추가
@@ -221,7 +208,7 @@ export class StockGateway implements OnGatewayConnection {
       antc_cnpr: recvvalue[47]
     };
 
-    // return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환
-    return result;
+    return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환
+    // return result;
   }
 }
