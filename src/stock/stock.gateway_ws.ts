@@ -18,6 +18,7 @@ export class StockGateway implements OnGatewayConnection {
   private skToken: string;
   private tokenExpiresAt: Date;
   private wsClient: WebSocket | null = null;
+  private clients: { [id: string]: WebSocket } = {};
 
   constructor(private readonly configService: ConfigService) {
     this.initializeWebSocketClient();

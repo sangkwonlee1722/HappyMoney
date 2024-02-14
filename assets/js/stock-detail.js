@@ -44,7 +44,8 @@ $('#stockAmount').focus(function () {
 if (isKoreanWeekday() && isKoreanWorkingHour()) {
   livePriceData();
 } else {
-  priceData();
+  // priceData();
+  livePriceData();
 }
 
 // 구매(매수)버튼 클릭 시
