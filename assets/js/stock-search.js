@@ -12,7 +12,7 @@ export const getSearchData = async (keyword) => {
     const result = await axios.get(apiUrl);
 
     const stocks = result.data.data;
-    console.log('stocks: ', stocks);
+    // console.log('stocks: ', stocks);
 
     const mainDom = document.querySelector(".search-list-wrap");
 
@@ -47,12 +47,16 @@ export const getSearchData = async (keyword) => {
       })
       .join("")
 
+
+    $(".search-list-wrap li a").on('click', function (e) {
+      e.preventDefault();
+      alert('아직 준비중입니다.');
+    });
   } catch (error) {
     console.error(error)
   }
 }
 
 document.addEventListener("DOMContentLoaded", getSearchData(keyword));
-
 
 

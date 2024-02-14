@@ -1,5 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   SubscribeMessage,
@@ -7,8 +8,10 @@ import {
   WebSocketServer
 } from "@nestjs/websockets";
 import axios from "axios";
-import WebSocket from "ws"; // ws 모듈 추가
-import { Server } from "http";
+// import WebSocket from "ws"; // ws 모듈 추가
+// import { Server } from "http";
+import { Socket, Server } from "socket.io";
+import { io, Socket as ClientSocket } from "socket.io-client";
 @WebSocketGateway({
   namespace: "ws/stock"
 })
@@ -17,48 +20,33 @@ export class StockGateway implements OnGatewayConnection {
   server: Server;
   private skToken: string;
   private tokenExpiresAt: Date;
-  private wsClient: WebSocket | null = null;
+  private wsClient: ClientSocket | null = null;
+  constructor(private configService: ConfigService) {}
 
-  constructor(private readonly configService: ConfigService) {
-    this.initializeWebSocketClient();
+  afterInit(server: Server) {
+    console.log("Initialized!");
   }
 
-  handleConnection(socket: WebSocket) {
-    console.log(`on connect called: ${socket.id}`);
+  handleConnection(@ConnectedSocket() client: Socket) {
+    console.log(`Client connected: ${client.id}`);
   }
 
-  // async handleDisconnect(socket: WebSocket) {
-  //   console.log(`on disconnect called: ${socket.id}`);
-  //   this.wsClient.on("close", () => {
-  //     console.log("WebSocket disconnected.");
-  //   });
-  //   this.wsClient.terminate();
-  //   this.wsClient = null;
-  // }
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    console.log(`Client disconnected: ${client.id}`);
+  }
 
   private async initializeWebSocketClient() {
-    // try {
-    //   const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
-    //   this.wsClient = new WebSocket(url);
-    //   await new Promise((resolve, reject) => {
-    //     this.wsClient.on("open", () => {
-    //       console.log("WebSocket connected");
-    //       resolve(true);
-    //     });
-    //     this.wsClient.on("error", (err) => {
-    //       console.error("WebSocket error:", err);
-    //       reject(err);
-    //     });
-    //   });
-    // } catch (error) {
-    //   console.log("Failed to initialize WebSocket:", error);
-    // }
     if (!this.wsClient) {
       try {
         const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
-        this.wsClient = new WebSocket(url);
-        this.wsClient.on("open", () => {
-          console.log("WebSocket connected");
+        this.wsClient = io(url, {
+          transports: ["websocket"]
+        });
+        this.wsClient.on("connect", () => {
+          console.log("Socket.IO connected");
+        });
+        this.wsClient.on("connect_error", (error) => {
+          console.log("Connection Error:", error);
         });
       } catch (error) {
         console.log(error);
@@ -95,24 +83,10 @@ export class StockGateway implements OnGatewayConnection {
 
   // 실시간 호가API
   @SubscribeMessage("asking_price")
-  async getAskingPrice(@MessageBody() tr_key: string) {
-    // if (
-    //   this.wsClient &&
-    //   (this.wsClient.readyState === WebSocket.OPEN || this.wsClient.readyState === WebSocket.CONNECTING)
-    // ) {
-    //   await new Promise((resolve) => {
-    //     this.wsClient.on("close", () => {
-    //       console.log("WebSocket disconnected.");
-    //       resolve(true);
-    //     });
-    //     this.wsClient.terminate();
-    //   });
-    //   this.wsClient = null;
-    // }
-
+  async getAskingPrice(@MessageBody() tr_key: string, @ConnectedSocket() client: Socket) {
     await this.initializeWebSocketClient();
     console.log(tr_key);
-    // asking_price 이벤트 발생
+    // console.log("this.wsClient", this.wsClient);
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
         await this.getSk();
@@ -134,34 +108,26 @@ export class StockGateway implements OnGatewayConnection {
         }
       };
       // console.log("jsonRequest", jsonRequest);
-      this.wsClient.send(JSON.stringify(jsonRequest));
+      this.wsClient.emit("message", JSON.stringify(jsonRequest));
 
-      // const test: string[] = [];
-      // 메시지 수신 이벤트 핸들러
-      this.wsClient.on("message", async (data) => {
-        const messageString = data.toString(); // Buffer를 문자열로 변환
+      // 'message' 이벤트를 받습니다.
+      client.on("message", (data) => {
+        const messageString = data.toString();
         const jsonData = this.stockhoka(messageString);
-        // const addCode = jsonData.mksc_shrn_iscd.split("|")[3];
-
-        // if (!test.includes(addCode)) {
-        //   test.push(addCode); // addCode 추가
-        // }
-        // console.log(test);
-        // console.log("Received asking_price:", jsonData.mksc_shrn_iscd.split("|")[3]);
         try {
-          this.server.emit("asking_price", jsonData);
+          client.emit("asking_price", jsonData);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
       });
 
       // 클라이언트에서 서버로 메시지를 보내고, 서버에서 해당 메시지를 받아 로그로 찍는 부분 추가
-      this.wsClient.on("test_message", (message) => {
+      client.on("test_message", (message) => {
         console.log("Received test_message from client:", message);
       });
     } catch (error) {
       console.log("Error in getAskingPrice:", error);
-      throw new error(error);
+      throw error;
     }
   }
 
