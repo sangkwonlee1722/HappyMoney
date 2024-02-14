@@ -47,7 +47,7 @@ import { OrderModule } from "./order/order.module";
     NewsModule,
 
     StarStockModule,
-
+    OrderModule,
     SearchModule
   ],
   providers: [
