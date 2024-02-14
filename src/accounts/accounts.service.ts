@@ -120,10 +120,6 @@ export class AccountsService {
   async findOneAccount(userId: number) {
     const account = await this.accountRepository.findOne({ where: { userId }, relations: ["orders", "stockHoldings"] });
 
-    if (!account) {
-      throw new NotFoundException({ success: false, message: "해당하는 계좌를 찾을 수 없습니다." });
-    }
-
     return account;
   }
 
