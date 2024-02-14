@@ -28,6 +28,15 @@ export class StockGateway implements OnGatewayConnection {
     console.log(`on connect called: ${socket.id}`);
   }
 
+  // async handleDisconnect(socket: WebSocket) {
+  //   console.log(`on disconnect called: ${socket.id}`);
+  //   this.wsClient.on("close", () => {
+  //     console.log("WebSocket disconnected.");
+  //   });
+  //   this.wsClient.terminate();
+  //   this.wsClient = null;
+  // }
+
   private async initializeWebSocketClient() {
     // try {
     //   const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
