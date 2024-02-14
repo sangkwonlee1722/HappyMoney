@@ -37,7 +37,6 @@ const spreadPostsList = async () => {
         const { id, category, title, nickName, createdAt, commentNumbers } = post
 
         const dateObject = new Date(createdAt)
-        dateObject.setHours(dateObject.getHours() - 9)
 
         const formattedDate = dateObject.toISOString().split("T")[0];
 
