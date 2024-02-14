@@ -81,10 +81,6 @@ export class AccountsService {
       .where("user_id=:userId", { userId })
       .getRawOne();
 
-    if (account) {
-      await this.updateMyAccountValue(account);
-    }
-
     return account;
   }
 

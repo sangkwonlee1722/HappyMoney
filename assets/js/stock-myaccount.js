@@ -29,7 +29,7 @@ export const spreadMyAccountInfo = async () => {
   const mainDom = document.querySelector('.my-account-header')
   const myAccount = await getMyAccountInfo()
 
-  const { point, totalStockValue, totalOrderPrice, totalOrderCompletePrice } = myAccount;
+  const { point, totalStockValue, totalOrderPrice } = myAccount;
 
   /* 해당 통장의 총 가치 평가 */
   const baseValue = 100000000
