@@ -107,8 +107,6 @@ export class AccountsService {
       .where("a.userId=:userId", { userId })
       .getRawOne();
 
-    account.totalOrderPrice = Number(account.totalOrderPrice);
-
     return account;
   }
 
