@@ -137,7 +137,7 @@ export class StockGateway implements OnGatewayConnection {
       // console.log("jsonRequest", jsonRequest);
       this.wsClient.send(JSON.stringify(jsonRequest));
 
-      const test = [];
+      // const test: string[] = [];
       // 메시지 수신 이벤트 핸들러
       this.wsClient.on("message", async (data) => {
         const messageString = data.toString(); // Buffer를 문자열로 변환
@@ -149,7 +149,6 @@ export class StockGateway implements OnGatewayConnection {
         // }
         // console.log(test);
         // console.log("Received asking_price:", jsonData.mksc_shrn_iscd.split("|")[3]);
-
         try {
           this.server.emit("asking_price", jsonData);
         } catch (error) {
@@ -217,7 +216,7 @@ export class StockGateway implements OnGatewayConnection {
       antc_cnpr: recvvalue[47]
     };
 
-    return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환
-    // return result;
+    // return JSON.stringify(result, null, 2); // JSON 문자열로 변환하여 반환
+    return result;
   }
 }

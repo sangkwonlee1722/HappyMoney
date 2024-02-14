@@ -194,10 +194,10 @@ function livePriceData() {
   });
 
   socket.on('asking_price', async (data) => {
-    const price = JSON.parse(data);
+    const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];
-    // console.log(liveCode);
+    console.log(liveCode);
     // 코드가 같은거만 나오게
     if (liveCode === trKey) {
       $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
