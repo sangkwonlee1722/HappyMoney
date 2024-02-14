@@ -10,7 +10,7 @@ async function rankListData() {
 
   try {
     const stockList = await axios.get(stockUrl);
-    const list = stockList.data.list.output.slice(0, 10);
+    const list = stockList.data.list.output.slice(0, 20);
 
     const mainDom = document.querySelector(".rank-list-wrap");
     mainDom.innerHTML = list

@@ -125,7 +125,7 @@ export class StockService {
         },
         params: queryParams
       });
-      console.log(stockList.data);
+      // console.log(stockList.data);
 
       return stockList.data;
     } catch (error) {
