@@ -21,7 +21,6 @@ async function fetchPostData(postId) {
     const commentsResponse = await axios.get(`/api/comments/post/${postId}`);
     const comments = commentsResponse.data.data;
     const createdAt = new Date(data.createdAt);
-    createdAt.setHours(createdAt.getHours() - 9)
     const formattedCreatedAt = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")} ${String(createdAt.getHours()).padStart(2, "0")}:${String(createdAt.getMinutes()).padStart(2, "0")}`;
 
     postBox.innerHTML = `

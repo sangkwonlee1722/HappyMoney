@@ -427,7 +427,7 @@ export class OrderService implements OnModuleInit {
           .andWhere("o.status='complete'")
           .andWhere("o.stockCode=sh.stockCode");
       }, "totalCompleteBuyOrderPrice")
-      .where("sh.userId=:userId", { userId: id })
+      .where("sh.accountId=:accountId", { accountId: account.id })
       .getRawMany();
 
     return data;
@@ -472,7 +472,7 @@ export class OrderService implements OnModuleInit {
           .andWhere("o.status='complete'")
           .andWhere("o.stockCode=sh.stockCode");
       }, "totalCompleteBuyOrderPrice")
-      .where("sh.userId=:userId", { userId: id })
+      .where("sh.accountId=:accountId", { accountId: account.id })
       .andWhere("sh.stockCode=:stockCode", { stockCode })
       .getRawOne();
 

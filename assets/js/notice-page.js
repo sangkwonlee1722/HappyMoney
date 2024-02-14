@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 날짜 포맷 변경
         const dateObject = new Date(data.createdAt);
-        dateObject.setHours(dateObject.getHours() - 9)
 
         const formattedDate = `${dateObject.getFullYear()}
         -${String(dateObject.getMonth() + 1).padStart(2, "0")}

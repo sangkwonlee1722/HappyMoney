@@ -5,7 +5,7 @@ const token = getToken()
 
 /* 나의 계좌 가져오는 함수 */
 const getMyAccountsByToken = async (token) => {
-  const apiUrl = '/api/accounts'
+  const apiUrl = '/api/accounts/info'
 
   try {
     const result = await axios.get(apiUrl, {
@@ -19,12 +19,17 @@ const getMyAccountsByToken = async (token) => {
     const mainDom = document.querySelector(".accounts-list")
 
     if (account) {
-      const { id, name, accountNumber, totalValue, profit, profitPercentage } = account;
+      const { id, name, accountNumber, totalStockValue, totalOrderPrice, point } = account;
 
+      /* 해당 통장의 총 가치 평가 */
+      const baseValue = 100000000
+      const ttlAccountValues = point + totalStockValue + totalOrderPrice
 
+      const profit = ttlAccountValues - baseValue
       const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
+      const profitPercentage = ((profit / baseValue) * 100).toFixed(1)
 
-      const formatValues = addComma(totalValue)
+      const formatTtlAccountValues = addComma(ttlAccountValues);
 
       let profitClass
 
@@ -48,7 +53,7 @@ const getMyAccountsByToken = async (token) => {
       </div>
       <div class="accounts-right">
         <div class="account-prices">
-          <span class="ttl-price">${formatValues} 원</span>
+          <span class="ttl-price">${formatTtlAccountValues} 원</span>
           <span class="calculate-price ${profitClass}">${formatProfit} 원 (${profitPercentage}%)</span>
         </div>
         <button class="hm-button hm-gray-color delete-comment-btn" onclick="drPopupOpen('.delete-account-chk')">삭제</button>

@@ -81,8 +81,6 @@ export class AccountsService {
       .where("user_id=:userId", { userId })
       .getRawOne();
 
-    await this.updateMyAccountValue(account);
-
     return account;
   }
 
@@ -117,10 +115,6 @@ export class AccountsService {
   // 계좌 찾기
   async findOneAccount(userId: number) {
     const account = await this.accountRepository.findOne({ where: { userId }, relations: ["orders", "stockHoldings"] });
-
-    if (!account) {
-      throw new NotFoundException({ success: false, message: "해당하는 계좌를 찾을 수 없습니다." });
-    }
 
     return account;
   }
@@ -240,7 +234,12 @@ export class AccountsService {
   async updateMyAccountValue(myAccount: Account) {
     const { id, totalValue, profit, profitPercentage } = await this.calculateMyAccountValue(myAccount.id);
 
-    await this.accountRepository.update({ id, totalValue, profit, profitPercentage }, { id });
+    await this.accountRepository
+      .createQueryBuilder()
+      .update(Account)
+      .set({ totalValue, profit, profitPercentage })
+      .where("id = :accountId", { accountId: id })
+      .execute();
   }
 
   async calculateMyAccountValue(accountId: number) {
