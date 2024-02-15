@@ -23,7 +23,7 @@ const getMyAccountsByToken = async (token) => {
 
       /* 해당 통장의 총 가치 평가 */
       const baseValue = 100000000
-      const ttlAccountValues = point + totalStockValue + totalOrderPrice
+      const ttlAccountValues = point + Number(totalStockValue) + Number(totalOrderPrice)
 
       const profit = ttlAccountValues - baseValue
       const formatProfit = profit > 0 ? `+${addComma(profit)}` : `${addComma(profit)}`
