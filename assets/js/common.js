@@ -297,8 +297,3 @@ export const formatPrice = (number) => {
 
   return formattedNumber.join(" ");
 };
-
-/* 브라우저 종료 시 토큰 삭제 */
-window.addEventListener("beforeunload", () => {
-  deleteCookie("accessToken");
-});
