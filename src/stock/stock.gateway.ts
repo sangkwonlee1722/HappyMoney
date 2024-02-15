@@ -111,7 +111,7 @@ export class StockGateway implements OnGatewayConnection {
     // }
 
     await this.initializeWebSocketClient();
-    console.log(tr_key);
+    // console.log(tr_key);
     // asking_price 이벤트 발생
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
