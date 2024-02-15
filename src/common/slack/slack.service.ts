@@ -11,7 +11,6 @@ export class SlackService {
   async sendScheduleNoti(slackMessage: SlackMessage, url: string): Promise<void> {
     try {
       await axios.post(url, slackMessage);
-      console.log("스케쥴 알림이 성공적으로 전송되었습니다.");
     } catch (error) {
       console.error("스케쥴 알림 전송 중 오류가 발생했습니다:", error);
     }

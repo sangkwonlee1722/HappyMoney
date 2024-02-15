@@ -68,13 +68,7 @@ export class StockController {
     if (!keyword) {
       throw new BadRequestException({ success: false, message: "키워드를 입력해주세요." });
     }
-    let startTime = new Date();
-
     const stocks: Stock[] = await this.stockService.findStocksByKeyword(keyword);
-    let endTime = new Date();
-
-    const time = endTime.getTime() - startTime.getTime();
-    console.log("걸린시간 : ", time);
 
     return {
       success: true,

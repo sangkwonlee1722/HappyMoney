@@ -62,7 +62,6 @@ function displaySearchResults(data) {
     data.stocks.forEach((stock) => {
       const listItem = document.createElement("li");
 
-      console.log(stock);
       const {
         srtnCd: stockCode,
         itmsNm: stockName,

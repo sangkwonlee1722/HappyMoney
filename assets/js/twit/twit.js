@@ -29,7 +29,6 @@ async function getTwitData(url) {
 
     const mainDom = document.querySelector("#twitList");
 
-    console.log("list", list.length);
     if (list.length === 0) {
       return (mainDom.innerHTML = `<div class="text-center">메세지가 없습니다.</div>`);
     }
@@ -37,7 +36,6 @@ async function getTwitData(url) {
     mainDom.innerHTML = list
       .map((twit) => {
         const { senderName, receiverName, contents, createdAt, id } = twit;
-        console.log("receive", receiverName, "send", senderName);
         const send = url === `/api/twits/getReceive?page=${twit_page}` ? false : true;
         const dateObject = new Date(createdAt);
         const formattedDate = `${dateObject.getFullYear()}-${String(dateObject.getMonth() + 1).padStart(2, "0")}-${String(dateObject.getDate()).padStart(2, "0")} ${String(dateObject.getHours()).padStart(2, "0")}:${String(dateObject.getMinutes()).padStart(2, "0")}`;

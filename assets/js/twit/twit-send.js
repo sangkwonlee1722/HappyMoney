@@ -23,8 +23,6 @@ async function getDetailTwitData(url) {
       receiveNickname: receive_name,
       contents: processedText
     };
-    console.log(header);
-    console.log(body);
     const result = await axios.post(url, body, header);
     const data = result.data;
     if (data.success === true) {

@@ -177,7 +177,6 @@ function isKoreanWeekday() {
   return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(dayOfWeek);
 }
 
-// console.log(isKoreanWorkingHour());
 // 9:00 ~ 15:20
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
@@ -188,7 +187,6 @@ function isKoreanWorkingHour() {
 }
 
 function livePriceData() {
-  console.log("평일 9시부터 15시20분 까지 실행");
   // 여기에서 새로운 WebSocket 연결을 생성하고 반환
   const socket = io('/ws/stock', {
     transports: ['websocket'],
@@ -196,7 +194,6 @@ function livePriceData() {
 
   // 연결 성공 시 동작
   socket.on('connect', () => {
-    console.log('Connected to server');
 
     // 메시지 전송
     socket.emit(`asking_price`, trKey);
@@ -206,7 +203,7 @@ function livePriceData() {
     const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];
-    // console.log(liveCode);
+
     // 코드가 같은거만 나오게
     if (liveCode === trKey) {
       $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
@@ -233,7 +230,6 @@ function livePriceData() {
 
 async function priceData() {
   try {
-    console.log("평일 9시부터 15시20분 외에 실행");
     const result = await axios.get(`/api/stock/stockPrice?code=${trKey}`);
     const item = result.data.item.output1;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);

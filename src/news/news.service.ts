@@ -20,10 +20,10 @@ export class NewsService {
   async crawlNews() {
     try {
       // 브라우저 열기
-      const browser = await launch({ 
-        headless: "new", 
+      const browser = await launch({
+        headless: "new",
         executablePath: "/usr/bin/chromium-browser"
-       });
+      });
 
       // 새 페이지 생성
       const page = await browser.newPage();
@@ -86,13 +86,10 @@ export class NewsService {
 
   @Cron("0 */30 * * * *") // 30분마다 뉴스 크롤링
   async saveCrawledNews() {
-    console.log("뉴스 크롤링 시작");
     let start = new Date();
     await this.crawlNews();
-    console.log("뉴스 크롤링 완료");
     let end = new Date();
     const time = end.getTime() - start.getTime();
-    console.log("걸린 시간 : ", time);
   }
 
   // 매일 자정에 뉴스중 크롤링 후 7일이 지난 뉴스 삭제
@@ -100,7 +97,6 @@ export class NewsService {
   async deleteOldNews() {
     const time = new Date();
     time.setDate(time.getDate() - 7);
-    console.log("time: ", time);
 
     await this.newsRepository.createQueryBuilder().delete().from(News).where("createdAt <= :time", { time }).execute();
   }

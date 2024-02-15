@@ -76,7 +76,6 @@ async function deletTwitData(url) {
 
     const result = await axios.patch(url, {}, config);
     const item = result.data.data;
-    console.log(item);
 
   } catch (error) {
     alert(error.response.data.message);

@@ -59,7 +59,6 @@ export class OrderService implements OnModuleInit {
     }
     try {
       const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-      // console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
 
@@ -75,7 +74,6 @@ export class OrderService implements OnModuleInit {
           const buyOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
           });
-          // console.log("buy", buyOrderCode);
 
           for (const buyOrder of buyOrderCode) {
             // 계좌에 해당 주식 확인
@@ -114,7 +112,6 @@ export class OrderService implements OnModuleInit {
           const sellOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: false }
           });
-          // console.log("sell", sellOrderCode);
 
           for (const sellOrder of sellOrderCode) {
             // 계좌에 해당 주식 확인
@@ -179,10 +176,6 @@ export class OrderService implements OnModuleInit {
           // 구매(매수)건일 때,
           const updateAccount = await em.findOne(Account, { where: { userId: order.userId } });
           if (order.buySell && order.status === OrderStatus.Order) {
-            // console.log("point", updateAccount.point);
-            // console.log("plusPoint", order.ttlPrice);
-            // console.log("해당 계좌", updateAccount);
-            // console.log("주문내역", order);
             updateAccount.point += order.ttlPrice;
             await em.save(updateAccount);
           }
@@ -192,7 +185,6 @@ export class OrderService implements OnModuleInit {
       });
       /* 대기 주문 취소 트랜잭션 e */
 
-      console.log("주문 대기 건 취소 완료");
       return {
         success: true,
         message: "체결되지 않은 주문 건이 삭제되었습니다."
