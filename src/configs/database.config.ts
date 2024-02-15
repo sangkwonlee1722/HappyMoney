@@ -27,6 +27,6 @@ export const typeOrmModuleAsyncOptions: TypeOrmModuleAsyncOptions = {
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
     entities: [User, Notice, Account, Comment, Post, Stock, Twit, Push, StarStock, Order, StockHolding],
-    logging: true
+    logging: false
   })
 };

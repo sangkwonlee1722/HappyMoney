@@ -85,8 +85,7 @@ export class StockGateway implements OnGatewayConnection {
   @SubscribeMessage("asking_price")
   async getAskingPrice(@MessageBody() tr_key: string, @ConnectedSocket() client: Socket) {
     await this.initializeWebSocketClient();
-    console.log(tr_key);
-    // console.log("this.wsClient", this.wsClient);
+
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
         await this.getSk();
@@ -103,11 +102,9 @@ export class StockGateway implements OnGatewayConnection {
           input: {
             tr_id: "H0STASP0",
             tr_key: tr_key
-            // tr_key: "005930"
           }
         }
       };
-      // console.log("jsonRequest", jsonRequest);
       this.wsClient.emit("message", JSON.stringify(jsonRequest));
 
       // 'message' 이벤트를 받습니다.

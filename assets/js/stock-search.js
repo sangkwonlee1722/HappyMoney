@@ -12,7 +12,6 @@ export const getSearchData = async (keyword) => {
     const result = await axios.get(apiUrl);
 
     const stocks = result.data.data;
-    // console.log('stocks: ', stocks);
 
     const mainDom = document.querySelector(".search-list-wrap");
 
