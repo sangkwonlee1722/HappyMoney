@@ -101,7 +101,6 @@ export class orderProcessor {
               point: account.point + sellOrder.ttlPrice
             }
           );
-
           await em.update(
             StockHolding,
             { accountId: sellOrder.accountId, stockCode: sellOrder.stockCode },
@@ -117,11 +116,5 @@ export class orderProcessor {
       }
     });
     /* 주식 판매(매도) 시 트랜잭션 e */
-
-    // 주식 보유수가 0일 때 보유 주식 데이터 삭제
-    const updateStock = await this.orderService.findOneStock(account.id, sellOrder.stockCode);
-    if (updateStock.numbers === 0) {
-      await this.stockHoldingRepository.delete({ accountId: account.id, stockCode: sellOrder.stockCode });
-    }
   }
 }

@@ -135,6 +135,15 @@ export class OrderService implements OnModuleInit {
                   ttlPrice: sH.ttlPrice - sellOrder.ttlPrice
                 }
               );
+
+              // 주식 보유수가 0일 때 보유 주식 데이터 삭제
+              const updateStock = await this.findOneStock(sellOrder.accountId, sellOrder.stockCode);
+              if (updateStock.numbers === 0) {
+                await this.stockHoldingRepository.delete({
+                  accountId: sellOrder.accountId,
+                  stockCode: sellOrder.stockCode
+                });
+              }
             }
           }
 
@@ -243,38 +252,38 @@ export class OrderService implements OnModuleInit {
 
   // 판매(매도)API
   async sellStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
-    const account = await this.accountsService.findOneAccount(id);
-    if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-    if (!orderNumbers || !price)
-      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
-    // 판매(매도) 내역 생성
-    const sellOrder = this.orderRepository.create({
-      userId: id,
-      accountId: account.id,
-      stockName,
-      stockCode,
-      orderNumbers,
-      price,
-      ttlPrice: orderNumbers * price,
-      buySell: false,
-      status
-    });
-
-    // 계좌에 해당 주식 확인
-    const sH = await this.findOneStock(account.id, sellOrder.stockCode);
-    if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
-    if (sH.numbers < sellOrder.orderNumbers)
-      throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
-
-    // 예약 매도 수량 확인
-    const orderChk = await this.orderRepository.find({
-      where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
-    });
-    const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
-    if (totalOrderNumbers > sH.numbers)
-      throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
-
     try {
+      const account = await this.accountsService.findOneAccount(id);
+      if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
+      if (!orderNumbers || !price)
+        throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
+      // 판매(매도) 내역 생성
+      const sellOrder = this.orderRepository.create({
+        userId: id,
+        accountId: account.id,
+        stockName,
+        stockCode,
+        orderNumbers,
+        price,
+        ttlPrice: orderNumbers * price,
+        buySell: false,
+        status
+      });
+
+      // 계좌에 해당 주식 확인
+      const sH = await this.findOneStock(account.id, sellOrder.stockCode);
+      if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
+      if (sH.numbers < sellOrder.orderNumbers)
+        throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
+
+      // 예약 매도 수량 확인
+      const orderChk = await this.orderRepository.find({
+        where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
+      });
+      const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
+      if (totalOrderNumbers > sH.numbers)
+        throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
+
       await this.ordersQueue.add(
         "sell",
         { sellOrder, id },
@@ -286,6 +295,12 @@ export class OrderService implements OnModuleInit {
           jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${sellOrder.buySell}-${Date.now()}`
         }
       );
+
+      // 주식 보유수가 0일 때 보유 주식 데이터 삭제
+      const updateStock = await this.findOneStock(account.id, sellOrder.stockCode);
+      if (updateStock.numbers === 0) {
+        await this.stockHoldingRepository.delete({ accountId: account.id, stockCode: sellOrder.stockCode });
+      }
     } catch (error) {
       console.error(error);
       throw error;
