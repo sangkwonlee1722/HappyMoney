@@ -166,6 +166,7 @@ $('#stockAmount').on('input', function () {
 $("#fixPrice").on('input', function () {
   const fixPrice = $(this).val();
   const num = $('#stockAmount').val();
+
   $('.total-price').text('');
   $('.total-price').text(addComma(fixPrice * num));
 })

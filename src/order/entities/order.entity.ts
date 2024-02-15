@@ -43,7 +43,7 @@ export class Order extends BaseEntity {
    * @example 1
    * @requires true
    */
-  @IsPositive()
+  @IsPositive({ message: "양수이어야 합니다." })
   @Column({ nullable: false })
   orderNumbers: number;
 
@@ -52,7 +52,7 @@ export class Order extends BaseEntity {
    * @example 74000
    * @requires true
    */
-  @IsPositive()
+  @IsPositive({ message: "양수이어야 합니다." })
   @Column({ nullable: false })
   price: number;
 
