@@ -226,7 +226,6 @@ const getMyOrders = async () => {
 const spreadOrderLists = async () => {
   const mainDom = document.querySelector('.order-list')
   const { ordersLists, ordersTotal } = await getMyOrders()
-  console.log('ordersLists: ', ordersLists);
 
   if (ordersLists.length !== 0) {
     mainDom.innerHTML = ordersLists
@@ -314,7 +313,6 @@ $('.order-date-btn button').on('click', function () {
   drPopupOpen('.delete-order-chk')
 
   const orderId = $(this).closest('li').attr('data-id');
-  console.log('orderId: ', orderId);
   const orderCategory = $(this).closest('li').find('.child-category').text();
   const orderStockName = $(this).closest('li').find('.stock-name').text();
   const orderTtlPrice = $(this).closest('li').find('.order-ttl-price').text();

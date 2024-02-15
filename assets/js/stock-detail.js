@@ -49,6 +49,11 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 
 // 구매(매수)버튼 클릭 시
 $('#buyBtn').on('click', function () {
+  const bidp = $('.sell.num1 .price').text();
+  if (bidp === '') {
+    alert('호가 업데이트가 되지않아 구매가 불가능합니다.');
+    return;
+  }
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
     const bidp = $('.sell.num1 .price').text();
     const bidp1 = parseFloat(bidp.replace(',', ''));
@@ -64,6 +69,10 @@ $('#sellBtn').on('click', function () {
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
     const bidp = $('.sell.num1 .price').text();
     const bidp1 = parseFloat(bidp.replace(',', ''));
+    if (bidp === '') {
+      alert('호가 업데이트가 되지않아 판매가 불가능합니다.');
+      return;
+    }
     sellFatchData(bidp1);
   } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
@@ -168,7 +177,6 @@ function isKoreanWeekday() {
   return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(dayOfWeek);
 }
 
-// console.log(isKoreanWorkingHour());
 // 9:00 ~ 15:20
 function isKoreanWorkingHour() {
   const koreanOptions = { timeZone: 'Asia/Seoul' };
@@ -179,7 +187,6 @@ function isKoreanWorkingHour() {
 }
 
 function livePriceData() {
-  console.log("평일 9시부터 15시20분 까지 실행");
   // 여기에서 새로운 WebSocket 연결을 생성하고 반환
   const socket = io('/ws/stock', {
     transports: ['websocket'],
@@ -187,21 +194,19 @@ function livePriceData() {
 
   // 연결 성공 시 동작
   socket.on('connect', () => {
-    console.log('Connected to server');
 
     // 메시지 전송
-    socket.emit('asking_price', trKey);
+    socket.emit(`asking_price`, trKey);
   });
 
-  socket.on('asking_price', async (data) => {
+  socket.on(`asking_price_${trKey}`, async (data) => {
     const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];
-    // console.log(liveCode);
+
     // 코드가 같은거만 나오게
     if (liveCode === trKey) {
       $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
-      // console.log(price.bidp1);
 
       // 시장가 체크에 따른 수정
       const fixPrice = $('#fixPrice').val();
@@ -225,7 +230,6 @@ function livePriceData() {
 
 async function priceData() {
   try {
-    console.log("평일 9시부터 15시20분 외에 실행");
     const result = await axios.get(`/api/stock/stockPrice?code=${trKey}`);
     const item = result.data.item.output1;
     $('.stock-dt-tit-box > .price').text(`${addComma(item.bidp1)}원`);

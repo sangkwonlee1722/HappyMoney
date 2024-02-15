@@ -158,8 +158,6 @@ export class AccountsService {
     const message = new SlackMessage(color, text, mrkTitle, mrkValue);
 
     this.slackService.sendScheduleNoti(message, slackHookUrl);
-
-    console.log("걸린 시간 : ", time);
   }
 
   /* 각 계좌의 총 가치 계산하기 */

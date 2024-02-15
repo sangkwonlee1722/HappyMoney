@@ -50,7 +50,6 @@ async function getAccountRank() {
     });
 
     const topTenAccounts = result.data.topTenAccounts;
-    console.log("topTenAccount: ", topTenAccounts);
 
     return topTenAccounts;
   } catch (error) {

@@ -191,13 +191,11 @@ export function addComma(number) {
 async function registerNotificationService() {
   try {
     const status = await Notification.requestPermission();
-    console.log("Notification 상태", status);
 
     const vapidPublicKey = await getVAPIDPublicKey();
     const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
     if (status === "denied") {
-      console.log("Notification 상태", status);
       return;
     } else if (navigator.serviceWorker) {
       const registration = await navigator.serviceWorker.register("sw.js");
