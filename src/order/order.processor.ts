@@ -41,10 +41,6 @@ export class orderProcessor {
             point: account.point - buyOrder.ttlPrice
           }
         );
-<<<<<<< Updated upstream
-        // console.log("1. test", buyOrder);
-=======
->>>>>>> Stashed changes
         // 계좌에 해당 주식이 없고 체결 됐을 때,
         if (!sH && buyOrder.status === OrderStatus.Complete) {
           const createSh = em.create(StockHolding, {
@@ -59,10 +55,6 @@ export class orderProcessor {
           await em.save(StockHolding, createSh);
         }
 
-<<<<<<< Updated upstream
-        // console.log("2. test", buyOrder);
-=======
->>>>>>> Stashed changes
         // 계좌에 해당 주식이 있고 체결 됐을 때,
         if (sH && buyOrder.status === OrderStatus.Complete) {
           await em.update(
@@ -74,10 +66,6 @@ export class orderProcessor {
             }
           );
         }
-<<<<<<< Updated upstream
-        // console.log("3. test", buyOrder);
-=======
->>>>>>> Stashed changes
       } catch (error) {
         console.error(error);
         throw error;
