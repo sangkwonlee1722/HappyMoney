@@ -31,7 +31,7 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 28 9 * * 1-5")
+  @Cron("0 26 11 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
@@ -59,7 +59,7 @@ export class OrderService implements OnModuleInit {
     }
     try {
       const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-      console.log("orders", orders);
+      // console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
 
@@ -75,7 +75,7 @@ export class OrderService implements OnModuleInit {
           const buyOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
           });
-          console.log("buy", buyOrderCode);
+          // console.log("buy", buyOrderCode);
 
           for (const buyOrder of buyOrderCode) {
             // 계좌에 해당 주식 확인
@@ -114,7 +114,7 @@ export class OrderService implements OnModuleInit {
           const sellOrderCode = await em.find(Order, {
             where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: false }
           });
-          console.log("sell", sellOrderCode);
+          // console.log("sell", sellOrderCode);
 
           for (const sellOrder of sellOrderCode) {
             // 계좌에 해당 주식 확인
@@ -127,19 +127,13 @@ export class OrderService implements OnModuleInit {
               sellAccount.point += sellOrder.ttlPrice;
               await em.save(sellAccount);
 
-              await em.update(
-                StockHolding,
-                { accountId: sellOrder.accountId, stockCode: sellOrder.stockCode },
-                {
-                  numbers: sH.numbers - sellOrder.orderNumbers,
-                  ttlPrice: sH.ttlPrice - sellOrder.ttlPrice
-                }
-              );
+              sH.numbers -= sellOrder.orderNumbers;
+              sH.ttlPrice -= sellOrder.ttlPrice;
+              await em.save(sH);
 
               // 주식 보유수가 0일 때 보유 주식 데이터 삭제
-              const updateStock = await this.findOneStock(sellOrder.accountId, sellOrder.stockCode);
-              if (updateStock.numbers === 0) {
-                await this.stockHoldingRepository.delete({
+              if (sH.numbers === 0) {
+                await em.delete(StockHolding, {
                   accountId: sellOrder.accountId,
                   stockCode: sellOrder.stockCode
                 });
@@ -295,12 +289,6 @@ export class OrderService implements OnModuleInit {
           jobId: `${sellOrder.userId}-${sellOrder.stockCode}-${sellOrder.buySell}-${Date.now()}`
         }
       );
-
-      // 주식 보유수가 0일 때 보유 주식 데이터 삭제
-      const updateStock = await this.findOneStock(account.id, sellOrder.stockCode);
-      if (updateStock.numbers === 0) {
-        await this.stockHoldingRepository.delete({ accountId: account.id, stockCode: sellOrder.stockCode });
-      }
     } catch (error) {
       console.error(error);
       throw error;

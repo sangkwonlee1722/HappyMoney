@@ -25,6 +25,7 @@ export class StockGateway implements OnGatewayConnection {
 
   handleConnection(socket: WebSocket) {
     console.log(`on connect called: ${socket.id}`);
+    socket.setMaxListeners(40);
   }
 
   // async handleDisconnect(socket: WebSocket) {
