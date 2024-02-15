@@ -20,10 +20,10 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          // host: "localhost",
-          // port: 6379
-          host: configService.get<string>("REDIS_HOST"),
-          port: configService.get<number>("REDIS_PORT")
+          host: "localhost",
+          port: 6379
+          // host: configService.get<string>("REDIS_HOST"),
+          // port: configService.get<number>("REDIS_PORT")
         }
       })
     }),
