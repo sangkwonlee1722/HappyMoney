@@ -1,37 +1,44 @@
 <!doctype html>
 <html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/js/jquery-3.7.1.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="/js/bootstrap.min.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/news-main.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6466HVHEWX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script type="module" src="/js/jquery-3.7.1.min.js"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script type="module" src="/js/bootstrap.min.js"></script>
-  <script type="module" src="/js/common.js"></script>
-  <script type="module" src="/js/news-main.js"></script>
-  <link rel="stylesheet" href="/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/css/common.css" />
-  <link rel="stylesheet" href="/css/main-page.css" />
-  <title>HappyMoney</title>
-</head>
+      gtag("config", "G-6466HVHEWX");
+    </script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/main-page.css" />
+    <title>HappyMoney</title>
+  </head>
 
-<body>
-  <div class="hm-container">
-    <header id="header_wrap"></header>
-    <div id="main-content">
-      <!-- 뉴스 -->
-      <div class="contents-wrap">
-        <div class="notice-main-header">
-          <h2 class="board-title">
-            뉴스
-          </h2>
+  <body>
+    <div class="hm-container">
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <!-- 뉴스 -->
+        <div class="contents-wrap">
+          <div class="notice-main-header">
+            <h2 class="board-title">뉴스</h2>
+          </div>
+          <ul class="board-list"></ul>
         </div>
-        <ul class="board-list"></ul>
       </div>
+      <ul id="hm-pagination"></ul>
     </div>
-    <ul id="hm-pagination"></ul>
-  </div>
-  <footer id="footer_wrap"></footer>
-</body>
-
+    <footer id="footer_wrap"></footer>
+  </body>
 </html>
