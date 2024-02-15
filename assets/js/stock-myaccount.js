@@ -51,7 +51,7 @@ export const spreadMyAccountInfo = async () => {
 
   const ttlOriginBuyValues = originBuyValues.reduce((a, b) => a + b, 0); // 투자원금을 구하기 위해 배열 요소의 합을 구함
 
-  const profitOfStocks = totalStockValue - ttlOriginBuyValues
+  const profitOfStocks = (totalStockValue - ttlOriginBuyValues).toFixed(0)
   const profitPercentofStocks = ttlOriginBuyValues === 0 ? 0 : ((profitOfStocks / ttlOriginBuyValues) * 100).toFixed(1)
   const formatProfitOfStocks = profitOfStocks > 0 ? `+${addComma(profitOfStocks)}` : `${addComma(profitOfStocks)}`
 
