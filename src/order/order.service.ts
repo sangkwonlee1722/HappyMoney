@@ -31,25 +31,43 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 45 14 * * 1-5")
+  @Cron("00 00 09 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
+    console.log("시작");
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
     this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
   }
 
   // 평일 15시 25분에 종료
-  @Cron("0 25 15 * * 1-5")
+  @Cron("00 25 15 * * 1-5")
   stopTask() {
     this.shouldRunTask = false;
     // 기존에 등록된 작업을 중지
+    console.log("끝");
     const timeout = this.schedulerRegistry.getTimeout("waitOrderChk");
     clearTimeout(timeout);
   }
 
   async onModuleInit() {
     // 서버가 켜질때 시작
-    this.waitOrderChk();
+    const now = new Date();
+    const day = now.getDay();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    if (day === 0 || day === 6) {
+      return;
+    }
+    // 시간 확인 (9시부터 15시 25분까지)
+    if ((hours > 9 || (hours === 9 && minutes >= 0)) && (hours < 15 || (hours === 15 && minutes <= 25))) {
+      console.log("평일 9시 ~ 15시 25분");
+      this.shouldRunTask = true;
+      this.waitOrderChk();
+    } else {
+      console.log("끝");
+      this.shouldRunTask = false;
+      this.waitOrderChk();
+    }
   }
 
   // 대기 주문 체결
@@ -151,8 +169,8 @@ export class OrderService implements OnModuleInit {
     } finally {
       if (this.shouldRunTask) {
         // 기존에 등록된 작업이 있다면 제거
-        const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
-        if (existingTimeout) {
+        if (this.schedulerRegistry.doesExist("timeout", "waitOrderChk")) {
+          const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
           clearTimeout(existingTimeout);
           this.schedulerRegistry.deleteTimeout("waitOrderChk");
         }
@@ -202,8 +220,6 @@ export class OrderService implements OnModuleInit {
   async buyStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-    if (!orderNumbers || !price)
-      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
     // 매수 내역 생성
     const buyOrder = this.orderRepository.create({
       userId: id,
@@ -216,6 +232,11 @@ export class OrderService implements OnModuleInit {
       buySell: true,
       status
     });
+
+    if (!orderNumbers || !price)
+      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
+    if (buyOrder.ttlPrice > account.point)
+      throw new BadRequestException({ success: false, message: "금액이 부족합니다." });
 
     try {
       // 주문 데이터를 Redis 큐에 추가
@@ -241,8 +262,6 @@ export class OrderService implements OnModuleInit {
     try {
       const account = await this.accountsService.findOneAccount(id);
       if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-      if (!orderNumbers || !price)
-        throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
       // 판매(매도) 내역 생성
       const sellOrder = this.orderRepository.create({
         userId: id,
@@ -256,19 +275,19 @@ export class OrderService implements OnModuleInit {
         status
       });
 
+      if (!orderNumbers || !price)
+        throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
       // 계좌에 해당 주식 확인
       const sH = await this.findOneStock(account.id, sellOrder.stockCode);
       if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
-      if (sH.numbers < sellOrder.orderNumbers)
-        throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
 
       // 예약 매도 수량 확인
       const orderChk = await this.orderRepository.find({
         where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
       });
       const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
-      if (totalOrderNumbers > sH.numbers)
-        throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
+      if (totalOrderNumbers + sellOrder.orderNumbers > sH.numbers)
+        throw new BadRequestException({ success: false, message: "보유 주식보다 수량이 많습니다." });
 
       await this.ordersQueue.add(
         "sell",
