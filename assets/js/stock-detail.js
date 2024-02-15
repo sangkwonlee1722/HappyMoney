@@ -49,6 +49,11 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 
 // 구매(매수)버튼 클릭 시
 $('#buyBtn').on('click', function () {
+  const bidp = $('.sell.num1 .price').text();
+  if (bidp === '') {
+    alert('호가 업데이트가 되지않아 구매가 불가능합니다.');
+    return;
+  }
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
     const bidp = $('.sell.num1 .price').text();
     const bidp1 = parseFloat(bidp.replace(',', ''));
@@ -64,6 +69,10 @@ $('#sellBtn').on('click', function () {
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
     const bidp = $('.sell.num1 .price').text();
     const bidp1 = parseFloat(bidp.replace(',', ''));
+    if (bidp === '') {
+      alert('호가 업데이트가 되지않아 판매가 불가능합니다.');
+      return;
+    }
     sellFatchData(bidp1);
   } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
@@ -190,10 +199,10 @@ function livePriceData() {
     console.log('Connected to server');
 
     // 메시지 전송
-    socket.emit('asking_price', trKey);
+    socket.emit(`asking_price`, trKey);
   });
 
-  socket.on('asking_price', async (data) => {
+  socket.on(`asking_price_${trKey}`, async (data) => {
     const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];
@@ -201,7 +210,6 @@ function livePriceData() {
     // 코드가 같은거만 나오게
     if (liveCode === trKey) {
       $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
-      // console.log(price.bidp1);
 
       // 시장가 체크에 따른 수정
       const fixPrice = $('#fixPrice').val();

@@ -48,10 +48,10 @@ export const getSearchData = async (keyword) => {
       .join("")
 
 
-    $(".search-list-wrap li a").on('click', function (e) {
-      e.preventDefault();
-      alert('아직 준비중입니다.');
-    });
+    // $(".search-list-wrap li a").on('click', function (e) {
+    //   e.preventDefault();
+    //   alert('아직 준비중입니다.');
+    // });
   } catch (error) {
     console.error(error)
   }
