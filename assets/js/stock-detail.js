@@ -157,6 +157,7 @@ $('#fixCheck').on('change', function () {
 
 // 주문수량 바꿀 때 계산
 $('#stockAmount').on('input', function () {
+  this.value = this.value.replace(/[^0-9]/g, '');
   const fixPrice = $('#fixPrice').val();
   const num = $(this).val();
   $('.total-price').text('');
@@ -164,6 +165,7 @@ $('#stockAmount').on('input', function () {
 });
 // 가격을 바꿀 때 계산
 $("#fixPrice").on('input', function () {
+  this.value = this.value.replace(/[^0-9]/g, '');
   const fixPrice = $(this).val();
   const num = $('#stockAmount').val();
 
