@@ -28,6 +28,9 @@ export class Push extends BaseEntity {
   @Column({ nullable: true, comment: "쪽지 발신자 등 사용자에게 보내줄 알림 내용 데이터2" })
   contents2: string;
 
+  @Column({ type: "simple-array", nullable: true, comment: "주식 이름, 코드", default: null })
+  contents3?: any[];
+
   @Column({ nullable: false, comment: "클릭 시 넘어갈 주소에 사용될 Id값" })
   contentId: number;
 

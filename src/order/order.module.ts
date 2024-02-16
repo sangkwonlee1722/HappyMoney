@@ -9,6 +9,7 @@ import { StockModule } from "src/stock/stock.module";
 import { BullModule } from "@nestjs/bull";
 import { orderProcessor } from "./order.processor";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { PushModule } from "@/push/push.module";
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     }),
     BullModule.registerQueue({
       name: "orders"
-    })
+    }),
+    PushModule
   ],
   controllers: [OrderController],
   providers: [OrderService, orderProcessor]
