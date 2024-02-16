@@ -45,7 +45,7 @@ export async function spreadMyAllPushNotis() {
   if (pushNotis.length !== 0) {
     mainDom.innerHTML =
       pushNotis.map(noti => {
-        const { id, createdAt, serviceType, isRead, contents1, contents2, contentId } = noti
+        const { id, createdAt, serviceType, isRead, contents1, contents2, contents3, contentId } = noti
 
         const readStatus = isRead === false ? "안읽음" : "읽음";
         const readStatusClass = isRead === false ? "unread" : "read";
@@ -67,7 +67,8 @@ export async function spreadMyAllPushNotis() {
             break
 
           case "주식":
-            message = `주식 ${contents1}에 성공하였습니다.`
+            message = `[${contents2}] 주문이 체결되었습니다.`
+            contentUrl = `/views/stock-detail-my.html?code=${contents3[0]}&name=${contents3[1]}&page=1`
             break
         }
 
