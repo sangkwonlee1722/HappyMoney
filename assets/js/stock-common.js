@@ -11,12 +11,17 @@ $(document).ready(function () {
         // 유저가 종목 검색창에서 입력한 키워드를 가져오기
         const keyword = $(".stock-search-bar").val();
 
-        const regex = /[^\w\s]/;
+        const regex = /[^\w\sㄱ-ㅎ가-힣]/;
 
         // 키워드에 공백이나 특수문자가 포함되어 있는지 확인
         if (keyword.match(regex) || keyword.includes(" ")) {
           alert("공백이나 특수문자는 검색할 수 없습니다.");
 
+          return
+        }
+
+        if (keyword.length === 0) {
+          alert("검색어를 입력하세요.")
           return
         }
 
