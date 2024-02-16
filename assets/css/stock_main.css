@@ -38,6 +38,14 @@
   font-size: 12px;
 }
 
+.plus {
+  color: #db1515;
+}
+
+.minus {
+  color: #405fff;
+}
+
 /* 랭킹보드 부분 s */
 .stock-ranking-header h3 {
   font-weight: bold;

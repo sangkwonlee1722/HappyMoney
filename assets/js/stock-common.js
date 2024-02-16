@@ -11,6 +11,15 @@ $(document).ready(function () {
         // 유저가 종목 검색창에서 입력한 키워드를 가져오기
         const keyword = $(".stock-search-bar").val();
 
+        const regex = /[^\w\s]/;
+
+        // 키워드에 공백이나 특수문자가 포함되어 있는지 확인
+        if (keyword.match(regex) || keyword.includes(" ")) {
+          alert("공백이나 특수문자는 검색할 수 없습니다.");
+
+          return
+        }
+
         // 해당 키워드 검색 결과 페이지로 이동
         const redirectUrl = generateUrl(keyword);
         window.location.href = redirectUrl;
@@ -24,8 +33,6 @@ export const generateUrl = (keyword) => {
   const baseUrl = "stock-search.html?keyword=";
   return baseUrl + keyword;
 };
-
-
 
 
 

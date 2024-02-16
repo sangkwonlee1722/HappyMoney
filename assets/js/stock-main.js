@@ -15,9 +15,11 @@ async function rankListData() {
     const mainDom = document.querySelector(".rank-list-wrap");
     mainDom.innerHTML = list
       .map((list) => {
+
         const formattedPrice = addComma(list.stck_prpr);
-        const percentClass = $(".rank-list-wrap .rank-price span").addClass("mius");
-        const priceClass = parseFloat(list.prdy_ctrt) < 0 ? percentClass : "";
+
+        const priceClass = parseFloat(list.prdy_ctrt) <= 0 ? "minus" : "plus";
+
         return `
             <li>
               <a href='/views/stock-detail.html?code=${list.mksc_shrn_iscd}&name=${list.hts_kor_isnm}'></a>
@@ -26,7 +28,7 @@ async function rankListData() {
               </div>
               <div class="rank-price">
                 <p>${formattedPrice} 원</p>
-                <span>${list.prdy_ctrt}%</span>
+                <span class=${priceClass}>${list.prdy_ctrt}%</span>
               <div>
             </li>
             `;
