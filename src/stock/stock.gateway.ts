@@ -115,6 +115,9 @@ export class StockGateway implements OnGatewayConnection {
       });
       this.wsClient = null;
       this.addStock = [];
+
+      // 연결 끊었을 때, 클라이언트에 refresh 이벤트 보내기
+      this.server.emit("refresh", {});
     }
     await this.initializeWebSocketClient();
     console.log(tr_key);
@@ -150,7 +153,7 @@ export class StockGateway implements OnGatewayConnection {
         // console.log("Received asking_price:", jsonData.mksc_shrn_iscd.split("|")[3]);
         try {
           if (addCode === tr_key) {
-            this.server.emit(`asking_price_${tr_key}`, jsonData);
+            this.server.emit("asking_price", jsonData);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
