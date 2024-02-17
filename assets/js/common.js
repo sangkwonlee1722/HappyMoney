@@ -51,7 +51,7 @@ export default function getToken() {
 
   if (token === "Bearer null") {
     // alert("로그인이 필요합니다.");
-    window.location.href = "/views/main.html";
+    // window.location.href = "/views/main.html";
   }
 
   return token;
@@ -342,7 +342,6 @@ export const formatPrice = (number) => {
 // $(document).on("submit", "form", function () {
 //   closing_window = false;
 // });
-
 
 // window.addEventListener("unload", function (e) {
 //   if (closing_window) {

@@ -15,7 +15,6 @@ async function rankListData() {
     const mainDom = document.querySelector(".rank-list-wrap");
     mainDom.innerHTML = list
       .map((list) => {
-
         const formattedPrice = addComma(list.stck_prpr);
 
         const priceClass = parseFloat(list.prdy_ctrt) <= 0 ? "minus" : "plus";
@@ -57,6 +56,8 @@ async function getAccountRank() {
   } catch (error) {
     if (error.response.status === 401) {
       alert("로그인이 필요합니다.");
+      // window.location.href = "/views/main.html";
+      drPopupOpen(".hm-popup-login");
     } else {
       console.error(error.response);
       const errorMessage = error.response.data.message;
