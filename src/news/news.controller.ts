@@ -9,15 +9,6 @@ export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
   /**
-   * 예시용 뉴스 크롤링
-   * @returns
-   */
-  @Get("sample")
-  getSample() {
-    return this.newsService.crawlNews();
-  }
-
-  /**
    * 뉴스 조회 페이지네이션
    * @params ?page=페이지
    * @returns
