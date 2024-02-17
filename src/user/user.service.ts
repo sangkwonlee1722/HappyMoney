@@ -25,6 +25,7 @@ export class UserService {
     private readonly jwtService: JwtService
   ) {}
 
+  // 회원가입
   async createUser(createUserDto: CreateUserDto) {
     const { email, password, name, nickName, phone } = createUserDto;
 
@@ -71,6 +72,7 @@ export class UserService {
     }
   }
 
+  // 로그인
   async login(email: string, password: string) {
     const user = await this.findUserByEmail(email);
 
@@ -91,18 +93,21 @@ export class UserService {
     };
   }
 
+  // 유저 정보 수정
   async updateUserInfo(id: number, nickName: string, phone: string) {
     const updated = await this.userRepository.update({ id }, { nickName, phone });
 
     return updated;
   }
 
+  // 유저 비밀번호 수정
   async updatePassword(id: number, password: string) {
     const updated = await this.userRepository.update({ id }, { password });
 
     return updated;
   }
 
+  // 회원탈퇴 이메일
   async deleteUserSendEmail(id: number) {
     const user: User = await this.userRepository.findOne({
       where: { id }
@@ -131,6 +136,7 @@ export class UserService {
     }
   }
 
+  // 회원탈퇴
   async deleteUser(id: number) {
     const user: User = await this.userRepository.findOne({
       where: { id }
@@ -143,6 +149,7 @@ export class UserService {
     await this.userRepository.softRemove(user);
   }
 
+  // 모든 유저 찾기
   async find() {
     return await this.userRepository.find({
       select: ["id", "email", "name", "deletedAt", "nickName"],
@@ -150,10 +157,12 @@ export class UserService {
     });
   }
 
+  // 유저 id 찾기
   async findUserById(id: number) {
     return await this.userRepository.findOneBy({ id });
   }
 
+  // 유저 이메일만 찾기
   async findUserByEmail(email: string) {
     return await this.userRepository.findOne({
       select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified", "emailVerifyToken"],
@@ -161,6 +170,7 @@ export class UserService {
     });
   }
 
+  // 유저 핸드폰 번호 찾기
   async findUserByPhone(phone: string) {
     return await this.userRepository.find({
       select: ["id", "email", "password", "name", "phone", "role", "isEmailVerified"],
@@ -168,10 +178,12 @@ export class UserService {
     });
   }
 
+  // 유저 닉네임 찾기
   async findUserByNickName(nickName: string) {
     return await this.userRepository.findOneBy({ nickName });
   }
 
+  // 유저 DB 정보 수정
   async updateUserVerify(userId: number, updateData: Partial<User>): Promise<void> {
     await this.userRepository.update(userId, updateData);
   }
@@ -181,10 +193,12 @@ export class UserService {
     return this.userRepository.createQueryBuilder("user").where("user.nickName = :nickname", { nickname }).getOne();
   }
 
+  // 구독
   async saveSubscription(subscription: JSON, id: number) {
     await this.userRepository.update({ id }, { subscription });
   }
 
+  // 임시 비밀번호 이메일 발송
   async sendTemporaryPassword(email: string) {
     const user: User = await this.findUserByEmail(email);
     const temporaryPassword = Math.floor(100000 + Math.random() * 900000).toString();
