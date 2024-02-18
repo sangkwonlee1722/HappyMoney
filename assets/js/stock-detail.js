@@ -223,7 +223,7 @@ function livePriceData() {
     setTimeout(function () {
       alert('실시간 호가 데이터가 수정되었습니다.');
       location.reload();
-    }, 3000);
+    }, 1000);
   });
 
   socket.on('asking_price', async (data) => {
