@@ -134,16 +134,21 @@ export class AccountsService {
     let start = new Date();
     const calculateAccountValue = await this.calculateAccountValue();
 
-    this.accountRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Account)
-      .values(calculateAccountValue)
-      .orUpdate(["total_value", "profit", "profit_percentage", "updated_at"], "id", {
-        skipUpdateIfNoValuesChanged: true,
-        upsertType: "on-conflict-do-update"
+    await Promise.all(
+      calculateAccountValue.map(async (value) => {
+        await this.accountRepository
+          .createQueryBuilder()
+          .update(Account)
+          .set({
+            totalValue: value.totalValue,
+            profit: value.profit,
+            profitPercentage: value.profitPercentage,
+            rankUpdatedAt: new Date()
+          })
+          .where("id = :id", { id: value.id })
+          .execute();
       })
-      .execute();
+    );
 
     let end = new Date();
     const time = end.getTime() - start.getTime();
@@ -216,7 +221,7 @@ export class AccountsService {
         "a.profitPercentage",
         "a.name",
         "a.createdAt",
-        "a.updatedAt",
+        "a.rankUpdatedAt",
         "u.nickName"
       ])
       .orderBy("a.totalValue", "DESC")

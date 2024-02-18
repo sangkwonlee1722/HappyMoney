@@ -70,9 +70,9 @@ async function spreadTopTenAccounts() {
   const topTenAccounts = await getAccountRank();
 
   /* 랭킹 기준 날짜 보여주기 */
-  const updateDate = new Date(topTenAccounts[0].updatedAt);
+  const rankUpdatedAt = new Date(topTenAccounts[0].rankUpdatedAt);
 
-  const koreanTime = `${updateDate.getFullYear()}-${String(updateDate.getMonth() + 1).padStart(2, "0")}-${String(updateDate.getDate()).padStart(2, "0")} ${String(updateDate.getHours()).padStart(2, "0")}:${String(updateDate.getMinutes()).padStart(2, "0")}`;
+  const koreanTime = `${rankUpdatedAt.getFullYear()}-${String(rankUpdatedAt.getMonth() + 1).padStart(2, "0")}-${String(rankUpdatedAt.getDate()).padStart(2, "0")} ${String(rankUpdatedAt.getHours()).padStart(2, "0")}:${String(rankUpdatedAt.getMinutes()).padStart(2, "0")}`;
 
   $(".criteria-date").text(`* ${koreanTime} 기준`);
 

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { IsDate, IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { BaseEntity } from "src/common/entities/base.entity";
 import { Order } from "src/order/entities/order.entity";
 import { StockHolding } from "src/order/entities/stockHolding.entity";
@@ -33,6 +33,10 @@ export class Account extends BaseEntity {
   @IsString()
   @Column({ nullable: false, unique: true })
   accountNumber: string;
+
+  @IsDate()
+  @Column({ nullable: true })
+  rankUpdatedAt?: Date;
 
   @ManyToOne(() => User, (user) => user.accounts)
   @JoinColumn({ name: "user_id" })
