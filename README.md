@@ -157,7 +157,7 @@
 
 # 🕸 서비스 아키텍처
 
- ![서비스 아키텍처](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/fdaac75c-19c4-413c-b0ab-68df79dfdb19)
+![아키텍처](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/e86a7cdd-351f-45ba-b3b8-bee53939a519)
 
 <br>
 
