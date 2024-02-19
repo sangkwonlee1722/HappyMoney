@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
+
+// 이메일 전송 함수
 @Injectable()
 export class EmailService {
   private transporter;

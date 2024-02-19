@@ -2,9 +2,11 @@ const signupBtn = document.querySelector(".signupBtn");
 const emailCheckBtn = document.getElementById("emailCheckBtn");
 const nickNameCheckBtn = document.getElementById("nickNameCheckBtn");
 
+// 중복체크
 let emailCheck = false;
 let nickNameCheck = false;
 
+// 이메일 중복체크 버튼 클릭 시
 emailCheckBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const emailCheckVerify = document.getElementById("emailCheckVerify");
@@ -50,6 +52,7 @@ emailCheckBtn.addEventListener("click", async () => {
   }
 });
 
+// 닉네임 중복체크 버튼 클릭 시
 nickNameCheckBtn.addEventListener("click", async () => {
   const nickName = document.getElementById("nickName").value;
   const nickNameCheckVerify = document.getElementById("nickNameCheckVerify");
@@ -96,6 +99,7 @@ nickNameCheckBtn.addEventListener("click", async () => {
   }
 });
 
+// 회원가입 버튼 클릭 시
 signupBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -231,10 +235,12 @@ signupBtn.addEventListener("click", async () => {
   }
 });
 
+// input value 새로 입력하면 이메일 중복체크 다시 하기
 document.getElementById("email").addEventListener("input", () => {
   emailCheck = false;
 });
 
+// input value 새로 입력하면 닉네임 중복체크 다시 하기
 document.getElementById("nickName").addEventListener("input", () => {
   nickNameCheck = false;
 });
