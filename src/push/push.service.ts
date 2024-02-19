@@ -96,7 +96,6 @@ export class PushService {
   async deleteOldPushAlarm() {
     const time = new Date();
     time.setDate(time.getDate() - 1);
-    console.log("time: ", time);
 
     const deleteResult = await this.pushRepository
       .createQueryBuilder()

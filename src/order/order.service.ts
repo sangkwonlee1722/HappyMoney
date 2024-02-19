@@ -12,6 +12,9 @@ import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import { StockService } from "src/stock/stock.service";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
+import { Push, ServiceType } from "@/push/entities/push.entity";
+import { Payload } from "@/push/push-config";
+import { PushService } from "@/push/push.service";
 
 @Injectable()
 export class OrderService implements OnModuleInit {
@@ -22,6 +25,7 @@ export class OrderService implements OnModuleInit {
     private readonly stockHoldingRepository: Repository<StockHolding>,
     private readonly accountsService: AccountsService,
     private readonly stockService: StockService,
+    private readonly pushService: PushService,
     private schedulerRegistry: SchedulerRegistry,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -31,25 +35,43 @@ export class OrderService implements OnModuleInit {
   private shouldRunTask: boolean = false;
 
   // 평일 9시부터 시작
-  @Cron("0 33 11 * * 1-5")
+  @Cron("00 00 09 * * 1-5")
   startTask() {
     this.shouldRunTask = true;
+    console.log("시작");
     const timeout = setTimeout(() => this.waitOrderChk(), 0); // 즉시 실행
     this.schedulerRegistry.addTimeout("waitOrderChk", timeout);
   }
 
   // 평일 15시 25분에 종료
-  @Cron("0 25 15 * * 1-5")
+  @Cron("00 25 15 * * 1-5")
   stopTask() {
     this.shouldRunTask = false;
     // 기존에 등록된 작업을 중지
+    console.log("끝");
     const timeout = this.schedulerRegistry.getTimeout("waitOrderChk");
     clearTimeout(timeout);
   }
 
   async onModuleInit() {
     // 서버가 켜질때 시작
-    this.waitOrderChk();
+    const now = new Date();
+    const day = now.getDay();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    if (day === 0 || day === 6) {
+      return;
+    }
+    // 시간 확인 (9시부터 15시 25분까지)
+    if ((hours > 9 || (hours === 9 && minutes >= 0)) && (hours < 15 || (hours === 15 && minutes <= 25))) {
+      console.log("평일 9시 ~ 15시 25분");
+      this.shouldRunTask = true;
+      this.waitOrderChk();
+    } else {
+      console.log("끝");
+      this.shouldRunTask = false;
+      this.waitOrderChk();
+    }
   }
 
   // 대기 주문 체결
@@ -59,7 +81,6 @@ export class OrderService implements OnModuleInit {
     }
     try {
       const orders = await this.orderRepository.find({ where: { status: OrderStatus.Order } });
-      // console.log("orders", orders);
       // 몇초마다 수행할지 비동기를 동기적으로 사용하기 위해 Promise작업
       const delay = (interval) => new Promise((resolve) => setTimeout(resolve, interval));
 
@@ -71,15 +92,32 @@ export class OrderService implements OnModuleInit {
           // 가격비교를 위한 현재가 호가OpenAPI
           const list = await this.stockService.getStockPrice(order.stockCode);
           const stockPr = list.output1.bidp1;
+
           // 구매(매수)일 때,
-          const buyOrderCode = await em.find(Order, {
-            where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: true }
-          });
-          // console.log("buy", buyOrderCode);
+          const buyOrderCode = await em
+            .createQueryBuilder(Order, "order")
+            .innerJoinAndSelect("order.user", "user")
+            .where("order.stockCode = :stockCode", { stockCode: order.stockCode })
+            .andWhere("order.status = :status", { status: OrderStatus.Order })
+            .andWhere("order.buySell = :buySell", { buySell: true })
+            .select(["order", "user.subscription"])
+            .getMany();
 
           for (const buyOrder of buyOrderCode) {
             // 계좌에 해당 주식 확인
             const sH = await this.findOneStock(buyOrder.accountId, order.stockCode);
+
+            // 대기 구매 체결 시 알림 테이블에 데이터 추가
+            const formattedOrderTtlPrice: string = await this.addComma(buyOrder.ttlPrice);
+            const pushData: Push = em.create(Push, {
+              userId: buyOrder.userId,
+              serviceType: ServiceType.Stock,
+              contents1: `${buyOrder.stockName} ${buyOrder.orderNumbers}주 ${formattedOrderTtlPrice}원`,
+              contents2: "구매",
+              contents3: [buyOrder.stockCode, buyOrder.stockName],
+              contentId: buyOrder.id
+            });
+
             if (buyOrder.price >= stockPr) {
               buyOrder.status = OrderStatus.Complete;
               await em.save(buyOrder);
@@ -96,6 +134,12 @@ export class OrderService implements OnModuleInit {
               });
 
               await em.save(StockHolding, createSh);
+
+              // Push 테이블에 데이터 추가
+              await em.save(Push, pushData);
+
+              // 구매 주문 체결 시 웹 푸시 발송
+              await this.sendOrderPush(buyOrder);
             }
             // 계좌에 해당 주식이 있고 체결 됐을 때,
             if (sH && buyOrder.status === OrderStatus.Complete) {
@@ -107,18 +151,40 @@ export class OrderService implements OnModuleInit {
                   ttlPrice: sH.ttlPrice + buyOrder.ttlPrice
                 }
               );
+
+              // Push 테이블에 데이터 추가
+              await em.save(Push, pushData);
+
+              // 구매 주문 체결 시 웹 푸시 발송
+              await this.sendOrderPush(buyOrder);
             }
           }
 
           // 판매(매도)일 때,
-          const sellOrderCode = await em.find(Order, {
-            where: { stockCode: order.stockCode, status: OrderStatus.Order, buySell: false }
-          });
-          // console.log("sell", sellOrderCode);
+          const sellOrderCode = await em
+            .createQueryBuilder(Order, "order")
+            .innerJoinAndSelect("order.user", "user")
+            .where("order.stockCode = :stockCode", { stockCode: order.stockCode })
+            .andWhere("order.status = :status", { status: OrderStatus.Order })
+            .andWhere("order.buySell = :buySell", { buySell: false })
+            .select(["order", "user.subscription"])
+            .getMany();
 
           for (const sellOrder of sellOrderCode) {
             // 계좌에 해당 주식 확인
             const sH = await this.findOneStock(sellOrder.accountId, order.stockCode);
+
+            // 대기 구매 체결 시 알림 테이블에 데이터 추가
+            const formattedOrderTtlPrice: string = await this.addComma(sellOrder.ttlPrice);
+            const pushData: Push = em.create(Push, {
+              userId: sellOrder.userId,
+              serviceType: ServiceType.Stock,
+              contents1: `${sellOrder.stockName} ${sellOrder.orderNumbers}주 ${formattedOrderTtlPrice}원`,
+              contents2: "판매",
+              contents3: [sellOrder.stockCode, sellOrder.stockName],
+              contentId: sellOrder.id
+            });
+
             const sellAccount = await em.findOne(Account, { where: { userId: sellOrder.userId } });
             if (sellOrder.price <= stockPr) {
               sellOrder.status = OrderStatus.Complete;
@@ -138,6 +204,12 @@ export class OrderService implements OnModuleInit {
                   stockCode: sellOrder.stockCode
                 });
               }
+
+              // Push 테이블에 데이터 추가
+              await em.save(Push, pushData);
+
+              // 구매 주문 체결 시 웹 푸시 발송
+              await this.sendOrderPush(sellOrder);
             }
           }
 
@@ -154,8 +226,8 @@ export class OrderService implements OnModuleInit {
     } finally {
       if (this.shouldRunTask) {
         // 기존에 등록된 작업이 있다면 제거
-        const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
-        if (existingTimeout) {
+        if (this.schedulerRegistry.doesExist("timeout", "waitOrderChk")) {
+          const existingTimeout = this.schedulerRegistry.getTimeout("waitOrderChk");
           clearTimeout(existingTimeout);
           this.schedulerRegistry.deleteTimeout("waitOrderChk");
         }
@@ -179,10 +251,6 @@ export class OrderService implements OnModuleInit {
           // 구매(매수)건일 때,
           const updateAccount = await em.findOne(Account, { where: { userId: order.userId } });
           if (order.buySell && order.status === OrderStatus.Order) {
-            // console.log("point", updateAccount.point);
-            // console.log("plusPoint", order.ttlPrice);
-            // console.log("해당 계좌", updateAccount);
-            // console.log("주문내역", order);
             updateAccount.point += order.ttlPrice;
             await em.save(updateAccount);
           }
@@ -192,7 +260,6 @@ export class OrderService implements OnModuleInit {
       });
       /* 대기 주문 취소 트랜잭션 e */
 
-      console.log("주문 대기 건 취소 완료");
       return {
         success: true,
         message: "체결되지 않은 주문 건이 삭제되었습니다."
@@ -210,8 +277,6 @@ export class OrderService implements OnModuleInit {
   async buyStock({ id }: User, { stockName, stockCode, orderNumbers, price, status }: CreateOrderDto) {
     const account = await this.accountsService.findOneAccount(id);
     if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-    if (!orderNumbers || !price)
-      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
     // 매수 내역 생성
     const buyOrder = this.orderRepository.create({
       userId: id,
@@ -224,6 +289,11 @@ export class OrderService implements OnModuleInit {
       buySell: true,
       status
     });
+
+    if (!orderNumbers || !price)
+      throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
+    if (buyOrder.ttlPrice > account.point)
+      throw new BadRequestException({ success: false, message: "금액이 부족합니다." });
 
     try {
       // 주문 데이터를 Redis 큐에 추가
@@ -249,8 +319,6 @@ export class OrderService implements OnModuleInit {
     try {
       const account = await this.accountsService.findOneAccount(id);
       if (!account) throw new BadRequestException({ success: false, message: "계좌를 생성해주세요." });
-      if (!orderNumbers || !price)
-        throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
       // 판매(매도) 내역 생성
       const sellOrder = this.orderRepository.create({
         userId: id,
@@ -264,19 +332,19 @@ export class OrderService implements OnModuleInit {
         status
       });
 
+      if (!orderNumbers || !price)
+        throw new BadRequestException({ success: false, message: "수량 또는 가격을 입력해주세요." });
       // 계좌에 해당 주식 확인
       const sH = await this.findOneStock(account.id, sellOrder.stockCode);
       if (!sH) throw new BadRequestException({ success: false, message: "주식을 보유하고 있지 않습니다" });
-      if (sH.numbers < sellOrder.orderNumbers)
-        throw new BadRequestException({ success: false, message: "보유한 주식보다 수량이 많습니다." });
 
       // 예약 매도 수량 확인
       const orderChk = await this.orderRepository.find({
         where: { accountId: account.id, buySell: false, stockCode: sH.stockCode, status: OrderStatus.Order }
       });
       const totalOrderNumbers = orderChk.reduce((total, order) => total + order.orderNumbers, 0);
-      if (totalOrderNumbers > sH.numbers)
-        throw new BadRequestException({ success: false, message: "보유 주식보다 예약 매수 수량이 많습니다." });
+      if (totalOrderNumbers + sellOrder.orderNumbers > sH.numbers)
+        throw new BadRequestException({ success: false, message: "보유 주식보다 수량이 많습니다." });
 
       await this.ordersQueue.add(
         "sell",
@@ -489,5 +557,35 @@ export class OrderService implements OnModuleInit {
     return await this.stockHoldingRepository.findOne({
       where: { accountId: accountId, stockCode: stockCode }
     });
+  }
+
+  async sendOrderPush(order: Order) {
+    const userSubscription = Object(order.user.subscription);
+    const url: string = `/views/stock-detail-my.html?code=${order.stockCode}&name=${order.stockName}&page=1`;
+    const buySellWord: string = order.buySell === true ? "구매" : "판매";
+
+    const formattedOrderTtlPrice: string = await this.addComma(order.ttlPrice);
+
+    const payload = new Payload(
+      `[주식 ${buySellWord}] ${order.stockName} ${order.orderNumbers}주 ${formattedOrderTtlPrice}원 ${buySellWord} 주문이 체결되었습니다. `,
+      url
+    );
+
+    await this.pushService.sendPush(userSubscription, payload);
+  }
+
+  async addComma(number: number): Promise<string> {
+    // 값이 정의되어 있지 않다면 빈 문자열 반환
+    if (number === undefined || number === null) {
+      return "";
+    }
+
+    // 값이 정의되어 있다면 toString 메서드 호출
+    const stringValue: string = number.toString();
+
+    // 나머지 addComma 함수 로직
+    const formattedValue: string = stringValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    return formattedValue;
   }
 }

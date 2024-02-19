@@ -125,7 +125,6 @@ export class StockService {
         },
         params: queryParams
       });
-      // console.log(stockList.data);
 
       return stockList.data;
     } catch (error) {
@@ -156,7 +155,6 @@ export class StockService {
         },
         params: queryParams
       });
-      // console.log(stockPrice.data);
 
       return stockPrice.data;
     } catch (error) {
@@ -212,7 +210,6 @@ export class StockService {
   }
 
   async saveStocks() {
-    console.log("스톡정보를 업데이트 합니다.");
     let start = new Date();
 
     const stocksList: Stock[] = await this.getStocksFromPublicApi();
@@ -241,8 +238,6 @@ export class StockService {
     const message = new SlackMessage(color, text, mrkTitle, mrkValue);
 
     this.slackService.sendScheduleNoti(message, slackHookUrl);
-
-    console.log("걸린 시간 : ", time);
   }
 
   async findStocksByKeyword(keyword: string): Promise<Stock[]> {

@@ -12,23 +12,23 @@ export const getSearchData = async (keyword) => {
     const result = await axios.get(apiUrl);
 
     const stocks = result.data.data;
-    // console.log('stocks: ', stocks);
 
     const mainDom = document.querySelector(".search-list-wrap");
 
-    mainDom.innerHTML = stocks
-      .map(stock => {
-        const {
-          srtnCd: stockCode,
-          itmsNm: stockName,
-          mrktCtg: market,
-          mrktTotAmt: totalPrice,
-          lstgStCnt: stockCounts } = stock;
+    if (stocks.length !== 0) {
+      mainDom.innerHTML = stocks
+        .map(stock => {
+          const {
+            srtnCd: stockCode,
+            itmsNm: stockName,
+            mrktCtg: market,
+            mrktTotAmt: totalPrice,
+            lstgStCnt: stockCounts } = stock;
 
-        const formattedPrice = formatPrice(totalPrice);
-        const formattedStockNumbers = addComma(stockCounts)
+          const formattedPrice = formatPrice(totalPrice);
+          const formattedStockNumbers = addComma(stockCounts)
 
-        return `
+          return `
       <li>
         <a href="/views/stock-detail.html?code=${stockCode}&name=${stockName}"></a>
         <div class="stock-name-box">
@@ -44,14 +44,18 @@ export const getSearchData = async (keyword) => {
         </div>
       </li>
         `
-      })
-      .join("")
+        })
+        .join("")
+    } else {
+      mainDom.innerHTML = `
+      <div class="none-contents">
+        <span>검색 결과가 없습니다.</span>
+      </div>
+      `
+    }
 
 
-    $(".search-list-wrap li a").on('click', function (e) {
-      e.preventDefault();
-      alert('아직 준비중입니다.');
-    });
+
   } catch (error) {
     console.error(error)
   }

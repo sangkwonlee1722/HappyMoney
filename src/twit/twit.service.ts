@@ -129,7 +129,6 @@ export class TwitService {
     const userSubscription = Object(receiver.subscription);
     const url = `/views/twit/twit-detail.html?send=false&id=${sendTwit.id}`;
     const payload = new Payload(`[${sendTwit.senderName}]님이 쪽지를 보냈습니다.`, url);
-    console.log("payload: ", payload);
 
     await this.pushService.sendPush(userSubscription, payload);
   }

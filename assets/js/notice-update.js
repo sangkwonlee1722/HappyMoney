@@ -119,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       )
       .then(function (response) {
-        console.log(response);
         alert("공지사항이 성공적으로 등록되었습니다.");
         window.location.href = "/views/notice-main.html?page=1";
       })

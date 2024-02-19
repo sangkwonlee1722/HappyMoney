@@ -99,7 +99,6 @@ $("#posting-button").on("click", function () {
       }
     )
     .then(function (response) {
-      console.log(response);
       alert("게시물이 성공적으로 등록되었습니다.");
       window.location.href = "/views/post.html?page=1";
     })

@@ -120,7 +120,6 @@ $('.order-date-btn button').on('click', function () {
   drPopupOpen('.delete-order-chk')
 
   const orderId = $(this).closest('li').attr('data-id');
-  console.log('orderId: ', orderId);
   const orderCategory = $(this).closest('li').find('.child-category').text();
   const orderStockName = $(this).closest('li').find('.stock-name').text();
   const orderTtlPrice = $(this).closest('li').find('.order-ttl-price').text();

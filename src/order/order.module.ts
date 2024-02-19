@@ -9,6 +9,7 @@ import { StockModule } from "src/stock/stock.module";
 import { BullModule } from "@nestjs/bull";
 import { orderProcessor } from "./order.processor";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { PushModule } from "@/push/push.module";
 
 @Module({
   imports: [
@@ -20,16 +21,17 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          // host: "localhost",
-          // port: 6379
-          host: configService.get<string>("REDIS_HOST"),
-          port: configService.get<number>("REDIS_PORT")
+          host: "localhost",
+          port: 6379
+          // host: configService.get<string>("REDIS_HOST"),
+          // port: configService.get<number>("REDIS_PORT")
         }
       })
     }),
     BullModule.registerQueue({
       name: "orders"
-    })
+    }),
+    PushModule
   ],
   controllers: [OrderController],
   providers: [OrderService, orderProcessor]

@@ -18,7 +18,6 @@ const getMyPosts = async () => {
 
     const myPostsList = result.data.lists
     const myPostsTotal = result.data.total
-    console.log('myPostsTotal: ', myPostsTotal);
     return { myPostsList, myPostsTotal }
   } catch (error) {
     console.error(error)

@@ -18,6 +18,7 @@ export class StockGateway implements OnGatewayConnection {
   private skToken: string;
   private tokenExpiresAt: Date;
   private wsClient: WebSocket | null = null;
+  private addStock: string[] = [];
 
   constructor(private readonly configService: ConfigService) {
     this.initializeWebSocketClient();
@@ -38,33 +39,35 @@ export class StockGateway implements OnGatewayConnection {
   // }
 
   private async initializeWebSocketClient() {
-    // try {
-    //   const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
-    //   this.wsClient = new WebSocket(url);
-    //   await new Promise((resolve, reject) => {
-    //     this.wsClient.on("open", () => {
-    //       console.log("WebSocket connected");
-    //       resolve(true);
-    //     });
-    //     this.wsClient.on("error", (err) => {
-    //       console.error("WebSocket error:", err);
-    //       reject(err);
-    //     });
-    //   });
-    // } catch (error) {
-    //   console.log("Failed to initialize WebSocket:", error);
-    // }
     if (!this.wsClient) {
       try {
         const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
         this.wsClient = new WebSocket(url);
-        this.wsClient.on("open", () => {
-          console.log("WebSocket connected");
+        await new Promise((resolve, reject) => {
+          this.wsClient.on("open", () => {
+            console.log("WebSocket connected");
+            resolve(true);
+          });
+          this.wsClient.on("error", (err) => {
+            console.error("WebSocket error:", err);
+            reject(err);
+          });
         });
       } catch (error) {
-        console.log(error);
+        console.log("Failed to initialize WebSocket:", error);
       }
     }
+    // if (!this.wsClient) {
+    //   try {
+    //     const url = "ws://ops.koreainvestment.com:21000/tryitout/H0STASP0";
+    //     this.wsClient = new WebSocket(url);
+    //     this.wsClient.on("open", () => {
+    //       console.log("WebSocket connected");
+    //     });
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
   }
 
   // WebSocket token
@@ -97,22 +100,24 @@ export class StockGateway implements OnGatewayConnection {
   // 실시간 호가API
   @SubscribeMessage("asking_price")
   async getAskingPrice(@MessageBody() tr_key: string) {
-    // if (
-    //   this.wsClient &&
-    //   (this.wsClient.readyState === WebSocket.OPEN || this.wsClient.readyState === WebSocket.CONNECTING)
-    // ) {
-    //   await new Promise((resolve) => {
-    //     this.wsClient.on("close", () => {
-    //       console.log("WebSocket disconnected.");
-    //       resolve(true);
-    //     });
-    //     this.wsClient.terminate();
-    //   });
-    //   this.wsClient = null;
-    // }
-
+    if (!this.addStock.includes(tr_key)) {
+      this.addStock.push(tr_key); // addCode 추가
+    }
+    // console.log(this.addStock);
+    // console.log(this.addStock.length);
+    if (this.addStock.length > 20) {
+      await new Promise((resolve) => {
+        this.wsClient.on("close", () => {
+          console.log("WebSocket disconnected.");
+          resolve(true);
+        });
+        this.wsClient.terminate();
+      });
+      this.wsClient = null;
+      this.addStock = [];
+    }
     await this.initializeWebSocketClient();
-    // console.log(tr_key);
+    console.log(tr_key);
     // asking_price 이벤트 발생
     try {
       if (!this.skToken || !this.tokenExpiresAt || new Date() > this.tokenExpiresAt) {
@@ -137,20 +142,16 @@ export class StockGateway implements OnGatewayConnection {
       // console.log("jsonRequest", jsonRequest);
       this.wsClient.send(JSON.stringify(jsonRequest));
 
-      // const test: string[] = [];
       // 메시지 수신 이벤트 핸들러
       this.wsClient.on("message", async (data) => {
         const messageString = data.toString(); // Buffer를 문자열로 변환
         const jsonData = this.stockhoka(messageString);
-        // const addCode = jsonData.mksc_shrn_iscd.split("|")[3];
-
-        // if (!test.includes(addCode)) {
-        //   test.push(addCode); // addCode 추가
-        // }
-        // console.log(test);
+        const addCode = jsonData.mksc_shrn_iscd.split("|")[3];
         // console.log("Received asking_price:", jsonData.mksc_shrn_iscd.split("|")[3]);
         try {
-          this.server.emit("asking_price", jsonData);
+          if (addCode === tr_key) {
+            this.server.emit(`asking_price_${tr_key}`, jsonData);
+          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }

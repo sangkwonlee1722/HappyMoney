@@ -10,10 +10,22 @@
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/stock-common.js"></script>
     <script type="module" src="/js/stock-detail.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6466HVHEWX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6466HVHEWX");
+    </script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/stock-detail.css" />
     <link rel="stylesheet" href="/css/stock-order.css" />
+
     <title>HappyMoney</title>
   </head>
   <body>
@@ -140,7 +152,7 @@
                 <div class="up">
                   <div class="hm-input-wrap fw-bold mb-4">
                     <label for="fixPrice">지정가</label>
-                    <input type="number" class="hm-input" id="fixPrice" value="" disabled />
+                    <input type="number" class="hm-input" id="fixPrice" min="0" value="" disabled />
                   </div>
                   <div class="hm-checkbox fw-bold mb-4">
                     <input type="checkbox" id="fixCheck" checked />
@@ -148,7 +160,7 @@
                   </div>
                   <div class="hm-input-wrap fw-bold">
                     <label for="stockAmount">수량</label>
-                    <input type="number" class="hm-input" id="stockAmount" value="" />
+                    <input type="number" class="hm-input" min="0" id="stockAmount" value="" />
                   </div>
                   <!-- <ul class="percent mt-3">
                     <li>10%</li>

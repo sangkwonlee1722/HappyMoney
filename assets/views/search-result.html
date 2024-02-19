@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<!doctype html>
+<html lang="ko">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="/js/jquery-3.7.1.min.js"></script>
@@ -9,34 +8,44 @@
     <script type="module" src="/js/bootstrap.min.js"></script>
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/search-result.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6466HVHEWX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-6466HVHEWX");
+    </script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/main-page.css" />
     <link rel="stylesheet" href="/css/search-result.css" />
     <title>HappyMoney</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="hm-container">
-        <header id="header_wrap"></header>
-        <div id="main-content">
-            <div class="contents-wrap">
-                <section id="noticesSection" class="section">
-                    <h2>공지사항</h2>
-                    <ul id="noticesList" class="notice-list"></ul>
-                </section>
-                <section id="postsSection" class="section">
-                    <h2>자유게시판</h2>
-                    <ul id="postsList"></ul>
-                </section>
-                <section id="stocksSection" class="search-list-wrap">
-                    <h2>주식</h2>
-                    <ul id="stocksList"></ul>
-                </section>
-            </div>
+      <header id="header_wrap"></header>
+      <div id="main-content">
+        <div class="contents-wrap">
+          <section id="noticesSection" class="section">
+            <h2>공지사항</h2>
+            <ul id="noticesList" class="notice-list"></ul>
+          </section>
+          <section id="postsSection" class="section">
+            <h2>자유게시판</h2>
+            <ul id="postsList"></ul>
+          </section>
+          <section id="stocksSection" class="search-list-wrap">
+            <h2>주식</h2>
+            <ul id="stocksList"></ul>
+          </section>
         </div>
+      </div>
     </div>
     <footer id="footer_wrap"></footer>
-</body>
-
+  </body>
 </html>

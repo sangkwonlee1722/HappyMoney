@@ -12,6 +12,17 @@
   <script type="module" src="/js/bootstrap.min.js"></script>
   <script type="module" src="/js/common.js"></script>
   <script type="module" src="/js/notice-update.js"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6466HVHEWX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-6466HVHEWX");
+  </script>
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/css/common.css" />
   <link rel="stylesheet" href="/css/notice-update.css" />
@@ -22,9 +33,7 @@
     <header id="header_wrap"></header>
     <div id="main-content">
       <div class="contents-wrap">
-        <h2 class="board-title">
-          공지사항 수정하기
-        </h2>
+        <h2 class="board-title">공지사항 수정하기</h2>
         <form action="" method="post">
           <div class="form-group">
             <label for="title"></label>
