@@ -73,6 +73,10 @@ export class PushService {
 
   /* 유저에게 웹 푸시를 보내는 함수 */
   async sendPush(userSubscription, payload: Payload): Promise<void> {
+    if (!userSubscription) {
+      return;
+    }
+
     const options = {
       TTL: 24 * 60 * 60,
       vapidDetails: {
