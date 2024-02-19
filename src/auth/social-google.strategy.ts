@@ -3,6 +3,7 @@ import { Strategy } from "passport-google-oauth20";
 import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
 
+// 구글 소셜로그인 Usegudars("google")
 export class JwtGoogleStrategy extends PassportStrategy(Strategy, "google") {
   constructor(private readonly userRepository: Repository<User>) {
     super({
@@ -13,6 +14,7 @@ export class JwtGoogleStrategy extends PassportStrategy(Strategy, "google") {
     });
   }
 
+  // 구글 소셜로그인 정보
   async validate(accessToken, refreshToken, profile) {
     const signupType = profile.provider;
     return {

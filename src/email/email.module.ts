@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { EmailController } from "./email.controller";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/user/entities/user.entity";
@@ -20,7 +19,6 @@ import { EmailService } from "./email.service";
       })
     })
   ],
-  controllers: [EmailController],
   providers: [EmailService, ConfigService],
   exports: [EmailService]
 })
