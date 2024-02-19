@@ -14,6 +14,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
+  // 소셜로그인으로 가입 시 DB에 저장
   async findByEmailOrSave(email: string, name: string, signupType: string, nickName: string) {
     try {
       const user = await this.userRepository.findOne({ where: { email } });
@@ -32,6 +33,7 @@ export class AuthService {
     }
   }
 
+  // 소셜 로그인 랜덤 닉네임
   async generateUniqueRandomNickname() {
     let isUnique = false;
     let nickname = "";
@@ -48,6 +50,7 @@ export class AuthService {
     return nickname;
   }
 
+  // 소셜 로그인으로 가입 시 회원정보
   async socialLogin(@Req() req: any) {
     let { email, name, signupType } = req.user;
     const nickname = await this.generateUniqueRandomNickname();

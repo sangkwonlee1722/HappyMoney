@@ -1,11 +1,13 @@
 import getToken from "./common.js";
 
+// 쿠키에서 토큰 삭제
 function deleteCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
 }
 
 const token = getToken();
 
+// 회원탈퇴
 async function signout() {
   try {
     const axiosInstance = axios.create({
@@ -33,6 +35,7 @@ async function signout() {
   }
 }
 
+// 회원탈퇴 버튼 confirm
 const signoutBtn = document.getElementById("signoutBtn");
 signoutBtn.addEventListener("click", () => {
   const userConfirmed = window.confirm("정말로 회원탈퇴 하시겠습니까? 재가입이 불가능합니다.");

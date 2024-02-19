@@ -1,6 +1,7 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-naver";
 
+// 구글 소셜로그인 Usegudars("naver")
 export class JwtNaverStrategy extends PassportStrategy(Strategy, "naver") {
   constructor() {
     super({
@@ -10,6 +11,7 @@ export class JwtNaverStrategy extends PassportStrategy(Strategy, "naver") {
     });
   }
 
+  // 네이버 소셜로그인 정보
   validate(accessToken: string, refreshToken: string, profile: any) {
     const signupType = profile.provider;
 
