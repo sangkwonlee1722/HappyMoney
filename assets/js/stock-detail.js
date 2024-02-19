@@ -229,8 +229,8 @@ function livePriceData() {
   socket.on(`asking_price_${trKey}`, async (data) => {
     const price = data;
     const tax = price.bidp1;
-    const liveCode = price.mksc_shrn_iscd.split("|")[3];
-    console.log(liveCode);
+    // const liveCode = price.mksc_shrn_iscd.split("|")[3];
+    // console.log(liveCode);
 
     // 코드가 같은거만 나오게
     // if (liveCode === trKey) {
