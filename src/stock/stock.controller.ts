@@ -38,14 +38,14 @@ export class StockController {
     return { list };
   }
 
-  @Patch("upadateStock")
-  async updateStockValue() {
-    await this.stockService.updateStockAndRank();
-    return {
-      success: true,
-      message: "okay"
-    };
-  }
+  // @Patch("upadateStock")
+  // async updateStockValue() {
+  //   await this.stockService.updateStockAndRank();
+  //   return {
+  //     success: true,
+  //     message: "okay"
+  //   };
+  // }
 
   /**
    * 주식현재가 호가

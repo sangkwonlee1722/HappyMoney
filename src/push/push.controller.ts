@@ -6,7 +6,7 @@ import { UserInfo } from "src/common/decorator/user.decorator";
 import { User } from "src/user/entities/user.entity";
 import { ConfigService } from "@nestjs/config";
 
-@ApiTags("push")
+@ApiTags("Push")
 @UseGuards(AuthGuard("jwt"))
 @ApiBearerAuth()
 @Controller("push")
