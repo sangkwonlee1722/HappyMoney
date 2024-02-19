@@ -1,4 +1,4 @@
-# <img src="https://github.com/nbcamp-HappyMoney/HappyMoney/blob/dev/assets/images/123.png"  width="30" height="30"/> HappyMoney
+# <img src="https://github.com/nbcamp-HappyMoney/HappyMoney/blob/dev/assets/images/favicon.png"  width="30" height="30"/> HappyMoney
 
 
 #### 당신에게 1억이 주어진다면?
