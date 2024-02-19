@@ -460,68 +460,114 @@ https://github.com/backEndKwon/CodeBlue/assets/128948886/df25786c-7415-4b66-be66
 
 <br>
 
-# 📝Commit Convention
+# ⚙ Github Rules
+<details>   
+<summary> Branch Convention </summary>
+    
+* 브랜치명 : 자원/기능
+* user/sign-up
+* account/read
+ 
+</details>
 
 <details>
-<summary> Commit Convention 펼쳐보기 </summary>
+<summary> Commit Convention </summary>
 <div markdown="1">  
-  <br>
-● 제목은 최대 30글자이하로 작성: ex) feat: Add Key mapping
-  <br>
-● 본문은 아래에 작성  
-<br><br>
 
---- <타입> 리스트 --- 
+ * Commit Type
 ```
-feat        : 기능 (새로운 기능)  
-fix         : 버그 (버그 수정)  
-refactor    : 리팩토링  
-design      : CSS 등 사용자 UI 디자인 변경  
-comment     : 필요한 주석 추가 및 변경  
-style       : 스타일 (코드 형식, 세미콜론 추가: 비즈니스 로직에 변경 없음)  
-docs        : 문서 수정 (문서 추가, 수정, 삭제, README)  
-test        : 테스트 (테스트 코드 추가, 수정, 삭제: 비즈니스 로직에 변경 없음)  
-chore       : 기타 변경사항 (빌드 스크립트 수정, assets, 패키지 매니저 등)  
-init        : 초기 생성  
-rename      : 파일 혹은 폴더명을 수정하거나 옮기는 작업만 한 경우  
-remove      : 파일을 삭제하는 작업만 수행한 경우 
+Feat        : 기능 (새로운 기능)  
+Fix         : 버그 (버그 수정)  
+Refactor    : 리팩토링  
+Design      : CSS 등 사용자 UI 디자인 변경  
+Comment     : 필요한 주석 추가 및 변경  
+Style       : 스타일 (코드 형식, 세미콜론 추가: 비즈니스 로직에 변경 없음)  
+Test        : 테스트 (테스트 코드 추가, 수정, 삭제: 비즈니스 로직에 변경 없음)  
+Chore       : 기타 변경사항 (빌드 스크립트 수정, assets, 패키지 매니저 등)  
+Init        : 초기 생성  
+Rename      : 파일 혹은 폴더명을 수정하거나 옮기는 작업만 한 경우  
+Remove      : 파일을 삭제하는 작업만 수행한 경우 
 ```
---- <꼬리말> 필수아닌 옵션 ---   
+* 예시
 ```
-Fixes        : 이슈 수정중 (아직 해결되지 않은 경우)  
-Resolves     : 이슈 해결했을 때 사용  
-Ref          : 참고할 이슈가 있을 때 사용  
-Related to   : 해당 커밋에 관련된 이슈번호 (아직 해결되지 않은 경우)  
-ex) Fixes: #47 Related to: #32, #21
+Feat: [performance/read] 모든 공연 조회 API 추가
+1) 테스트 REST Client로 변경
+- 토큰값 자동으로 할당 가능
+- 다른 서비스 사용하지 않고 VS code 에서 처리 가능
 ```
-
 </div>
 </details>
 
-# 🗒️Code Convention
+<details>   
+<summary> Git Convention(PR) </summary>
+  
+* Title : (브랜치명) 진행 사항 1줄 요약
+  * (reservation/delete) 예약 삭제 API 추가
+* 본문 
+  * Issue 연결 
+  * 진행사항
+    * 진행했던 사항을 상세하게 기록
+  * 특이사항
+    * 오류 발생
+    * 다른 사람 코드와 연계되어 영향을 받을 경우 멘션
+* 예시
+```
+#20
+
+진행사항
+1) 트랜잭션 처리
+* 예약 취소 시 예약 테이블 softDelete 처리 및 status값을 Canceled로 변경
+* 예약 취소 시 User 테이블 point 값을 totalPrice 만큼 추가(환불)
+* 예약 취소 시 Seat 테이블 status 값을 Possible로 변경 및 reservationId Null 값으로 변경
+
+2) 공연 시작 시간 기준 3시간 전에는 예약 취소 불가
+* 혹시 몰라 한국시간으로 변환 후 현재와 비교하여 3시간 미만 일 경우 에러 처리
+
+특이사항
+1) 트랜잭션 처리 중 에러
+* 삭제의 경우 트랜잭션 내에서 유효성 검사를 하는 부분이 없어 try...catch를 통해 에러 던짐 (롤백)
+
+2) Controller에서 AuthGuard 잘못된 사용
+* AuthGuard 이렇게만 적어서 서버 시작 시 오류..
+* AuthGuard('jwt') 로 바꿔주었음 !
+```
+
+</details>
+
+
+# 🗒️ Code Convention
 
 <details>
-<summary> Code Convention 펼쳐보기 </summary>
-<div markdown="1">  
-  <br>
+<summary> Code Convention </summary>
 
---- Prettier & Eslint 자동 적용 ---   
+* 변수명 : `camelCase`
+* 클래스명 : `PascalCase` 
+* Prettier
+
+```json
+{
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "bracketSpacing": true,
+  "trailingComma": "none"
+}
+
 ```
-singleQuote: true → 작은 따옴표(') 사용
-trailingComma: "all" → 객체 또는 배열의 마지막 요소 뒤에 항상 쉼표(,) 추가
-tabWidth: 2 → 들여쓰기 탭의 너비 2
-semi: true → 문장의 끝에 항상 세미콜론(;) 추가
-arrowParens: "always" → 화살표 함수 매개변수에 항상 괄호(ex, (param)=>expression) 추가 
-endOfLine: "auto" → 자동으로 행 종결 문자를 선택하도록 설정(줄 바꿈 문자(\n)→줄 바꿈 문자(\r\n))
-```
+</details>    
+        
+<details>   
+<summary> DB Convention </summary>
+  
+* Table 명 : `소문자 복수형`
+* DB Column명 : `snake_case`
 
-
- 
-</div>
 </details>
 <br><br><br>
 
-![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Thank%20you%20for%20watching&fontSize=50)
+
 
 ## 환경변수
 
