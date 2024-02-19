@@ -115,6 +115,9 @@ export class StockGateway implements OnGatewayConnection {
       });
       this.wsClient = null;
       this.addStock = [];
+
+      // 연결 끊었을 때, 클라이언트에 refresh 이벤트 보내기
+      this.server.emit("refresh", {});
     }
     await this.initializeWebSocketClient();
     console.log(tr_key);

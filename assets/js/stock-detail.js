@@ -50,13 +50,21 @@ if (isKoreanWeekday() && isKoreanWorkingHour()) {
 // 구매(매수)버튼 클릭 시
 $('#buyBtn').on('click', function () {
   const bidp = $('.sell.num1 .price').text();
+  const bidp1 = parseFloat(bidp.replace(',', ''));
+  const askp1 = parseFloat($('.buy.num1 .price').text().replace(',', ''));
+  const stockUnit = askp1 - bidp1;
+  const fixPrice = $('#fixPrice').val();
+
+  if (fixPrice % stockUnit !== 0) {
+    alert(`해당 주식 가격의 단위는 ${stockUnit}원 입니다.`);
+    $('#fixPrice').focus();
+    return;
+  }
   if (bidp === '') {
     alert('호가 업데이트가 되지않아 구매가 불가능합니다.');
     return;
   }
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
-    const bidp = $('.sell.num1 .price').text();
-    const bidp1 = parseFloat(bidp.replace(',', ''));
     buyFatchData(bidp1);
   } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
@@ -66,13 +74,22 @@ $('#buyBtn').on('click', function () {
 
 // 판매(매도)버튼 클릭 시
 $('#sellBtn').on('click', function () {
+  const bidp = $('.sell.num1 .price').text();
+  const bidp1 = parseFloat(bidp.replace(',', ''));
+  const askp1 = parseFloat($('.buy.num1 .price').text().replace(',', ''));
+  const stockUnit = askp1 - bidp1;
+  const fixPrice = $('#fixPrice').val();
+
+  if (fixPrice % stockUnit !== 0) {
+    alert(`해당 주식 가격의 단위는 ${stockUnit}원 입니다.`);
+    $('#fixPrice').focus();
+    return;
+  }
+  if (bidp === '') {
+    alert('호가 업데이트가 되지않아 판매가 불가능합니다.');
+    return;
+  }
   if (isKoreanWeekday() && isKoreanWorkingHour()) {
-    const bidp = $('.sell.num1 .price').text();
-    const bidp1 = parseFloat(bidp.replace(',', ''));
-    if (bidp === '') {
-      alert('호가 업데이트가 되지않아 판매가 불가능합니다.');
-      return;
-    }
     sellFatchData(bidp1);
   } else {
     alert('장 운영 일자가 주문일과 상이합니다.');
@@ -199,35 +216,43 @@ function livePriceData() {
   socket.on('connect', () => {
 
     // 메시지 전송
-    socket.emit(`asking_price`, trKey);
+    socket.emit('asking_price', trKey);
+  });
+
+  socket.on('refresh', function () {
+    setTimeout(function () {
+      alert('실시간 호가 데이터가 수정되었습니다.');
+      location.reload();
+    }, 1000);
   });
 
   socket.on(`asking_price_${trKey}`, async (data) => {
     const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];
+    console.log(liveCode);
 
     // 코드가 같은거만 나오게
-    if (liveCode === trKey) {
-      $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
+    // if (liveCode === trKey) {
+    $('.stock-dt-tit-box > .price').text(`${addComma(price.bidp1)}원`);
 
-      // 시장가 체크에 따른 수정
-      const fixPrice = $('#fixPrice').val();
-      const num = $('#stockAmount').val();
+    // 시장가 체크에 따른 수정
+    const fixPrice = $('#fixPrice').val();
+    const num = $('#stockAmount').val();
 
-      if ($('#fixPrice').prop('disabled')) {
-        $('#fixPrice').val(`${tax}`);
-        $('.total-price').text('');
-      }
-      $('.total-price').text(addComma(fixPrice * num));
-
-      for (let i = 1; i < 11; i++) {
-        $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
-        $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
-        $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
-        $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
-      }
+    if ($('#fixPrice').prop('disabled')) {
+      $('#fixPrice').val(`${tax}`);
+      $('.total-price').text('');
     }
+    $('.total-price').text(addComma(fixPrice * num));
+
+    for (let i = 1; i < 11; i++) {
+      $(`.stock-dt-live .buy.num${i} .price`).text(addComma(price[`askp${i}`]));
+      $(`.stock-dt-live .buy.num${i} .amount`).text(addComma(price[`askp_rsqn${i}`]));
+      $(`.stock-dt-live .sell.num${i} .price`).text(addComma(price[`bidp${i}`]));
+      $(`.stock-dt-live .sell.num${i} .amount`).text(addComma(price[`bidp_rsqn${i}`]));
+    }
+    // }
   })
 }
 
