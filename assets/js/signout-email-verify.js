@@ -1,3 +1,4 @@
+// 회원탈퇴 이메일 인증 확인 후 로직
 document.addEventListener("DOMContentLoaded", async () => {
   const queryParams = new URLSearchParams(window.location.search);
   const email = queryParams.get("email");

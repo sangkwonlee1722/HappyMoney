@@ -3,6 +3,7 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-kakao";
 
+// 구글 소셜로그인 Usegudars("kakao")
 export class JwtKakaoStrategy extends PassportStrategy(Strategy, "kakao") {
   constructor() {
     super({
@@ -13,6 +14,7 @@ export class JwtKakaoStrategy extends PassportStrategy(Strategy, "kakao") {
     });
   }
 
+  // 카카오 소셜로그인 정보
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     const signupType = profile.provider;
 
