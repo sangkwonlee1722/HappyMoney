@@ -1,4 +1,5 @@
 import { addComma, formatPrice } from "./common.js";
+import { getCookie } from "/js/common.js";
 
 // HTML 요소를 만들어서 검색 결과를 화면에 표시
 function displaySearchResults(data) {
@@ -93,12 +94,18 @@ function displaySearchResults(data) {
       listItem.innerHTML = listItemContent;
       stocksList.appendChild(listItem);
 
-      $(listItem)
-        .find("a")
-        .on("click", function (e) {
-          e.preventDefault();
-          alert("아직 준비중입니다.");
-        });
+      listItem.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const token = `Bearer ${getCookie("accessToken")}`;
+
+        if (token === "Bearer null") {
+          alert("로그인이 필요합니다.");
+          drPopupOpen(".hm-popup-login");
+        } else {
+          window.location.href = `/views/stock-detail.html?code=${stockCode}&name=${encodeURIComponent(stockName)}`;
+        }
+      });
     });
   } else {
     // 검색 결과가 없는 경우 메시지 표시
