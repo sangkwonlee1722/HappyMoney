@@ -104,11 +104,13 @@ export class OrderService implements OnModuleInit {
             .getMany();
 
           for (const buyOrder of buyOrderCode) {
+            console.log("buyOrder: ", buyOrder);
             // 계좌에 해당 주식 확인
             const sH = await this.findOneStock(buyOrder.accountId, order.stockCode);
 
             // 대기 구매 체결 시 알림 테이블에 데이터 추가
             const formattedOrderTtlPrice: string = await this.addComma(buyOrder.ttlPrice);
+
             const pushData: Push = em.create(Push, {
               userId: buyOrder.userId,
               serviceType: ServiceType.Stock,
@@ -139,7 +141,9 @@ export class OrderService implements OnModuleInit {
               await em.save(Push, pushData);
 
               // 구매 주문 체결 시 웹 푸시 발송
-              await this.sendOrderPush(buyOrder);
+              if (buyOrder.user.subscription) {
+                await this.sendOrderPush(buyOrder);
+              }
             }
             // 계좌에 해당 주식이 있고 체결 됐을 때,
             if (sH && buyOrder.status === OrderStatus.Complete) {
@@ -156,7 +160,9 @@ export class OrderService implements OnModuleInit {
               await em.save(Push, pushData);
 
               // 구매 주문 체결 시 웹 푸시 발송
-              await this.sendOrderPush(buyOrder);
+              if (buyOrder.user.subscription) {
+                await this.sendOrderPush(buyOrder);
+              }
             }
           }
 
@@ -208,8 +214,10 @@ export class OrderService implements OnModuleInit {
               // Push 테이블에 데이터 추가
               await em.save(Push, pushData);
 
-              // 구매 주문 체결 시 웹 푸시 발송
-              await this.sendOrderPush(sellOrder);
+              if (sellOrder.user.subscription) {
+                // 구매 주문 체결 시 웹 푸시 발송
+                await this.sendOrderPush(sellOrder);
+              }
             }
           }
 
@@ -561,6 +569,9 @@ export class OrderService implements OnModuleInit {
 
   async sendOrderPush(order: Order) {
     const userSubscription = Object(order.user.subscription);
+    if (!userSubscription) {
+      return;
+    }
     const url: string = `/views/stock-detail-my.html?code=${order.stockCode}&name=${order.stockName}&page=1`;
     const buySellWord: string = order.buySell === true ? "구매" : "판매";
 
