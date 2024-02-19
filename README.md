@@ -36,62 +36,54 @@
 
 <br>
 
-# 📹 주요 기능별 영상
+# 📹 주요 기능 사진
 <details>
-<summary> #1 증상보고서 입력 </summary>
+<summary> #1 실시간 호가 데이터를 바탕으로한 주식 주문 기능 </summary>
 <div markdown="1">
 
 
 
-https://github.com/backEndKwon/CodeBlue/assets/128948886/3db6882f-c55c-46fa-98df-2fecacc53cde
+![실시간호가](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/99943d1d-d00c-47b7-b877-37b4a7bb7e1d)
+![실시간호가사진](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/6449d5f6-4d18-4feb-a1ac-08e2020734da)
 
 
 </div>
 </details>
 
 <details>
-<summary> #2 사용자 위치기반 추천 병원조회 </summary>
+<summary> #2 모의투자 결과를 바탕으로한 랭킹 기능  </summary>
 <div markdown="1">
 
 
 
-https://github.com/backEndKwon/CodeBlue/assets/128948886/adc761d1-06a5-4463-ae5f-a62764b7d229
+![랭킹1](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/80caed7f-c183-4774-a9ab-0c1989148a10)
+![랭킹2](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/2753298e-8eb5-4994-9778-1d7ce8139e9a)
+
+</div>
+</details>
+
+<details>
+<summary> #3 대기 주문체결, 댓글, 쪽지 수신 시 웹 푸시 알림 기능 </summary>
+<div markdown="1">
+
+
+
+![웹푸쉬알림](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/4a1e7a82-50c1-4684-833e-d49b339218c5)
+![웹푸시1](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/5cf1b258-22da-4660-a515-5bad011f836f)
 
 
 </div>
 </details>
 
 <details>
-<summary> #3 이송신청 </summary>
-<div markdown="1">
-
-
-https://github.com/backEndKwon/CodeBlue/assets/128948886/7e0393e9-5328-44c9-bc50-fb9fe3e7bd9a
-
-
-
-</div>
-</details>
-
-<details>
-<summary> #4 증상보고서 검색 </summary>
+<summary> #4 커뮤니티 </summary>
 <div markdown="1">
 
 
 
-https://github.com/backEndKwon/CodeBlue/assets/128948886/078fa385-f992-43a3-a3ed-bc42bd005163
-
-
-</div>
-</details>
-
-<details>
-<summary> #5 인근 병원조회 </summary>
-<div markdown="1">
-
-
-https://github.com/backEndKwon/CodeBlue/assets/128948886/df25786c-7415-4b66-be66-98d54eecfbe4
-
+![커뮤니티1](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/3dc01791-d561-4cc6-8a2f-365253db725d)
+![커뮤니티2](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/5752ff69-49f4-4900-b63c-99fb85d7e1c6)
+![커뮤니티3](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/0a0b0e39-cb60-4b5b-8b28-624b871d4985)
 
 
 </div>
@@ -171,7 +163,19 @@ https://github.com/backEndKwon/CodeBlue/assets/128948886/df25786c-7415-4b66-be66
 
 #  📒 ERD
 
-![ERD](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/33468c37-bd00-4277-908d-47f7a666da9a)
+https://dbdiagram.io/d/Final_Project_HappyMoney-658a371b89dea6279988f566
+
+<br>
+
+#  📗 와이어 프레임
+
+https://www.figma.com/file/g1xNcU7RORoY56gcK8QJnz/Final_Project_Happy_Money?type=design&node-id=0-1&mode=design
+
+<br>
+
+#  📘 API 명세서(SWAGGER)
+
+https://happymoneynow.com/api-docs 
 
 <br>
 
