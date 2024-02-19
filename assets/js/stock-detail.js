@@ -226,7 +226,7 @@ function livePriceData() {
     }, 1000);
   });
 
-  socket.on('asking_price', async (data) => {
+  socket.on(`asking_price_${trKey}`, async (data) => {
     const price = data;
     const tax = price.bidp1;
     const liveCode = price.mksc_shrn_iscd.split("|")[3];

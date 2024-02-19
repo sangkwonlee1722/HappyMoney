@@ -153,7 +153,7 @@ export class StockGateway implements OnGatewayConnection {
         // console.log("Received asking_price:", jsonData.mksc_shrn_iscd.split("|")[3]);
         try {
           if (addCode === tr_key) {
-            this.server.emit("asking_price", jsonData);
+            this.server.emit(`asking_price_${tr_key}`, jsonData);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
