@@ -7,7 +7,7 @@ import { Roles } from "src/common/decorator/roles.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
 import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
-@ApiTags("notices")
+@ApiTags("Notices")
 @Controller("notices")
 export class NoticeController {
   constructor(private readonly noticeService: NoticeService) {}

@@ -1,5 +1,16 @@
 // comment.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, BadRequestException } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  BadRequestException
+} from "@nestjs/common";
 import { CommentService } from "./comment.service";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
@@ -9,7 +20,7 @@ import { User } from "src/user/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { PaginatePostDto } from "src/common/dto/paginate.dto";
 
-@ApiTags("comments")
+@ApiTags("Comments")
 @Controller("comments")
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
@@ -24,9 +35,9 @@ export class CommentController {
   @Post(":postId")
   async create(@Param("postId") postId: number, @UserInfo() user: User, @Body() createCommentDto: CreateCommentDto) {
     const { content } = createCommentDto;
-    if (content.trim()==="") {
+    if (content.trim() === "") {
       throw new BadRequestException({ success: false, message: "공백으로만 쓸 수 없습니다." });
-    };
+    }
 
     await this.commentService.create(user, postId, createCommentDto);
     return {
@@ -80,10 +91,10 @@ export class CommentController {
   @UseGuards(AuthGuard("jwt"))
   async update(@UserInfo() user, @Param("id") commentId: number, @Body() updateCommentDto: UpdateCommentDto) {
     const { content } = updateCommentDto;
-    if (content.trim()==="") {
+    if (content.trim() === "") {
       throw new BadRequestException({ success: false, message: "공백으로만 쓸 수 없습니다." });
-    };
-    
+    }
+
     const updateComment = await this.commentService.update(user.id, commentId, updateCommentDto);
     return {
       success: true,

@@ -3,6 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { Request, Response } from "express";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
+import { ApiTags } from "@nestjs/swagger";
 
 interface IOAuthUser {
   user: {
@@ -11,7 +12,7 @@ interface IOAuthUser {
     password: string;
   };
 }
-
+@ApiTags("Auth")
 @Controller()
 export class AuthController {
   constructor(
