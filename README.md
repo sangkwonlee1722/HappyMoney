@@ -8,6 +8,8 @@
 #### 🏠 배포 주소 : [HappyMoney](https://happymoneynow.com/views/main.html)
 #### 📊 작업 로그 : [Notion](https://www.notion.so/a7ef569785744b1099a268f691db41ff?pvs=4)
 #### 📌 브로 슈어 : [Brochure](https://www.notion.so/A-3-HAPPY-MONEY-84c6ffd6f0cc49768bd7f4f1fadf50dc?pvs=4)
+#### 🏆 수상 내역
+![내배캠최우수상 - Happy Money](https://github.com/nbcamp-HappyMoney/HappyMoney/assets/147799382/05d851ef-fde5-430e-8c4e-ee2964945d23)
 
 -------------------
 
